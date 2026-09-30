@@ -1,0 +1,10 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "mkg-global-website",
+  "main": "./_worker.js",
+  "compatibility_date": "2026-09-29",
+  "assets": {
+    "directory": ".",
+    "binding": "ASSETS"
+  }
+}

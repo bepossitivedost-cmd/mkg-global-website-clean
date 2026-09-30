@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>MKG GLOBAL — Private Admin</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+<style>
+  html,body{margin:0!important;padding:0!important;background:#f1f5f9}
+  body{font-family:Arial,sans-serif}
+  .admin-header{height:72px}
+  .drop{border:2px dashed #0f766e;transition:.15s}
+  .drop:hover{background:#f0fdfa}
+  .disabled-btn{opacity:.55;cursor:not-allowed}
+  .mini{font-size:11px}
+</style>
+</head>
+<body class="min-h-screen text-slate-900">
+<header class="admin-header bg-white border-b sticky top-0 z-10">
+  <div class="max-w-6xl mx-auto px-5 h-full flex items-center justify-between">
+    <img src="image/mkg_official_logo.png" class="h-11 w-auto" alt="MKG GLOBAL">
+    <div class="text-right"><div class="text-xs font-black uppercase tracking-wider text-teal-700">PRIVATE ADMIN</div><div id="accessState" class="mini text-slate-400 mt-0.5">Checking secure connection…</div></div>
+  </div>
+</header>
+<main class="max-w-6xl mx-auto p-4 sm:p-6 space-y-5">
+  <section class="bg-white rounded-2xl border p-5 shadow-sm">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+      <div><h1 class="text-xl font-black">Inventory & Product Images</h1><p class="text-sm text-slate-500 mt-1">Update live products and attach real product images. Changes are stored server-side.</p></div>
+      <button id="refreshBtn" onclick="load(true)" class="w-auto px-4 py-2 rounded-xl bg-slate-100 text-slate-800 font-black text-sm">↻ Refresh</button>
+    </div>
+    <div id="status" class="hidden mt-4 rounded-xl p-4 text-sm font-bold"></div>
+    <div id="loginBox" class="mt-4 rounded-xl border bg-slate-50 p-4 hidden">
+      <div class="font-black text-slate-900">Private Admin Login</div>
+      <p class="text-sm text-slate-500 mt-1">Enter your private admin access key. This is not a public PIN.</p>
+      <div class="flex flex-col sm:flex-row gap-2 mt-3">
+        <input id="adminKey" type="password" autocomplete="current-password" placeholder="Admin access key" class="flex-1 border rounded-xl p-3 bg-white">
+        <button onclick="loginAdmin()" class="px-5 py-3 rounded-xl bg-teal-700 text-white font-black">Sign In</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white rounded-2xl border p-5 shadow-sm">
+    <h2 class="text-lg font-black">1. Upload Inventory</h2>
+    <p class="text-sm text-slate-500 mt-1">CSV or Excel (.xlsx) supported. Your existing Inventory.csv.xlsx can be uploaded directly.</p>
+    <div class="drop rounded-2xl p-6 text-center mt-4">
+      <input id="csv" type="file" accept=".csv,.xlsx,text/csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" class="hidden">
+      <button onclick="document.getElementById('csv').click()" class="w-auto px-6 py-3 rounded-xl bg-teal-700 text-white font-black">Choose CSV / Excel</button>
+      <p id="csvName" class="text-xs text-slate-500 mt-3">15-column format • CSV or XLSX</p>
+    </div>
+    <button id="csvUpload" onclick="uploadCsv()" class="mt-4 w-full py-3 rounded-xl bg-slate-900 text-white font-black">Upload Inventory to Live Website</button>
+  </section>
+
+  <section class="bg-white rounded-2xl border p-5 shadow-sm">
+    <h2 class="text-lg font-black">2. Product Image Upload</h2>
+    <p class="text-sm text-slate-500 mt-1">Select a product, choose one or more images, then attach them to that product.</p>
+    <label class="block text-xs font-black text-slate-700 mt-4 mb-1">Select Product</label>
+    <select id="product" class="w-full border rounded-xl p-3 bg-white"></select>
+    <div id="productState" class="mini text-slate-400 mt-2">Loading products…</div>
+    <div id="imagePreview" class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-4"></div>
+    <div class="mt-4 flex items-center gap-3"><label class="flex items-center gap-2 text-sm font-bold"><input id="replace" type="checkbox"> Replace existing product images</label></div>
+    <div class="drop rounded-2xl p-6 text-center mt-4">
+      <input id="images" type="file" accept="image/jpeg,image/png,image/webp" multiple class="hidden">
+      <button id="chooseImages" onclick="document.getElementById('images').click()" class="w-auto px-6 py-3 rounded-xl bg-blue-700 text-white font-black disabled-btn" disabled>Choose Product Images</button>
+      <p id="imageNames" class="text-xs text-slate-500 mt-3">JPG / PNG / WEBP • max 8MB each</p>
+    </div>
+    <button id="imageUpload" onclick="uploadImages()" class="mt-4 w-full py-3 rounded-xl bg-orange-600 text-white font-black disabled-btn" disabled>Upload & Attach Images</button>
+  </section>
+
+  <section class="bg-slate-900 text-white rounded-2xl p-5">
+    <h2 class="font-black">Private Admin Security</h2>
+    <p class="text-sm text-slate-300 mt-1">Admin changes require a private access key stored server-side as the <b>ADMIN_KEY</b> secret. No Cloudflare Zero Trust subscription or card is required.</p>
+  </section>
+</main>
+<script>
+let inventory=[];
+const $=id=>document.getElementById(id);
+function status(msg,ok=false){const el=$('status');el.className='mt-4 rounded-xl p-4 text-sm font-bold '+(ok?'bg-emerald-50 text-emerald-800':'bg-red-50 text-red-800');el.textContent=msg;el.classList.remove('hidden')}
+function setButtons(enabled){['chooseImages','imageUpload'].forEach(id=>{const b=$(id);b.disabled=!enabled;b.classList.toggle('disabled-btn',!enabled)})}
+function productLabel(x){return `${x.Brand||''} ${x.Model||''} • ${x.Color||''} • ${x.Condition||''} • ${x.id}`.replace(/^\s+/,'')}
+function fillProducts(){
+  $('product').innerHTML=inventory.length ? inventory.map(x=>`<option value="${String(x.id).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}">${productLabel(x).replace(/&/g,'&amp;').replace(/</g,'&lt;')}</option>`).join('') : '<option value="">No products found</option>';
+  $('productState').textContent=inventory.length ? `${inventory.length} products loaded` : 'No products loaded. Upload inventory first.';
+  setButtons(inventory.length>0);
+}
+async function load(force=false){
+  $('accessState').textContent='Checking private admin session…';
+  try{
+    const sr=await fetch('/api/admin/session',{cache:'no-store'});
+    const sd=await sr.json().catch(()=>({}));
+    if(!sr.ok || !sd.authenticated){ $('accessState').textContent='Sign in required'; $('loginBox').classList.remove('hidden'); setButtons(false); return; }
+    $('loginBox').classList.add('hidden');
+    const r=await fetch('/api/inventory',{cache:'no-store'});
+    if(!r.ok) throw new Error(`API ${r.status}`);
+    const d=await r.json();
+    inventory=Array.isArray(d)?d:[];
+    if(!inventory.length){
+      const seed=await fetch('/inventory.seed.json',{cache:'no-store'});
+      if(seed.ok){const sd=await seed.json(); if(Array.isArray(sd)) inventory=sd;}
+    }
+    $('accessState').textContent='Secure admin connection ready';
+    fillProducts();
+    if(!inventory.length) status('No inventory found. Upload your Inventory.csv.xlsx first.');
+    else if(force) status(`Loaded ${inventory.length} products.`,true);
+  }catch(e){
+    $('accessState').textContent='Admin API not connected';
+    fillProducts();
+    status('Admin backend is not connected. Confirm the MKG_IMAGES KV binding and ADMIN_KEY secret, then redeploy.');
+  }
+}
+$('csv').onchange=()=>{$('csvName').textContent=$('csv').files[0]?.name||'15-column format • CSV or XLSX'};
+$('images').onchange=()=>{const fs=Array.from($('images').files);$('imageNames').textContent=fs.map(f=>f.name).join(', ')||'JPG / PNG / WEBP • max 8MB each'; const p=$('imagePreview'); p.innerHTML=''; fs.forEach(f=>{const u=URL.createObjectURL(f); const d=document.createElement('div'); d.className='border rounded-xl p-2 bg-slate-50'; d.innerHTML=`<img src="${u}" class="w-full h-28 object-contain rounded-lg bg-white"><div class="mini text-slate-500 mt-1 truncate">${f.name}</div>`; p.appendChild(d);});};
+async function loginAdmin(){
+  const key=$('adminKey').value.trim(); if(!key)return status('Please enter your admin access key.');
+  try{const r=await fetch('/api/admin/login',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({key})});const d=await r.json().catch(()=>({}));if(!r.ok)return status(d.error||'Sign in failed.');$('adminKey').value='';status('Signed in successfully.',true);await load(true)}catch(e){status('Sign in failed. Please try again.')}
+}
+$('adminKey').addEventListener('keydown',e=>{if(e.key==='Enter')loginAdmin()});
+async function uploadCsv(){
+  const f=$('csv').files[0]; if(!f)return status('Please choose your Inventory CSV/XLSX file.');
+  let blob=f;
+  if(f.name.toLowerCase().endsWith('.xlsx')){
+    try{const data=await f.arrayBuffer();const wb=XLSX.read(data,{type:'array'});const ws=wb.Sheets[wb.SheetNames[0]];const csv=XLSX.utils.sheet_to_csv(ws);blob=new Blob([csv],{type:'text/csv'});}catch(e){return status('Excel file could not be read. Please open and save it again as .xlsx or CSV.')}
+  }
+  const fd=new FormData();fd.append('file',blob,'inventory.csv');
+  try{const r=await fetch('/api/admin/csv',{method:'POST',body:fd});const d=await r.json().catch(()=>({}));if(!r.ok)return status(d.error||`CSV upload failed (${r.status}).`);status(d.message||'Inventory uploaded successfully.',true);await load(true)}catch(e){status('CSV upload failed. Check your admin sign-in, ADMIN_KEY secret and KV binding MKG_IMAGES.')}
+}
+async function uploadImages(){
+  const files=Array.from($('images').files), productId=$('product').value;
+  if(!productId)return status('Please select a product.');
+  if(!files.length)return status('Please choose at least one image.');
+  for(const f of files){if(f.size>8*1024*1024)return status(`${f.name} is larger than 8MB.`);if(!['image/jpeg','image/png','image/webp'].includes(f.type))return status(`${f.name} is not JPG/PNG/WEBP.`)}
+  const fd=new FormData();fd.append('productId',productId);fd.append('replace',$('replace').checked?'true':'false');files.forEach(f=>fd.append('files',f));
+  try{const r=await fetch('/api/admin/image',{method:'POST',body:fd});const d=await r.json().catch(()=>({}));if(!r.ok)return status(d.error||`Image upload failed (${r.status}).`);status(`Uploaded ${d.urls?.length||files.length} image(s) and attached them to the product.`,true);$('images').value='';$('imageNames').textContent='JPG / PNG / WEBP • max 8MB each';await load(true)}catch(e){status('Image upload failed. Check your admin sign-in, ADMIN_KEY secret and KV binding MKG_IMAGES.')}
+}
+load();
+</script>
+</body></html>
