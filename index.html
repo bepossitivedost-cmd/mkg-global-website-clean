@@ -331,6 +331,10 @@
               <span id="modal-box-info" class="px-2 py-0.5 rounded-md bg-amber-50 text-amber-800 border border-amber-200 font-bold"></span>
             </div>
             <p id="modal-desc-info" class="text-xs text-slate-500 font-medium mt-1 leading-relaxed"></p>
+            <div id="modal-special-remarks-wrap" class="hidden mt-2 p-2.5 rounded-xl bg-amber-50/70 border border-amber-200">
+              <div class="text-[10px] font-black uppercase tracking-wide text-amber-800">Special Remarks</div>
+              <p id="modal-special-remarks" class="text-xs text-amber-950 font-semibold mt-0.5 leading-relaxed"></p>
+            </div>
           </div>
 
           <!-- Pricing Row -->
@@ -2318,6 +2322,18 @@
       }
 
       document.getElementById('modal-desc-info').innerText = item.Specs || '';
+
+      const remarksWrap = document.getElementById('modal-special-remarks-wrap');
+      const remarksEl = document.getElementById('modal-special-remarks');
+      const specialRemarks = String(item.SpecialRemarks || item['Special remarks'] || '').trim();
+      if (specialRemarks) {
+        remarksEl.innerText = specialRemarks;
+        remarksWrap.classList.remove('hidden');
+      } else {
+        remarksEl.innerText = '';
+        remarksWrap.classList.add('hidden');
+      }
+
       const modalPriceRow = document.querySelector('#modal-selling-price')?.parentElement;
       const isAccessory = String(item.Category || '').toLowerCase() === 'accessories';
       if (modalPriceRow) modalPriceRow.classList.remove('hidden');
