@@ -142,9 +142,10 @@ async function handleImageUpload(request, env) {
 }
 
 function inventoryMatchKey(item) {
+  // MRP is product-level, so condition/grade changes should not break the match.
   return [
     item?.Category, item?.SubCategory, item?.Brand, item?.Model,
-    item?.Color, item?.RAM_Storage, item?.Condition, item?.Grade
+    item?.Color, item?.RAM_Storage
   ].map(v => cleanText(v).toLowerCase()).join('||');
 }
 
