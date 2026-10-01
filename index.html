@@ -536,35 +536,73 @@
 
   <!-- Grading Standard Guide Modal -->
   <div id="grading-guide-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4">
-    <div class="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-6 shadow-2xl relative border border-slate-200">
+    <div class="bg-white rounded-3xl max-w-2xl w-full p-5 sm:p-6 shadow-2xl relative border border-slate-200 max-h-[90vh] overflow-y-auto custom-scrollbar">
       <button onclick="closeGradingGuide()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center text-sm font-black">✕</button>
 
       <h3 class="text-lg font-black text-slate-900 mb-1">MKG Certified Grading Standard</h3>
-      <p class="text-xs text-slate-500 mb-4">Transparent physical, battery & packaging criteria</p>
+      <p class="text-xs text-slate-500 mb-4">Condition, cosmetic grade, QC &amp; packaging are shown separately for complete transparency.</p>
 
       <div class="space-y-3 text-xs">
         <div class="p-3 rounded-2xl bg-emerald-50/80 border border-emerald-200">
-          <div class="flex items-center justify-between mb-1">
-            <strong class="text-emerald-900 font-black text-sm">Seal Packed / Fresh Goods (FG)</strong>
-            <span class="px-2 py-0.5 bg-emerald-200 text-emerald-900 rounded font-black text-[10px]">100% Brand Sealed</span>
+          <div class="flex items-center justify-between mb-1 gap-2">
+            <strong class="text-emerald-900 font-black text-sm">1. Seal Packed / Fresh Goods (FG)</strong>
+            <span class="px-2 py-0.5 bg-emerald-200 text-emerald-900 rounded font-black text-[10px] whitespace-nowrap">Factory Sealed</span>
           </div>
-          <p class="text-slate-700">Brand factory sealed box with complete original OEM accessories and full 1 Year / 6 Months Brand Warranty included @ ₹0.</p>
+          <p class="text-slate-700">Brand factory-sealed product. Box has not been opened for inspection or use. Brand warranty applies as stated in the product listing / CSV.</p>
         </div>
 
         <div class="p-3 rounded-2xl bg-blue-50/80 border border-blue-200">
-          <div class="flex items-center justify-between mb-1">
-            <strong class="text-blue-900 font-black text-sm">Open Box (A+ Grade)</strong>
-            <span class="px-2 py-0.5 bg-blue-200 text-blue-900 rounded font-black text-[10px]">Pristine / Unused</span>
+          <div class="flex items-center justify-between mb-1 gap-2">
+            <strong class="text-blue-900 font-black text-sm">2. Open Box</strong>
+            <span class="px-2 py-0.5 bg-blue-200 text-blue-900 rounded font-black text-[10px] whitespace-nowrap">A+ / Pristine</span>
           </div>
-          <p class="text-slate-700">Box seal opened for inspection or customer demo. Device in pristine condition with 100% battery cycle health. Comes with Brand or MKG box.</p>
+          <p class="text-slate-700">Factory seal opened for inspection, verification or demo. Device is in pristine condition with no material cosmetic wear. Packaging may be Brand Box or MKG Box as stated in the listing.</p>
         </div>
 
         <div class="p-3 rounded-2xl bg-teal-50/80 border border-teal-200">
-          <div class="flex items-center justify-between mb-1">
-            <strong class="text-teal-900 font-black text-sm">Refurbished (Certified)</strong>
-            <span class="px-2 py-0.5 bg-teal-200 text-teal-900 rounded font-black text-[10px]">42-Point QC Pass</span>
+          <div class="flex items-center justify-between mb-2 gap-2">
+            <strong class="text-teal-900 font-black text-sm">3. Refurbished — Certified Grades</strong>
+            <span class="px-2 py-0.5 bg-teal-200 text-teal-900 rounded font-black text-[10px] whitespace-nowrap">42-Point QC</span>
           </div>
-          <p class="text-slate-700">Professionally inspected, cleaned, and tested with MKG GLOBAL quality assurance. Every device passes our 42-point quality check. Warranty options are available at checkout.</p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            <div class="p-2.5 rounded-xl bg-white/80 border border-teal-100">
+              <div class="flex items-center justify-between">
+                <strong class="text-sm text-slate-900">A+ — Flawless</strong>
+                <span class="text-[10px] font-black text-teal-700">LIKE NEW</span>
+              </div>
+              <p class="mt-1 text-slate-600">No visible cosmetic marks under normal inspection. Clean, premium appearance.</p>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-white/80 border border-teal-100">
+              <div class="flex items-center justify-between">
+                <strong class="text-sm text-slate-900">A — Minor Scratches</strong>
+                <span class="text-[10px] font-black text-teal-700">LIGHT WEAR</span>
+              </div>
+              <p class="mt-1 text-slate-600">Light hairline scratches or minor signs of previous use, visible on close inspection.</p>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-white/80 border border-teal-100">
+              <div class="flex items-center justify-between">
+                <strong class="text-sm text-slate-900">A− — Deep Scratches</strong>
+                <span class="text-[10px] font-black text-teal-700">VISIBLE WEAR</span>
+              </div>
+              <p class="mt-1 text-slate-600">Clearly visible deeper scratches or stronger cosmetic wear, while the device remains within QC acceptance.</p>
+            </div>
+
+            <div class="p-2.5 rounded-xl bg-white/80 border border-teal-100">
+              <div class="flex items-center justify-between">
+                <strong class="text-sm text-slate-900">B+ — Noticeable Wear</strong>
+                <span class="text-[10px] font-black text-teal-700">HEAVIER WEAR</span>
+              </div>
+              <p class="mt-1 text-slate-600">More noticeable scratches, scuffs or minor dents. Functional condition is subject to the 42-point QC pass.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200">
+          <strong class="text-slate-900 font-black text-sm">How to read the grade</strong>
+          <p class="mt-1 text-slate-600">The A+/A/A−/B+ grade describes primarily <strong>cosmetic condition</strong>. Battery health, warranty, box/accessories and QC status are separate product attributes and should be checked on the product page.</p>
         </div>
       </div>
 
