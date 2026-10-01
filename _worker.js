@@ -39,14 +39,16 @@ function normalizeInventory(csvText) {
     brand: find('brand'), model: find('model'), color: find('color'), ram: find('ram/storage','ram_storage','ram storage'),
     specs: find('specs/description','specs','description'), box: find('box and accessories','box & accessories','boxandacc'),
     grade: find('grade'), qty: find('qty.','qty','quantity'), warranty: find('warranty'), mrp: find('mrp'),
-    deal: find('super deal price','superdealprice','deal price'), image: find('imageurl','image url','image_url')
+    deal: find('super deal price','superdealprice','deal price'), image: find('imageurl','image url','image_url'),
+    remarks: find('special remarks','specialremarks','remarks','remark')
   };
   return rows.slice(1).map((r, i) => ({
     Category: cleanText(r[idx.category]), SubCategory: cleanText(r[idx.sub]), Condition: cleanText(r[idx.condition]),
     Brand: cleanText(r[idx.brand]), Model: cleanText(r[idx.model]), Color: cleanText(r[idx.color]),
     RAM_Storage: cleanText(r[idx.ram]), Specs: cleanText(r[idx.specs]), BoxAndAcc: cleanText(r[idx.box]),
     Grade: cleanText(r[idx.grade]), Qty: num(r[idx.qty]), Warranty: cleanText(r[idx.warranty]),
-    MRP: num(r[idx.mrp]), SuperDealPrice: num(r[idx.deal]), ImageUrl: cleanText(r[idx.image]), id: `item_${i + 1}`
+    MRP: num(r[idx.mrp]), SuperDealPrice: num(r[idx.deal]), ImageUrl: cleanText(r[idx.image]),
+    SpecialRemarks: cleanText(r[idx.remarks]), id: `item_${i + 1}`
   })).filter(x => x.Brand || x.Model || x.Category);
 }
 
