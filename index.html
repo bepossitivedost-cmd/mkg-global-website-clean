@@ -2348,7 +2348,7 @@
         // Open Box + Refurbished Smartphones/Laptops: paid 6/12-month plans are based on Super Deal Price.
         const warrantyPricing = getWarrantyPlanPricing(cleanPrice(item.SuperDealPrice));
         activeModalWarrantyPrice = 0;
-        activeModalWarrantyLabel = `${defaultWarranty} Standard Warranty`;
+        activeModalWarrantyLabel = '1 Month Standard Warranty';
         warrantyContainer.innerHTML = `
           <div class="flex items-center justify-between mb-1.5">
             <label class="text-xs font-black text-slate-800">Protection & Warranty Plan:</label>
@@ -2357,10 +2357,10 @@
           <div class="space-y-2 text-xs">
             <label class="flex items-center justify-between p-2.5 rounded-xl border border-teal-500 bg-teal-50/40 cursor-pointer transition-all" id="w-opt-0">
               <div class="flex items-center gap-2">
-                <input type="radio" name="modal-warranty-opt" value="0" checked onchange="handleWarrantySelect(0, '${defaultWarranty} Standard Warranty', this)" class="text-mkgTeal focus:ring-mkgTeal">
+                <input type="radio" name="modal-warranty-opt" value="0" checked onchange="handleWarrantySelect(0, '1 Month Standard Warranty', this)" class="text-mkgTeal focus:ring-mkgTeal">
                 <div>
-                  <span class="font-black text-slate-900 text-xs">${defaultWarranty} Standard Warranty</span>
-                  <p class="text-[10px] text-slate-500">Current standard warranty included with the product</p>
+                  <span class="font-black text-slate-900 text-xs">1 Month Standard Warranty</span>
+                  <p class="text-[10px] text-slate-500">Included with Open Box & Refurbished devices</p>
                 </div>
               </div>
               <span class="font-black text-emerald-700 text-xs">Free</span>
