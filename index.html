@@ -2316,13 +2316,16 @@
       }
 
       const warrantyContainer = document.getElementById('modal-warranty-section');
-      const isSealPacked = (item.Condition || '').toLowerCase().includes('seal');
-      const isRefurbished = (item.Condition || '').toLowerCase().includes('refurb');
-      const isOpenBox = (item.Condition || '').toLowerCase().includes('open');
-      const defaultWarranty = isRefurbished ? '1 Month' : (item.Warranty || (isSealPacked ? '1 year' : '6 months'));
+      const conditionText = (item.Condition || '').toLowerCase();
+      const categoryText = (item.Category || '').toLowerCase();
+      const subCategoryText = (item.SubCategory || '').toLowerCase();
+      const isSealPacked = conditionText.includes('seal');
+      const isDevice = categoryText === 'phone' || categoryText === 'smartphone' || categoryText === 'laptop' || subCategoryText === 'smartphone' || subCategoryText === 'laptop';
+      const isRefurbOrOpenDevice = isDevice && (conditionText.includes('refurb') || conditionText.includes('open'));
+      const defaultWarranty = item.Warranty || (isSealPacked ? '1 year' : '6 months');
 
       if (isSealPacked) {
-        // Seal packed items have included warranty @ ₹0 with NO extra warranty charge
+        // Seal packed items: brand warranty is included. No paid percentage plan.
         activeModalWarrantyPrice = 0;
         activeModalWarrantyLabel = `${defaultWarranty} Brand Warranty Included`;
         warrantyContainer.innerHTML = `
@@ -2341,60 +2344,9 @@
             <span class="text-sm">📄</span> Warranty Terms &amp; Claim Process
           </button>
         `;
-      } else if (isRefurbished) {
-        // Refurbished devices: 1 Month included by default, with optional 6/12 Month paid plans.
-        activeModalWarrantyPrice = 0;
-        activeModalWarrantyLabel = '1 Month Warranty';
-        const productValue = cleanPrice(item.SuperDealPrice);
-        const sixRate = productValue <= 30000 ? 0.05 : (productValue <= 40000 ? 0.04 : 0.03);
-        const twelveRate = productValue <= 30000 ? 0.07 : (productValue <= 40000 ? 0.06 : 0.05);
-        const sixPrice = Math.round(productValue * sixRate);
-        const twelvePrice = Math.round(productValue * twelveRate);
-        warrantyContainer.innerHTML = `
-          <div class="flex items-center justify-between mb-1.5">
-            <label class="text-xs font-black text-slate-800">Warranty Plan:</label>
-            <span class="text-[10px] text-teal-800 font-bold bg-teal-50 px-2 py-0.5 rounded">QC Certified</span>
-          </div>
-          <div class="space-y-2 text-xs">
-            <label class="flex items-center justify-between p-2.5 rounded-xl border border-teal-500 bg-teal-50/40 cursor-pointer transition-all" id="w-opt-0">
-              <div class="flex items-center gap-2">
-                <input type="radio" name="modal-warranty-opt" value="0" checked onchange="handleWarrantySelect(0, '1 Month Warranty', this)" class="text-mkgTeal focus:ring-mkgTeal">
-                <div>
-                  <span class="font-black text-slate-900 text-xs">1 Month Warranty</span>
-                  <p class="text-[10px] text-slate-500">Included with every certified refurbished device</p>
-                </div>
-              </div>
-              <span class="font-black text-emerald-700 text-xs">Included</span>
-            </label>
-
-            <label class="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-all" id="w-opt-1">
-              <div class="flex items-center gap-2">
-                <input type="radio" name="modal-warranty-opt" value="${sixPrice}" onchange="handleWarrantySelect(${sixPrice}, '6 Months Warranty', this)" class="text-mkgTeal focus:ring-mkgTeal">
-                <div>
-                  <span class="font-black text-slate-900 text-xs">6 Months Warranty</span>
-                  <p class="text-[10px] text-slate-500">Optional extended warranty</p>
-                </div>
-              </div>
-              <span class="font-black text-slate-900 text-xs">+${formatINR(sixPrice)}</span>
-            </label>
-
-            <label class="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-all" id="w-opt-2">
-              <div class="flex items-center gap-2">
-                <input type="radio" name="modal-warranty-opt" value="${twelvePrice}" onchange="handleWarrantySelect(${twelvePrice}, '12 Months Warranty', this)" class="text-mkgTeal focus:ring-mkgTeal">
-                <div>
-                  <span class="font-black text-slate-900 text-xs">12 Months Warranty</span>
-                  <p class="text-[10px] text-slate-500">Optional extended warranty</p>
-                </div>
-              </div>
-              <span class="font-black text-slate-900 text-xs">+${formatINR(twelvePrice)}</span>
-            </label>
-          </div>
-          <button type="button" onclick="openWarrantyTermsModal()" class="mt-2.5 w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-black transition-all">
-            <span class="text-sm">📄</span> Warranty Terms &amp; Claim Process
-          </button>
-        `;
-      } else if (isOpenBox) {
-        // Open Box devices keep the existing included warranty + optional extended care.
+      } else if (isRefurbOrOpenDevice) {
+        // Open Box + Refurbished Smartphones/Laptops: paid 6/12-month plans are based on Super Deal Price.
+        const warrantyPricing = getWarrantyPlanPricing(cleanPrice(item.SuperDealPrice));
         activeModalWarrantyPrice = 0;
         activeModalWarrantyLabel = `${defaultWarranty} Standard Warranty`;
         warrantyContainer.innerHTML = `
@@ -2407,8 +2359,8 @@
               <div class="flex items-center gap-2">
                 <input type="radio" name="modal-warranty-opt" value="0" checked onchange="handleWarrantySelect(0, '${defaultWarranty} Standard Warranty', this)" class="text-mkgTeal focus:ring-mkgTeal">
                 <div>
-                  <span class="font-black text-slate-900 text-xs">${defaultWarranty} Warranty</span>
-                  <p class="text-[10px] text-slate-500">100% Inspection & Diagnostic covered</p>
+                  <span class="font-black text-slate-900 text-xs">${defaultWarranty} Standard Warranty</span>
+                  <p class="text-[10px] text-slate-500">Current standard warranty included with the product</p>
                 </div>
               </div>
               <span class="font-black text-emerald-700 text-xs">Free</span>
@@ -2416,13 +2368,24 @@
 
             <label class="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-all" id="w-opt-1">
               <div class="flex items-center gap-2">
-                <input type="radio" name="modal-warranty-opt" value="999" onchange="handleWarrantySelect(999, '+ 6 Months Extended Care', this)" class="text-mkgTeal focus:ring-mkgTeal">
+                <input type="radio" name="modal-warranty-opt" value="${warrantyPricing.sixMonthCost}" onchange="handleWarrantySelect(${warrantyPricing.sixMonthCost}, '6 Months Warranty', this)" class="text-mkgTeal focus:ring-mkgTeal">
                 <div>
-                  <span class="font-black text-slate-900 text-xs">+ 6 Months Extended Care</span>
-                  <p class="text-[10px] text-slate-500">Total 12 Months full peace of mind</p>
+                  <span class="font-black text-slate-900 text-xs">6 Months Warranty</span>
+                  <p class="text-[10px] text-slate-500">${warrantyPricing.sixRate}% of product price</p>
                 </div>
               </div>
-              <span class="font-black text-slate-900 text-xs">+₹999</span>
+              <span class="font-black text-slate-900 text-xs">+${formatINR(warrantyPricing.sixMonthCost)}</span>
+            </label>
+
+            <label class="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 hover:bg-slate-50 cursor-pointer transition-all" id="w-opt-2">
+              <div class="flex items-center gap-2">
+                <input type="radio" name="modal-warranty-opt" value="${warrantyPricing.twelveMonthCost}" onchange="handleWarrantySelect(${warrantyPricing.twelveMonthCost}, '12 Months Warranty', this)" class="text-mkgTeal focus:ring-mkgTeal">
+                <div>
+                  <span class="font-black text-slate-900 text-xs">12 Months Warranty</span>
+                  <p class="text-[10px] text-slate-500">${warrantyPricing.twelveRate}% of product price</p>
+                </div>
+              </div>
+              <span class="font-black text-slate-900 text-xs">+${formatINR(warrantyPricing.twelveMonthCost)}</span>
             </label>
           </div>
           <button type="button" onclick="openWarrantyTermsModal()" class="mt-2.5 w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-black transition-all">
@@ -2430,7 +2393,7 @@
           </button>
         `;
       } else {
-        // Fallback for accessories or general items
+        // Accessories/general items: use the Warranty value from CSV and do not apply percentage pricing.
         activeModalWarrantyPrice = 0;
         activeModalWarrantyLabel = `${defaultWarranty} Brand Warranty`;
         warrantyContainer.innerHTML = `
@@ -2460,6 +2423,25 @@
       if (!modal) return;
       modal.classList.add('hidden');
       modal.classList.remove('flex');
+    }
+
+    function getWarrantyPlanPricing(price) {
+      const base = Math.max(0, Number(price) || 0);
+      let sixRate = 3;
+      let twelveRate = 5;
+      if (base <= 30000) {
+        sixRate = 5;
+        twelveRate = 7;
+      } else if (base <= 40000) {
+        sixRate = 4;
+        twelveRate = 6;
+      }
+      return {
+        sixRate,
+        twelveRate,
+        sixMonthCost: Math.round(base * sixRate / 100),
+        twelveMonthCost: Math.round(base * twelveRate / 100)
+      };
     }
 
     function handleWarrantySelect(addCost, label, inputEl) {
