@@ -6,5 +6,11 @@
   "assets": {
     "directory": ".",
     "binding": "ASSETS"
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "MKG_IMAGES",
+      "id": "7abd8e828ca8446ca76f6dde698e2dc4"
+    }
+  ]
 }
