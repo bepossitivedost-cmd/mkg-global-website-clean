@@ -141,15 +141,66 @@ async function handleImageUpload(request, env) {
   return json({ ok: true, urls: added.map(x => x.url), count: imageIndex[productId].length });
 }
 
+function inventoryMatchKey(item) {
+  return [
+    item?.Category, item?.SubCategory, item?.Brand, item?.Model,
+    item?.Color, item?.RAM_Storage, item?.Condition, item?.Grade
+  ].map(v => cleanText(v).toLowerCase()).join('||');
+}
+
+function isPlaceholderMrp(value) {
+  const raw = cleanText(value).toLowerCase();
+  if (!raw) return true;
+  if (/example.*replace.*actual.*mrp/.test(raw)) return true;
+  return num(value) <= 0;
+}
+
 async function handleCsvUpload(request, env) {
   if (!(await isAdmin(request, env))) return json({ error: 'Unauthorized. Please sign in to the private admin first.' }, 401);
   if (!env.MKG_IMAGES) return json({ error: 'KV binding MKG_IMAGES is not configured.' }, 500);
   const form = await request.formData(); const file = form.get('file');
   if (!file || typeof file.text !== 'function') return json({ error: 'CSV file is required.' }, 400);
+
   const items = normalizeInventory(await file.text());
   if (!items.length) return json({ error: 'No valid products found in the CSV.' }, 400);
-  await env.MKG_IMAGES.put('inventory', JSON.stringify(items));
-  return json({ ok: true, message: `Inventory uploaded successfully: ${items.length} products.` });
+
+  // Preserve existing live MRP whenever the uploaded CSV contains a blank, zero,
+  // or template placeholder such as "Example - replace with actual MRP".
+  // A real numeric MRP in the new CSV always takes precedence.
+  let previous = [];
+  const previousRaw = await env.MKG_IMAGES.get('inventory');
+  if (previousRaw) {
+    try {
+      const parsed = JSON.parse(previousRaw);
+      if (Array.isArray(parsed)) previous = parsed;
+    } catch {}
+  }
+
+  const previousMrp = new Map();
+  for (const item of previous) {
+    const key = inventoryMatchKey(item);
+    const mrp = num(item?.MRP);
+    if (key && mrp > 0 && !previousMrp.has(key)) previousMrp.set(key, mrp);
+  }
+
+  let preservedMrpCount = 0;
+  const merged = items.map(item => {
+    const copy = { ...item };
+    if (isPlaceholderMrp(copy.MRP)) {
+      const oldMrp = previousMrp.get(inventoryMatchKey(copy));
+      if (oldMrp) {
+        copy.MRP = oldMrp;
+        preservedMrpCount++;
+      }
+    }
+    return copy;
+  });
+
+  await env.MKG_IMAGES.put('inventory', JSON.stringify(merged));
+  return json({
+    ok: true,
+    message: `Inventory uploaded successfully: ${merged.length} products. Existing MRP preserved for ${preservedMrpCount} matching products.`
+  });
 }
 
 export default {
