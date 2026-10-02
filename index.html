@@ -2280,7 +2280,7 @@
         const chosen = items.slice(0, 4);
         el.innerHTML = chosen.map((item, idx) => {
           const img = heroImage(item);
-          return '<button class="hero-product" onclick="openProduct(' + JSON.stringify(item.id || '') + ')" aria-label="' + String(item.Model||'Product').replace(/"/g,'&quot;') + '">' +
+          return '<button class="hero-product" onclick="openProductModal(' + JSON.stringify(item.id || '') + ')" aria-label="' + String(item.Model||'Product').replace(/"/g,'&quot;') + '">' +
             '<img src="' + img.replace(/"/g,'&quot;') + '" alt="' + String(item.Model||'Product').replace(/"/g,'&quot;') + '" loading="eager">' +
             (idx === 0 ? '<span class="hero-product-tag">' + String(item.Brand||'').replace(/</g,'&lt;') + '</span>' : '') +
           '</button>';
