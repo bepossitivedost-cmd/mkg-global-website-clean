@@ -2334,7 +2334,7 @@
           if (x === 'refurb' || x === 'refurbished' || x === 'certified refurbished') return 'refurbished';
           return x;
         };
-        const isWearable = /watch|wearable|neckband|band/i.test(norm(item.SubCategory)) || /watch|wearable|neckband|band/i.test(norm(item.Model));
+        const isWearable = /watch|smart\s*watch|wearable/i.test(norm(item.SubCategory)) || /watch|smart\s*watch|wearable/i.test(norm(item.Model));
         const matchCategory = (selectedCategory === 'all') ||
           (selectedCategory === 'Wearables' ? isWearable : norm(item.Category) === norm(selectedCategory));
         const matchCondition = (selectedCondition === 'all') || normalizeCondition(item.Condition) === normalizeCondition(selectedCondition);
