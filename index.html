@@ -106,6 +106,43 @@
   .compact-select{height:28px;font-size:9px}
 }
 </style>
+<style>
+.super-deal-banner{background:linear-gradient(100deg,#063f3b 0%,#006c64 52%,#0b7f75 100%);border-bottom:1px solid rgba(255,255,255,.12);color:#fff}
+.super-deal-inner{max-width:1280px;margin:0 auto;padding:14px 16px;display:flex;align-items:center;gap:22px}
+.super-deal-brand{flex:0 0 250px}
+.super-deal-kicker{font-size:9px;font-weight:900;letter-spacing:.16em;color:#ffd166;text-transform:uppercase}
+.super-deal-brand h2{font-size:21px;line-height:1.1;font-weight:950;margin:3px 0}
+.super-deal-brand p{font-size:10.5px;color:rgba(255,255,255,.78);margin:0;font-weight:600}
+.super-deal-points{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;flex:1}
+.deal-point{display:flex;align-items:center;gap:9px;padding:9px 11px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);border-radius:12px}
+.deal-icon{width:31px;height:31px;display:flex;align-items:center;justify-content:center;border-radius:9px;background:rgba(255,255,255,.12);font-size:15px;flex:0 0 auto}
+.deal-point strong{display:block;font-size:10.5px;font-weight:900;white-space:nowrap}
+.deal-point small{display:block;font-size:9px;color:rgba(255,255,255,.7);margin-top:2px;white-space:nowrap}
+.quality-guide-btn{border:1px solid #0f766e!important;background:#ecfdf5!important;color:#065f59!important;font-weight:950!important;padding:6px 10px!important}
+.quality-guide-btn:hover{background:#d1fae5!important}
+.filter-reset{border:1px solid #e2e8f0!important;background:#fff!important;color:#475569!important;cursor:pointer}
+.filter-reset:hover{background:#f8fafc!important;color:#0f766e!important}
+@media(max-width:900px){
+  .super-deal-inner{padding:10px 12px;gap:10px}
+  .super-deal-brand{flex:0 0 170px}
+  .super-deal-brand h2{font-size:17px}
+  .super-deal-brand p{font-size:9px}
+  .super-deal-points{gap:6px}
+  .deal-point{padding:7px 8px}
+  .deal-icon{width:27px;height:27px;font-size:13px}
+  .deal-point strong{font-size:9px}
+  .deal-point small{font-size:8px}
+}
+@media(max-width:640px){
+  .super-deal-inner{display:block;padding:10px 12px}
+  .super-deal-brand{margin-bottom:8px}
+  .super-deal-brand h2{font-size:16px}
+  .super-deal-points{display:flex;overflow-x:auto;scrollbar-width:none}
+  .super-deal-points::-webkit-scrollbar{display:none}
+  .deal-point{min-width:205px}
+  .quality-guide-btn{font-size:9px!important}
+}
+</style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col custom-scrollbar">
 
@@ -198,37 +235,26 @@
     </div>
   </header>
 
-  <!-- Assurance Strip -->
-  <section class="bg-white border-b border-slate-200/80 py-3 shadow-2xs">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
-        <div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50/50 border border-slate-100">
-          <div class="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center text-base shrink-0">🛡️</div>
-          <div>
-            <h4 class="text-xs font-bold text-slate-800">Genuine Warranty</h4>
-            <p class="text-[10.5px] text-slate-500 font-medium">Brand & MKG Tested Care</p>
-          </div>
+  <!-- Super Deal Hub Banner -->
+  <section class="super-deal-banner">
+    <div class="super-deal-inner">
+      <div class="super-deal-brand">
+        <div class="super-deal-kicker">⚡ MKG GLOBAL</div>
+        <h2>Super Deal Hub</h2>
+        <p>Trusted products. Tested quality. Direct-value deals.</p>
+      </div>
+      <div class="super-deal-points">
+        <div class="deal-point">
+          <span class="deal-icon">🛡️</span>
+          <div><strong>Genuine Warranty</strong><small>Brand & MKG Tested Care</small></div>
         </div>
-        <div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50/50 border border-slate-100 cursor-pointer hover:bg-teal-50/60 transition-colors" onclick="openQcModal()">
-          <div class="w-9 h-9 rounded-lg bg-teal-50 text-mkgTeal flex items-center justify-center text-base shrink-0">🔬</div>
-          <div>
-            <h4 class="text-xs font-bold text-mkgTeal hover:underline">42-Point QC Certified</h4>
-            <p class="text-[10.5px] text-slate-500 font-medium">100% Diagnostic Checked</p>
-          </div>
+        <div class="deal-point">
+          <span class="deal-icon">⚡</span>
+          <div><strong>Super Deal Pricing</strong><small>Unbeatable Direct Value</small></div>
         </div>
-        <div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50/50 border border-slate-100">
-          <div class="w-9 h-9 rounded-lg bg-amber-50 text-mkgAmber flex items-center justify-center text-base shrink-0">⚡</div>
-          <div>
-            <h4 class="text-xs font-bold text-slate-800">Super Deal Pricing</h4>
-            <p class="text-[10.5px] text-slate-500 font-medium">Unbeatable Direct Value</p>
-          </div>
-        </div>
-        <div class="flex items-center gap-2.5 p-2 rounded-xl bg-slate-50/50 border border-slate-100">
-          <div class="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0" aria-hidden="true"><svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h11v10H3z"/><path d="M14 9h4l3 3v4h-7z"/><circle cx="7" cy="18" r="2"/><circle cx="18" cy="18" r="2"/><path d="M14 13h7"/></svg></div>
-          <div>
-            <h4 class="text-xs font-bold text-slate-800">Free Doorstep Delivery & Pickup</h4>
-            <p class="text-[10.5px] text-slate-500 font-medium">Convenient service at your doorstep</p>
-          </div>
+        <div class="deal-point">
+          <span class="deal-icon">🚚</span>
+          <div><strong>Free Doorstep Delivery & Pickup</strong><small>Convenient service at your doorstep</small></div>
         </div>
       </div>
     </div>
@@ -248,7 +274,6 @@
           <button onclick="setCategory('Wearable', this)" class="category-btn catalog-tab">⌚ Wearables</button>
           <button onclick="setCategory('LED TV', this)" class="category-btn catalog-tab">📺 LED TVs</button>
         </div>
-        <button onclick="resetFilters()" class="catalog-reset">Reset</button>
       </div>
 
       <div class="catalog-filterbar">
@@ -258,7 +283,7 @@
           <button onclick="setConditionFilter('Seal packed', this)" class="quality-pill">✨ Seal Packed</button>
           <button onclick="setConditionFilter('Open Box', this)" class="quality-pill">📦 Open Box</button>
           <button onclick="setConditionFilter('Refurbished', this)" class="quality-pill">♻️ Refurbished</button>
-          <button onclick="openGradingGuide()" class="quality-guide-btn">ℹ️ Guide</button>
+          <button onclick="openGradingGuide()" class="quality-guide-btn">🏆 MKG Certified Grading Standard</button>
         </div>
 
         <div class="compact-filters">
@@ -267,6 +292,7 @@
           <select id="grade-filter" onchange="setGradeFilter(this.value)" class="compact-select"><option value="all">Grade: All</option></select>
           <select id="condition-filter" onchange="setConditionFromSelect(this.value)" class="compact-select"><option value="all">Condition: All</option></select>
           <span class="item-count" id="item-counter-badge">0 Items</span>
+          <button onclick="resetFilters()" class="catalog-reset filter-reset">↺ Reset</button>
         </div>
       </div>
     </section>
