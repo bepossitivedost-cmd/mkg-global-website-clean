@@ -177,6 +177,64 @@
 .mobile-info-strip::-webkit-scrollbar{display:none}
 .mobile-info-btn{flex:0 0 auto;border:1px solid #dbe4e8;background:#fff;color:#0f5f5a;border-radius:8px;padding:6px 9px;font-size:9px;font-weight:900;white-space:nowrap}
 </style>
+<style>
+.mkg-hero-wrap{max-width:1280px;margin:10px auto 0;padding:0 16px}
+.mkg-hero{position:relative;height:270px;overflow:hidden;border-radius:18px;background:linear-gradient(115deg,#eef8f7,#dff4f1 52%,#edf5ff);box-shadow:0 10px 28px rgba(15,23,42,.08);border:1px solid #d8e8e6}
+.mkg-hero-slide{position:absolute;inset:0;display:flex;align-items:center;opacity:0;pointer-events:none;transform:translateX(18px);transition:opacity .45s ease,transform .45s ease;padding:22px 62px 28px 28px}
+.mkg-hero-slide.is-active{opacity:1;pointer-events:auto;transform:translateX(0)}
+.hero-copy{width:38%;z-index:3}
+.hero-kicker{font-size:10px;font-weight:950;letter-spacing:.18em;color:#00766e}
+.hero-copy h1{font-size:29px;line-height:1.04;margin:5px 0 7px;color:#0f172a;font-weight:950;max-width:430px}
+.hero-copy p{font-size:12px;line-height:1.45;color:#475569;font-weight:700;margin:0 0 10px}
+.hero-copy p span{color:#0f766e;margin:0 3px}
+.hero-benefits{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:12px}
+.hero-benefits span{font-size:9.5px;font-weight:850;background:rgba(255,255,255,.72);border:1px solid rgba(15,118,110,.13);border-radius:999px;padding:5px 7px;color:#334155;white-space:nowrap}
+.hero-cta{border:0;background:#0f172a;color:#fff;border-radius:10px;padding:9px 15px;font-size:11px;font-weight:950;cursor:pointer}
+.hero-products{position:absolute;left:34%;right:12%;top:14px;bottom:13px;display:flex;align-items:center;justify-content:center;gap:8px;z-index:2}
+.hero-product{position:relative;width:125px;height:220px;border:0;background:transparent;padding:0;cursor:pointer;filter:drop-shadow(0 14px 15px rgba(15,23,42,.16));transition:transform .2s}
+.hero-product:hover{transform:translateY(-5px) scale(1.03)}
+.hero-product img{width:100%;height:100%;object-fit:contain;border-radius:15px}
+.hero-product:nth-child(2){height:205px;margin-top:18px}
+.hero-product:nth-child(3){height:195px;margin-top:28px}
+.hero-product:nth-child(4){height:180px;margin-top:35px}
+.hero-product-tag{position:absolute;top:4px;left:6px;background:#0f172a;color:#fff;border-radius:6px;padding:3px 6px;font-size:8px;font-weight:900}
+.hero-side{position:absolute;right:18px;top:42px;bottom:42px;width:145px;background:rgba(15,23,42,.91);border-radius:14px;color:#fff;padding:14px;display:flex;flex-direction:column;justify-content:center;gap:7px;z-index:4}
+.hero-side strong{font-size:13px;color:#fff}
+.hero-side span{font-size:9.5px;color:#dbeafe;border-top:1px solid rgba(255,255,255,.12);padding-top:6px}
+.hero-arrow{position:absolute;top:50%;transform:translateY(-50%);width:32px;height:32px;border:0;border-radius:50%;background:rgba(255,255,255,.88);color:#0f172a;font-size:25px;line-height:1;z-index:5;box-shadow:0 4px 12px rgba(15,23,42,.12);cursor:pointer}
+.hero-prev{left:12px}.hero-next{right:12px}
+.hero-dots{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);display:flex;gap:5px;z-index:6}
+.hero-dots button{width:7px;height:7px;border:0;border-radius:50%;background:#cbd5e1;padding:0;cursor:pointer}
+.hero-dots button.active{width:20px;border-radius:999px;background:#0f766e}
+.hero-fallback-device{font-size:85px;filter:drop-shadow(0 15px 12px rgba(15,23,42,.15));transform:rotate(-8deg)}
+.hero-fallback-device.second{font-size:68px;margin-top:35px}.hero-fallback-device.third{font-size:62px;margin-top:45px}
+.catalog-filterbar{margin-top:4px}
+@media(max-width:900px){
+ .mkg-hero-wrap{padding:0 10px;margin-top:8px}
+ .mkg-hero{height:235px;border-radius:14px}
+ .mkg-hero-slide{padding:18px 20px}
+ .hero-copy{width:52%}
+ .hero-copy h1{font-size:22px}
+ .hero-copy p{font-size:10px}
+ .hero-benefits span{font-size:8px}
+ .hero-products{left:40%;right:2%}
+ .hero-product{width:92px;height:170px}.hero-product:nth-child(2){height:158px}.hero-product:nth-child(3){height:145px}.hero-product:nth-child(4){height:132px}
+ .hero-side{display:none}
+}
+@media(max-width:640px){
+ .mkg-hero{height:205px}
+ .mkg-hero-slide{padding:14px 15px 23px}
+ .hero-copy{width:56%}
+ .hero-copy h1{font-size:18px;max-width:230px}
+ .hero-copy p{font-size:9px;max-width:230px}
+ .hero-benefits{gap:3px;max-width:225px}.hero-benefits span{font-size:7.5px;padding:4px 5px}
+ .hero-cta{font-size:9px;padding:7px 10px}
+ .hero-products{left:47%;right:1%;gap:2px}
+ .hero-product{width:62px;height:125px}.hero-product:nth-child(2){height:116px}.hero-product:nth-child(3){height:106px}.hero-product:nth-child(4){height:96px}
+ .hero-arrow{width:25px;height:25px;font-size:19px}
+ .hero-prev{left:5px}.hero-next{right:5px}
+}
+</style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col custom-scrollbar">
 
@@ -268,47 +326,77 @@
     </div>
   </header>
 
-  <!-- Super Deal Hub Banner -->
-  <section class="super-deal-banner">
-    <div class="super-deal-inner">
-      <div class="super-deal-brand">
-        <div class="super-deal-kicker">⚡ MKG GLOBAL</div>
-        <h2>Super Deal Hub</h2>
-        <p>Trusted products. Tested quality. Direct-value deals.</p>
+  <!-- MKG Global Hero Slideshow -->
+  <section class="mkg-hero-wrap" aria-label="MKG Global featured deals">
+    <div id="mkg-hero" class="mkg-hero">
+      <div class="mkg-hero-slide is-active">
+        <div class="hero-copy">
+          <div class="hero-kicker">MKG GLOBAL</div>
+          <h1>Premium Refurbished Handsets</h1>
+          <p>Certified Quality <span>•</span> Great Value <span>•</span> Trusted by Retailers</p>
+          <div class="hero-benefits">
+            <span>🛡️ Up to 12 Months Warranty</span>
+            <span>🔬 42-Point Inspection</span>
+            <span>🚚 Free Doorstep Delivery</span>
+          </div>
+          <button class="hero-cta" onclick="setCategory('Phone', null)">Explore Phones →</button>
+        </div>
+        <div class="hero-products" data-hero-products="phones"></div>
+        <div class="hero-side">
+          <strong>A+ Grade</strong>
+          <span>Certified Refurbished</span>
+          <span>Super Deal Pricing</span>
+        </div>
       </div>
-      <div class="super-deal-points">
-        <div class="deal-point">
-          <span class="deal-icon">🛡️</span>
-          <div><strong>Genuine Warranty</strong><small>Brand & MKG Tested Care</small></div>
+      <div class="mkg-hero-slide">
+        <div class="hero-copy">
+          <div class="hero-kicker">MKG GLOBAL</div>
+          <h1>Open Box • Pristine Condition</h1>
+          <p>Carefully inspected products with genuine value and quality assurance.</p>
+          <div class="hero-benefits">
+            <span>✨ A+ Flawless Options</span>
+            <span>🧪 Quality Checked</span>
+            <span>💰 Direct Value Pricing</span>
+          </div>
+          <button class="hero-cta" onclick="setConditionFilter('Open Box', null)">Shop Open Box →</button>
         </div>
-        <div class="deal-point">
-          <span class="deal-icon">⚡</span>
-          <div><strong>Super Deal Pricing</strong><small>Unbeatable Direct Value</small></div>
-        </div>
-        <div class="deal-point">
-          <span class="deal-icon">🚚</span>
-          <div><strong>Free Doorstep Delivery & Pickup</strong><small>Convenient service at your doorstep</small></div>
+        <div class="hero-products" data-hero-products="openbox"></div>
+        <div class="hero-side">
+          <strong>Open Box</strong>
+          <span>Pristine / Unused</span>
+          <span>Inspection Checked</span>
         </div>
       </div>
+      <div class="mkg-hero-slide">
+        <div class="hero-copy">
+          <div class="hero-kicker">MKG GLOBAL</div>
+          <h1>Smart Deals Across Electronics</h1>
+          <p>Phones, wearables, accessories and more — one trusted destination.</p>
+          <div class="hero-benefits">
+            <span>⌚ Wearables</span>
+            <span>🔌 Accessories</span>
+            <span>📱 Smartphones</span>
+          </div>
+          <button class="hero-cta" onclick="resetFilters()">View All Deals →</button>
+        </div>
+        <div class="hero-products" data-hero-products="deals"></div>
+        <div class="hero-side">
+          <strong>Super Deal Hub</strong>
+          <span>Multiple Categories</span>
+          <span>Ready to Explore</span>
+        </div>
+      </div>
+      <button class="hero-arrow hero-prev" onclick="changeHero(-1)" aria-label="Previous slide">‹</button>
+      <button class="hero-arrow hero-next" onclick="changeHero(1)" aria-label="Next slide">›</button>
+      <div class="hero-dots" id="hero-dots"><button class="active"></button><button></button><button></button></div>
     </div>
   </section>
 
   <!-- Main Catalog Content -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+<!-- Main Catalog Content -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
     
-    <!-- Compact Catalog Navigation: categories stay on one line -->
-    <section class="mb-4">
-      <div class="catalog-topline">
-        <div id="category-tabs-container" class="category-scroll">
-          <button onclick="setCategory('all', this)" class="category-btn catalog-tab active">🌐 All</button>
-          <button onclick="setCategory('Phone', this)" class="category-btn catalog-tab">📱 Phones</button>
-          <button onclick="setCategory('Laptop', this)" class="category-btn catalog-tab">💻 Laptops</button>
-          <button onclick="setCategory('Accessories', this)" class="category-btn catalog-tab">🔌 Accessories</button>
-          <button onclick="setCategory('Wearable', this)" class="category-btn catalog-tab">⌚ Wearables</button>
-          <button onclick="setCategory('LED TV', this)" class="category-btn catalog-tab">📺 LED TVs</button>
-        </div>
-      </div>
-
       <div class="catalog-filterbar">
         <div class="quality-inline">
           <span class="quality-label">MKG Quality:</span>
@@ -2167,8 +2255,60 @@
       }
       populateCatalogFilters();
       syncCategoryButtons();
+      renderHeroSlides();
       renderCatalog();
       openProductFromUrl();
+    }
+
+    let heroIndex = 0;
+    let heroTimer = null;
+
+    function heroImage(item) {
+      const imgs = parseImages(item?.ImageUrl || item?.imageUrl || '');
+      return imgs[0] || '';
+    }
+
+    function renderHeroSlides() {
+      const groups = {
+        phones: inventory.filter(i => String(i.Category||'').toLowerCase() === 'phone' && heroImage(i)),
+        openbox: inventory.filter(i => /open\s*box/i.test(String(i.Condition||'')) && heroImage(i)),
+        deals: inventory.filter(i => heroImage(i))
+      };
+      document.querySelectorAll('[data-hero-products]').forEach(el => {
+        const key = el.getAttribute('data-hero-products');
+        const items = groups[key] || [];
+        const chosen = items.slice(0, 4);
+        el.innerHTML = chosen.map((item, idx) => {
+          const img = heroImage(item);
+          return '<button class="hero-product" onclick="openProduct(' + JSON.stringify(item.id || '') + ')" aria-label="' + String(item.Model||'Product').replace(/"/g,'&quot;') + '">' +
+            '<img src="' + img.replace(/"/g,'&quot;') + '" alt="' + String(item.Model||'Product').replace(/"/g,'&quot;') + '" loading="eager">' +
+            (idx === 0 ? '<span class="hero-product-tag">' + String(item.Brand||'').replace(/</g,'&lt;') + '</span>' : '') +
+          '</button>';
+        }).join('');
+        if (!chosen.length) {
+          el.innerHTML = '<div class="hero-fallback-device">📱</div><div class="hero-fallback-device second">⌚</div><div class="hero-fallback-device third">💻</div>';
+        }
+      });
+      startHeroAutoplay();
+    }
+
+    function showHero(index) {
+      const slides = document.querySelectorAll('.mkg-hero-slide');
+      const dots = document.querySelectorAll('#hero-dots button');
+      if (!slides.length) return;
+      heroIndex = (index + slides.length) % slides.length;
+      slides.forEach((slide,i)=>slide.classList.toggle('is-active', i === heroIndex));
+      dots.forEach((dot,i)=>dot.classList.toggle('active', i === heroIndex));
+    }
+
+    function changeHero(step) {
+      showHero(heroIndex + step);
+      startHeroAutoplay();
+    }
+
+    function startHeroAutoplay() {
+      clearInterval(heroTimer);
+      heroTimer = setInterval(() => showHero(heroIndex + 1), 5500);
     }
 
     function renderCatalog() {
