@@ -343,7 +343,7 @@
           <div class="hero-category-label">MOBILE PHONES</div>
           <div class="hero-products" data-hero-products="deals"></div>
           <div class="hero-accessories">
-            <span>🔌 Chargers</span><span>🎧 Earphones</span><span>🎶 Neckbands</span><span>⌚ Smart Watches</span><span>🔋 Power Banks</span>
+            <span>🔌 Chargers</span><span>🎧 Earphones</span><span>🎶 Neckbands</span><span>⌚ Realme Dizo Watch 2 Sports</span><span>🔋 Power Banks</span>
           </div>
         </div>
       </div>
@@ -2334,7 +2334,9 @@
           if (x === 'refurb' || x === 'refurbished' || x === 'certified refurbished') return 'refurbished';
           return x;
         };
-        const matchCategory = (selectedCategory === 'all') || norm(item.Category) === norm(selectedCategory);
+        const isWearable = /watch|wearable|neckband|band/i.test(norm(item.SubCategory)) || /watch|wearable|neckband|band/i.test(norm(item.Model));
+        const matchCategory = (selectedCategory === 'all') ||
+          (selectedCategory === 'Wearables' ? isWearable : norm(item.Category) === norm(selectedCategory));
         const matchCondition = (selectedCondition === 'all') || normalizeCondition(item.Condition) === normalizeCondition(selectedCondition);
         const matchBrand = (selectedBrand === 'all') || norm(item.Brand) === norm(selectedBrand);
         const matchGrade = (selectedGrade === 'all') || norm(item.Grade) === norm(selectedGrade);
@@ -3158,10 +3160,12 @@
 
     function setCategory(cat, btn) {
       selectedCategory = cat;
+      const select = document.getElementById('category-filter');
+      if (select) select.value = cat;
       document.querySelectorAll('.category-btn').forEach(b => {
         b.className = 'category-btn px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all shadow-2xs whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200';
       });
-      btn.className = 'category-btn px-4 py-2 text-xs sm:text-sm font-black rounded-xl transition-all shadow-2xs whitespace-nowrap bg-mkgTeal text-white';
+      if (btn) btn.className = 'category-btn px-4 py-2 text-xs sm:text-sm font-black rounded-xl transition-all shadow-2xs whitespace-nowrap bg-mkgTeal text-white';
       renderCatalog();
     }
 
@@ -3223,7 +3227,8 @@
         el.value = selected;
       };
       fill('brand-filter', 'Brand', unique('Brand'), selectedBrand);
-      fill('category-filter', 'Category', unique('Category'), selectedCategory);
+      const categories = [...new Set(['Phone','Laptop','Accessories','Wearables', ...unique('Category')])];
+      fill('category-filter', 'Category', categories, selectedCategory);
       fill('grade-filter', 'Grade', unique('Grade'), selectedGrade);
       fill('condition-filter', 'Condition', unique('Condition'), selectedCondition);
     }
