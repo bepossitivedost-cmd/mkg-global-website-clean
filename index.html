@@ -807,6 +807,46 @@
     </div>
   </div>
 
+  <!-- MKG Global Customer Feedback + Query Form -->
+  <section class="mkg-trust-section" aria-label="Customer feedback and enquiry">
+    <div class="mkg-trust-inner">
+      <div class="mkg-section-heading">
+        <div class="hero-kicker">MKG GLOBAL</div>
+        <h2>Trusted Shopping Experience</h2>
+        <p>Have a question about a product, stock, pricing, warranty or bulk requirement? Send us a query and our team will connect with you.</p>
+      </div>
+
+      <div class="mkg-feedback-grid">
+        <div class="mkg-feedback-card"><div class="mkg-stars">★★★★★</div><strong>Quality Checked</strong><p>Browse products with clear condition, grade and QC information before you enquire.</p></div>
+        <div class="mkg-feedback-card"><div class="mkg-stars">★★★★★</div><strong>Clear Product Details</strong><p>Model, colour, storage, pricing and warranty information are shown product-wise.</p></div>
+        <div class="mkg-feedback-card"><div class="mkg-stars">★★★★★</div><strong>Easy WhatsApp Support</strong><p>Need a quote or clarification? Send your requirement directly to the MKG Global team.</p></div>
+        <div class="mkg-feedback-card"><div class="mkg-stars">★★★★★</div><strong>Retailer Friendly</strong><p>Ask about availability, bulk requirements, accessories and special business enquiries.</p></div>
+      </div>
+
+      <div class="mkg-query-card">
+        <div class="mkg-query-copy">
+          <div class="hero-kicker">QUICK ENQUIRY</div>
+          <h3>Tell us what you need</h3>
+          <p>Submit your requirement and continue the conversation on WhatsApp.</p>
+          <div class="mkg-query-points"><span>✓ Product Enquiry</span><span>✓ Bulk / Retailer Query</span><span>✓ Warranty Support</span></div>
+        </div>
+        <form class="mkg-query-form" onsubmit="submitMkgQuery(event)">
+          <input id="query-name" type="text" placeholder="Your Name *" required>
+          <input id="query-phone" type="tel" inputmode="numeric" placeholder="WhatsApp Number *" required>
+          <input id="query-product" type="text" placeholder="Product / Model (optional)">
+          <select id="query-type">
+            <option value="Product Enquiry">Product Enquiry</option>
+            <option value="Bulk / Retailer Requirement">Bulk / Retailer Requirement</option>
+            <option value="Warranty / Claim">Warranty / Claim</option>
+            <option value="Other Query">Other Query</option>
+          </select>
+          <textarea id="query-message" rows="3" placeholder="Tell us your requirement..."></textarea>
+          <button type="submit">Send Query on WhatsApp →</button>
+        </form>
+      </div>
+    </div>
+  </section>
+
   <!-- Direct Floating WhatsApp Action (No visible raw phone number) -->
   <a 
     href="https://wa.me/918287361020?text=Hello%20MKG%20GLOBAL,%20I%20am%20interested%20in%20browsing%20your%20Super%20Deal%20Hub%20stock." 
@@ -3152,6 +3192,19 @@
       window.open(waUrl, '_blank');
     }
 
+    function submitMkgQuery(event) {
+      event.preventDefault();
+      const name = document.getElementById('query-name').value.trim();
+      const phone = document.getElementById('query-phone').value.trim();
+      const product = document.getElementById('query-product').value.trim();
+      const type = document.getElementById('query-type').value;
+      const message = document.getElementById('query-message').value.trim();
+      if (!name || !phone) return;
+      const wa = "918287361020";
+      const text = `*MKG GLOBAL QUERY*\\n--------------------------\\n👤 Name: ${name}\\n📱 WhatsApp: ${phone}\\n📦 Product/Model: ${product || 'Not specified'}\\n📌 Query Type: ${type}\\n💬 Requirement: ${message || 'Not specified'}`;
+      window.open(`https://wa.me/${wa}?text=${encodeURIComponent(text)}`, '_blank');
+    }
+
     // Filter Handlers
     function handleSearch(val) {
       searchQuery = val;
@@ -3395,5 +3448,28 @@ document.addEventListener('keydown', function(e) {
   }
   .filter-reset{padding:0 6px!important}
 }
+</style>
+<style>
+.mkg-trust-section{max-width:1280px;margin:34px auto 22px;padding:0 16px}
+.mkg-trust-inner{background:#f8fafc;border:1px solid #e2e8f0;border-radius:20px;padding:24px}
+.mkg-section-heading{text-align:center;max-width:760px;margin:0 auto 20px}
+.mkg-section-heading h2{margin:4px 0 6px;font-size:24px;font-weight:950;color:#0f172a}
+.mkg-section-heading p{margin:0;font-size:11px;line-height:1.55;color:#64748b;font-weight:600}
+.mkg-feedback-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:18px}
+.mkg-feedback-card{background:#fff;border:1px solid #e2e8f0;border-radius:14px;padding:15px;box-shadow:0 4px 14px rgba(15,23,42,.04)}
+.mkg-stars{color:#e5a400;font-size:14px;letter-spacing:1px;margin-bottom:7px}
+.mkg-feedback-card strong{font-size:12px;color:#0f172a;font-weight:900}
+.mkg-feedback-card p{font-size:9.5px;line-height:1.5;color:#64748b;margin:5px 0 0;font-weight:600}
+.mkg-query-card{display:grid;grid-template-columns:38% 62%;gap:20px;background:linear-gradient(120deg,#063f3b,#0a716a);border-radius:17px;padding:20px;color:#fff}
+.mkg-query-copy{display:flex;flex-direction:column;justify-content:center;padding:5px 8px}
+.mkg-query-copy .hero-kicker{color:#ffd166}
+.mkg-query-copy h3{font-size:23px;font-weight:950;margin:5px 0}
+.mkg-query-copy p{font-size:10.5px;line-height:1.5;color:#d9f4f1;margin:0 0 12px}
+.mkg-query-points{display:flex;flex-wrap:wrap;gap:5px}.mkg-query-points span{font-size:8.5px;font-weight:800;border:1px solid rgba(255,255,255,.2);border-radius:999px;padding:5px 7px}
+.mkg-query-form{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.mkg-query-form input,.mkg-query-form select,.mkg-query-form textarea{width:100%;box-sizing:border-box;border:1px solid #d7e3e2;background:#fff;color:#0f172a;border-radius:9px;padding:9px 10px;font-size:10px;font-weight:700;outline:none}
+.mkg-query-form textarea{grid-column:1/-1;resize:vertical}.mkg-query-form button{grid-column:1/-1;border:0;border-radius:9px;padding:10px;background:#f5b91c;color:#10203b;font-size:11px;font-weight:950;cursor:pointer}
+@media(max-width:900px){.mkg-feedback-grid{grid-template-columns:repeat(2,1fr)}.mkg-query-card{grid-template-columns:1fr}}
+@media(max-width:640px){.mkg-trust-section{padding:0 9px;margin-top:24px}.mkg-trust-inner{padding:14px;border-radius:14px}.mkg-section-heading h2{font-size:19px}.mkg-feedback-grid{grid-template-columns:1fr 1fr;gap:6px}.mkg-feedback-card{padding:10px}.mkg-feedback-card p{font-size:8.5px}.mkg-stars{font-size:11px}.mkg-query-card{padding:14px;gap:12px}.mkg-query-copy h3{font-size:19px}.mkg-query-form{grid-template-columns:1fr}.mkg-query-form textarea,.mkg-query-form button{grid-column:auto}}
 </style>
 
