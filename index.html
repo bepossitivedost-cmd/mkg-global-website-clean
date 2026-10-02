@@ -143,6 +143,35 @@
   .quality-guide-btn{font-size:9px!important}
 }
 </style>
+<style>
+.header-quick-actions{display:flex;align-items:center;gap:6px;flex:0 0 auto}
+.header-info-btn{height:40px;padding:0 10px;border-radius:10px;border:1px solid #dbe4e8;background:#fff;color:#0f5f5a;display:flex;align-items:center;justify-content:center;gap:5px;font-size:9.5px;font-weight:900;white-space:nowrap;transition:.18s}
+.header-info-btn:hover{background:#f0fdfa;border-color:#7dd3c7;transform:translateY(-1px)}
+.header-info-btn.grading{background:#effaf8;border-color:#9adbd4}
+.header-info-btn.qc{background:#f4fbfa}
+.header-info-btn.warranty{background:#fffaf0;border-color:#f2dfb4;color:#76520b}
+.header-search-input{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.compact-filters{gap:8px}
+.compact-select{height:36px;min-width:128px;width:auto;max-width:none;padding:0 28px 0 10px;font-size:11px;font-weight:800}
+.filter-reset{height:36px;min-width:72px;width:auto;padding:0 12px!important;font-size:11px!important;border-radius:8px!important}
+@media(max-width:1100px){
+ .header-info-btn{padding:0 7px;font-size:8.5px}
+ .header-info-btn span:last-child{max-width:105px;overflow:hidden;text-overflow:ellipsis}
+ .header-search-wrap{width:260px!important}
+ .compact-select{min-width:112px;font-size:10px}
+}
+@media(max-width:900px){
+ .header-quick-actions{display:none}
+ .catalog-filterbar{display:block}
+ .quality-inline{width:100%}
+ .compact-filters{width:100%;overflow-x:auto;padding-top:5px}
+ .compact-select{min-width:125px}
+}
+@media(max-width:640px){
+ .compact-select{min-width:118px;height:34px;font-size:10px}
+ .filter-reset{height:34px}
+}
+</style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col custom-scrollbar">
 
@@ -179,7 +208,7 @@
         </div>
 
         <!-- Center Search Bar -->
-        <div class="hidden md:flex flex-1 max-w-md lg:max-w-lg mx-2">
+        <div class="hidden md:flex flex-none w-[300px] lg:w-[360px] mx-2 header-search-wrap">
           <div class="relative w-full">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-slate-400">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
@@ -194,17 +223,11 @@
           </div>
         </div>
 
-        <!-- Right Quick Actions -->
-        <div class="flex items-center gap-2 sm:gap-3">
-          <button 
-            onclick="openQcModal()" 
-            class="flex items-center gap-1.5 px-3 py-2 text-xs sm:text-sm font-bold text-mkgTeal bg-mkgTealLight hover:bg-teal-100/70 border border-mkgTeal/30 rounded-xl transition-all shadow-2xs active:scale-95"
-          >
-            <span>🔬</span>
-            <span class="hidden sm:inline">42-Point QC &gt;</span>
-            <span class="sm:hidden">QC</span>
-          </button>
-
+        <!-- Quick Information Buttons + Cart -->
+        <div class="header-quick-actions">
+          <button onclick="openGradingGuide()" class="header-info-btn grading"><span>🏆</span><span>MKG Certified Grading</span></button>
+          <button onclick="openQcModal()" class="header-info-btn qc"><span>🔬</span><span>42-Point QC · 100% Diagnosed</span></button>
+          <button onclick="openWarrantyTermsModal()" class="header-info-btn warranty"><span>🛡️</span><span>Warranty Terms & Claims</span></button>
           <button 
             onclick="toggleCartDrawer(true)" 
             class="relative flex items-center gap-2 px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-black text-white bg-mkgTeal hover:bg-mkgTealDark rounded-xl shadow-sm transition-all active:scale-95"
@@ -283,7 +306,6 @@
           <button onclick="setConditionFilter('Seal packed', this)" class="quality-pill">✨ Seal Packed</button>
           <button onclick="setConditionFilter('Open Box', this)" class="quality-pill">📦 Open Box</button>
           <button onclick="setConditionFilter('Refurbished', this)" class="quality-pill">♻️ Refurbished</button>
-          <button onclick="openGradingGuide()" class="quality-guide-btn">🏆 MKG Certified Grading Standard</button>
         </div>
 
         <div class="compact-filters">
@@ -291,7 +313,6 @@
           <select id="category-filter" onchange="setCategoryFromSelect(this.value)" class="compact-select"><option value="all">Category: All</option></select>
           <select id="grade-filter" onchange="setGradeFilter(this.value)" class="compact-select"><option value="all">Grade: All</option></select>
           <select id="condition-filter" onchange="setConditionFromSelect(this.value)" class="compact-select"><option value="all">Condition: All</option></select>
-          <span class="item-count" id="item-counter-badge">0 Items</span>
           <button onclick="resetFilters()" class="catalog-reset filter-reset">↺ Reset</button>
         </div>
       </div>
@@ -2169,8 +2190,6 @@
 
         return matchCategory && matchCondition && matchBrand && matchGrade && matchSearch;
       });
-
-      document.getElementById('item-counter-badge').innerText = `${filtered.length} Items Available`;
 
       if (filtered.length === 0) {
         emptyState.classList.remove('hidden');
