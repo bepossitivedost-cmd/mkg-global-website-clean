@@ -71,6 +71,41 @@
 .quality-chip:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3)}
 @media(max-width:640px){.filter-select{min-width:calc(50% - .4rem);flex:1}.quality-chip{font-size:.68rem}}
 </style>
+<style>
+.catalog-topline{display:flex;align-items:center;gap:10px;border-bottom:1px solid #e5e7eb;padding-bottom:6px}
+.category-scroll{display:flex;align-items:center;gap:6px;overflow-x:auto;scrollbar-width:none;flex:1;min-width:0}
+.category-scroll::-webkit-scrollbar{display:none}
+.catalog-tab{flex:0 0 auto;border:0;background:transparent;color:#334155;padding:7px 13px;border-radius:10px;font-size:12px;font-weight:800;white-space:nowrap;transition:.18s}
+.catalog-tab:hover{background:#f1f5f9}
+.catalog-tab.active{background:#006c64;color:#fff;box-shadow:0 2px 5px rgba(0,0,0,.08)}
+.catalog-reset{flex:0 0 auto;border:0;background:transparent;color:#64748b;font-size:10px;font-weight:800;padding:6px}
+.catalog-filterbar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:7px 2px;overflow:hidden}
+.quality-inline,.compact-filters{display:flex;align-items:center;gap:5px;min-width:0}
+.quality-inline{overflow-x:auto;scrollbar-width:none}
+.quality-inline::-webkit-scrollbar{display:none}
+.quality-label{font-size:10px;font-weight:900;color:#0f172a;white-space:nowrap}
+.quality-pill,.quality-guide-btn{border:1px solid #e2e8f0;background:#fff;color:#475569;border-radius:8px;padding:5px 8px;font-size:10px;font-weight:800;white-space:nowrap}
+.quality-pill:hover,.quality-guide-btn:hover{background:#f8fafc}
+.quality-pill.active{background:#0f172a;color:#fff;border-color:#0f172a}
+.compact-filters{flex:0 0 auto}
+.compact-select{height:29px;border:1px solid #e2e8f0;border-radius:8px;background:#fff;color:#334155;padding:0 8px;font-size:10px;font-weight:800;outline:none;max-width:120px}
+.item-count{font-size:10px;font-weight:900;color:#475569;background:#f1f5f9;border-radius:999px;padding:6px 9px;white-space:nowrap}
+@media(max-width:900px){
+  .catalog-filterbar{display:block;overflow:visible}
+  .quality-inline{width:100%;padding-bottom:5px}
+  .compact-filters{width:100%;overflow-x:auto;scrollbar-width:none;padding-top:2px}
+  .compact-filters::-webkit-scrollbar{display:none}
+  .compact-select{flex:0 0 auto;max-width:none}
+}
+@media(max-width:640px){
+  .catalog-topline{gap:4px}
+  .catalog-tab{font-size:11px;padding:7px 10px}
+  .catalog-filterbar{margin-top:2px}
+  .quality-label{font-size:9px}
+  .quality-pill,.quality-guide-btn{font-size:9px;padding:5px 7px}
+  .compact-select{height:28px;font-size:9px}
+}
+</style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col custom-scrollbar">
 
@@ -202,54 +237,39 @@
   <!-- Main Catalog Content -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
     
-    <!-- Primary Product Categories -->
-    <section class="mb-5">
-      <div class="flex items-center justify-between gap-3 mb-2">
-        <div>
-          <h2 class="text-sm sm:text-base font-black text-slate-900">Shop by Category</h2>
-          <p class="text-[11px] sm:text-xs text-slate-500 font-medium">Choose a product category first</p>
+    <!-- Compact Catalog Navigation: categories stay on one line -->
+    <section class="mb-4">
+      <div class="catalog-topline">
+        <div id="category-tabs-container" class="category-scroll">
+          <button onclick="setCategory('all', this)" class="category-btn catalog-tab active">🌐 All</button>
+          <button onclick="setCategory('Phone', this)" class="category-btn catalog-tab">📱 Phones</button>
+          <button onclick="setCategory('Laptop', this)" class="category-btn catalog-tab">💻 Laptops</button>
+          <button onclick="setCategory('Accessories', this)" class="category-btn catalog-tab">🔌 Accessories</button>
+          <button onclick="setCategory('Wearable', this)" class="category-btn catalog-tab">⌚ Wearables</button>
+          <button onclick="setCategory('LED TV', this)" class="category-btn catalog-tab">📺 LED TVs</button>
         </div>
-        <button onclick="resetFilters()" class="text-[11px] font-bold text-slate-500 hover:text-mkgTeal">Reset</button>
+        <button onclick="resetFilters()" class="catalog-reset">Reset</button>
       </div>
-      <div class="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar" id="category-tabs-container">
-        <button onclick="setCategory('all', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-black rounded-xl whitespace-nowrap bg-mkgTeal text-white shadow-sm">🌐 All</button>
-        <button onclick="setCategory('Phone', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">📱 Phones</button>
-        <button onclick="setCategory('Laptop', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">💻 Laptops</button>
-        <button onclick="setCategory('Accessories', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">🔌 Accessories</button>
-        <button onclick="setCategory('Wearable', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">⌚ Wearables</button>
-        <button onclick="setCategory('LED TV', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">📺 LED TVs</button>
+
+      <div class="catalog-filterbar">
+        <div class="quality-inline">
+          <span class="quality-label">MKG Quality:</span>
+          <button onclick="setConditionFilter('all', this)" class="quality-pill active">All</button>
+          <button onclick="setConditionFilter('Seal packed', this)" class="quality-pill">✨ Seal Packed</button>
+          <button onclick="setConditionFilter('Open Box', this)" class="quality-pill">📦 Open Box</button>
+          <button onclick="setConditionFilter('Refurbished', this)" class="quality-pill">♻️ Refurbished</button>
+          <button onclick="openGradingGuide()" class="quality-guide-btn">ℹ️ Guide</button>
+        </div>
+
+        <div class="compact-filters">
+          <select id="brand-filter" onchange="setBrandFilter(this.value)" class="compact-select"><option value="all">Brand: All</option></select>
+          <select id="category-filter" onchange="setCategoryFromSelect(this.value)" class="compact-select"><option value="all">Category: All</option></select>
+          <select id="grade-filter" onchange="setGradeFilter(this.value)" class="compact-select"><option value="all">Grade: All</option></select>
+          <select id="condition-filter" onchange="setConditionFromSelect(this.value)" class="compact-select"><option value="all">Condition: All</option></select>
+          <span class="item-count" id="item-counter-badge">0 Items</span>
+        </div>
       </div>
     </section>
-
-    <!-- MKG Quality Standard — separate from product category -->
-    <section class="mb-5 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-4 sm:p-5 text-white shadow-sm">
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-        <div>
-          <div class="text-[10px] font-black uppercase tracking-[0.18em] text-teal-300">MKG GLOBAL</div>
-          <h2 class="text-base sm:text-lg font-black mt-0.5">MKG Quality Standard</h2>
-          <p class="text-[11px] text-slate-300 mt-0.5">Product category, condition and grade are shown separately.</p>
-        </div>
-        <button onclick="openGradingGuide()" class="inline-flex items-center justify-center px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-black whitespace-nowrap">ℹ️ View Quality Guide</button>
-      </div>
-      <div class="flex flex-wrap gap-2 mt-4">
-        <button onclick="setConditionFilter('all', null)" class="quality-chip">All Conditions</button>
-        <button onclick="setConditionFilter('Seal packed', null)" class="quality-chip">✨ Seal Packed</button>
-        <button onclick="setConditionFilter('Open Box', null)" class="quality-chip">📦 Open Box</button>
-        <button onclick="setConditionFilter('Refurbished', null)" class="quality-chip">♻️ Certified Refurbished</button>
-      </div>
-    </section>
-
-    <!-- Structured Filters: Brand / Category / Grade / Condition -->
-    <div class="mb-6 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-2xs">
-      <div class="flex flex-wrap items-center gap-2.5">
-        <span class="text-xs font-black text-slate-900 mr-1">Filters:</span>
-        <select id="brand-filter" onchange="setBrandFilter(this.value)" class="filter-select"><option value="all">Brand: All</option></select>
-        <select id="category-filter" onchange="setCategoryFromSelect(this.value)" class="filter-select"><option value="all">Category: All</option></select>
-        <select id="grade-filter" onchange="setGradeFilter(this.value)" class="filter-select"><option value="all">Grade: All</option></select>
-        <select id="condition-filter" onchange="setConditionFromSelect(this.value)" class="filter-select"><option value="all">Condition: All</option></select>
-        <span class="ml-auto text-xs font-black bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full" id="item-counter-badge">0 Items</span>
-      </div>
-    </div>
 
     <!-- Dynamic Product Cards Grid -->
     <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
