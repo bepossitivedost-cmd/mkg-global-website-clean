@@ -2121,8 +2121,15 @@
 
       const filtered = inventory.filter(item => {
         const norm = v => String(v || '').trim().toLowerCase();
+        const normalizeCondition = v => {
+          const x = norm(v).replace(/[_-]+/g, ' ').replace(/\s+/g, ' ');
+          if (x === 'sealpacked' || x === 'seal packed') return 'seal packed';
+          if (x === 'openbox' || x === 'open box') return 'open box';
+          if (x === 'refurb' || x === 'refurbished' || x === 'certified refurbished') return 'refurbished';
+          return x;
+        };
         const matchCategory = (selectedCategory === 'all') || norm(item.Category) === norm(selectedCategory);
-        const matchCondition = (selectedCondition === 'all') || norm(item.Condition) === norm(selectedCondition);
+        const matchCondition = (selectedCondition === 'all') || normalizeCondition(item.Condition) === normalizeCondition(selectedCondition);
         const matchBrand = (selectedBrand === 'all') || norm(item.Brand) === norm(selectedBrand);
         const matchGrade = (selectedGrade === 'all') || norm(item.Grade) === norm(selectedGrade);
 
@@ -2993,7 +3000,17 @@
     }
 
     function populateCatalogFilters() {
-      const unique = key => [...new Set(inventory.map(i => String(i[key] || '').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+      const canonicalCondition = value => {
+        const x = String(value || '').trim().toLowerCase().replace(/[_-]+/g, ' ').replace(/\s+/g, ' ');
+        if (x === 'sealpacked' || x === 'seal packed') return 'Seal packed';
+        if (x === 'openbox' || x === 'open box') return 'Open Box';
+        if (x === 'refurb' || x === 'refurbished' || x === 'certified refurbished') return 'Refurbished';
+        return String(value || '').trim();
+      };
+      const unique = key => {
+        const values = inventory.map(i => key === 'Condition' ? canonicalCondition(i[key]) : String(i[key] || '').trim()).filter(Boolean);
+        return [...new Set(values)].sort((a,b)=>a.localeCompare(b));
+      };
       const fill = (id, label, values, selected) => {
         const el = document.getElementById(id);
         if (!el) return;
