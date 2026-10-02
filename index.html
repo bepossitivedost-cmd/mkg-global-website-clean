@@ -235,6 +235,18 @@
  .hero-prev{left:5px}.hero-next{right:5px}
 }
 </style>
+<style>
+/* Hero visibility safeguard */
+.mkg-hero-wrap{display:block!important;visibility:visible!important}
+.mkg-hero{display:block!important;visibility:visible!important;min-height:270px!important}
+.mkg-hero-slide{visibility:hidden!important;opacity:0!important;display:flex!important}
+.mkg-hero-slide.is-active{visibility:visible!important;opacity:1!important;display:flex!important;z-index:10!important}
+.hero-copy{display:block!important;visibility:visible!important}
+.hero-products{display:flex!important;visibility:visible!important}
+.hero-side{display:flex!important;visibility:visible!important}
+@media(max-width:900px){.mkg-hero{min-height:235px!important}}
+@media(max-width:640px){.mkg-hero{min-height:205px!important}}
+</style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col custom-scrollbar">
 
@@ -329,7 +341,7 @@
   <!-- MKG Global Hero Slideshow -->
   <section class="mkg-hero-wrap" aria-label="MKG Global featured deals">
     <div id="mkg-hero" class="mkg-hero">
-      <div class="mkg-hero-slide is-active">
+      <div class="mkg-hero-slide is-active" style="opacity:1!important;visibility:visible!important;display:flex!important;">
         <div class="hero-copy">
           <div class="hero-kicker">MKG GLOBAL</div>
           <h1>Premium Refurbished Handsets</h1>
