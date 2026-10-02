@@ -2194,18 +2194,14 @@
               </div>
             ` : ''}
 
-            <!-- Condition & Grade Badges -->
-            <div class="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start">
-              <span class="text-[10px] font-black uppercase tracking-wide px-2.5 py-0.5 rounded-md border ${condBadgeClass}">
-                ${cond}
-              </span>
-              ${item.Grade ? `
+            <!-- Grade Badge — condition is shown once in the common MKG Quality filter -->
+            ${item.Grade ? `
+              <div class="absolute top-3 left-3 z-10">
                 <span class="text-[9.5px] font-extrabold px-2 py-0.5 rounded bg-slate-900/80 text-white backdrop-blur-xs">
                   Grade: ${item.Grade}
                 </span>
-              ` : ''}
-            </div>
-
+              </div>
+            ` : ''}
             <!-- Multi Image Badge -->
             ${imagesList.length > 1 ? `
               <div class="absolute bottom-2.5 right-2.5 z-10 bg-slate-900/80 text-white text-[10px] font-black px-2 py-0.5 rounded-md flex items-center gap-1 shadow-xs">
