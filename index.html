@@ -2962,12 +2962,8 @@
       selectedCondition = cond || 'all';
       const select = document.getElementById('condition-filter');
       if (select) select.value = selectedCondition;
-      if (btn) {
-        document.querySelectorAll('.cond-filter-pill').forEach(b => {
-          b.className = 'cond-filter-pill px-3 py-1 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all whitespace-nowrap';
-        });
-        btn.className = 'cond-filter-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-900 text-white transition-all whitespace-nowrap';
-      }
+      document.querySelectorAll('.quality-pill').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
       renderCatalog();
     }
 
@@ -2992,14 +2988,12 @@
     }
 
     function syncCategoryButtons() {
-      document.querySelectorAll('.category-btn').forEach(b => {
-        b.className = 'category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200';
-      });
+      document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
       const active = Array.from(document.querySelectorAll('.category-btn')).find(b => {
         const m = b.getAttribute('onclick') || '';
         return m.includes("setCategory('" + selectedCategory + "'");
       });
-      if (active) active.className = 'category-btn px-4 py-2.5 text-xs sm:text-sm font-black rounded-xl whitespace-nowrap bg-mkgTeal text-white shadow-sm';
+      if (active) active.classList.add('active');
     }
 
     function populateCatalogFilters() {
