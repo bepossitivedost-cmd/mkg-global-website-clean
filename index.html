@@ -3309,4 +3309,78 @@
 document.addEventListener('keydown', function(e) {
   if (e.key === 'Escape') closeWarrantyTermsModal();
 });
-</script>
+</script><style>
+/* Mobile header + filter fit */
+@media(max-width:900px){
+  .mobile-info-strip{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:5px;
+    overflow:visible!important;
+    padding:0 0 8px!important;
+  }
+  .mobile-info-btn{
+    min-width:0!important;
+    width:100%!important;
+    padding:7px 3px!important;
+    font-size:8px!important;
+    line-height:1.15!important;
+    text-align:center;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+}
+@media(max-width:640px){
+  .glass-nav .max-w-7xl{padding-left:10px!important;padding-right:10px!important}
+  .glass-nav .h-16{height:auto!important;min-height:56px;padding-top:6px;padding-bottom:5px}
+  .logo-container img{height:43px!important;max-width:175px!important}
+  .logo-container>span{font-size:8px!important;padding:3px 7px!important}
+  .mobile-info-strip{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:4px!important;
+    padding-bottom:7px!important;
+  }
+  .mobile-info-btn{font-size:7.5px!important;border-radius:7px!important;padding:7px 2px!important}
+  .mkg-hero-wrap{padding:0 8px!important}
+  .catalog-filterbar{padding:7px 0!important}
+  .quality-inline{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:4px!important;
+    width:100%!important;
+    overflow:visible!important;
+    padding-bottom:6px!important;
+  }
+  .quality-label{
+    grid-column:1 / -1;
+    font-size:9px!important;
+  }
+  .quality-pill{
+    min-width:0!important;
+    width:100%!important;
+    padding:6px 2px!important;
+    font-size:8px!important;
+    text-align:center;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .compact-filters{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:5px!important;
+    width:100%!important;
+    overflow:visible!important;
+    padding-top:0!important;
+  }
+  .compact-select,.filter-reset{
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    height:35px!important;
+    box-sizing:border-box;
+    font-size:9px!important;
+  }
+  .filter-reset{padding:0 6px!important}
+}
+</style>
+
