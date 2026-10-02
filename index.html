@@ -63,6 +63,14 @@
       transform: scale(1.04);
     }
   </style>
+
+<style>
+.filter-select{padding:.55rem .8rem;border:1px solid #e2e8f0;border-radius:.75rem;background:#fff;color:#334155;font-size:.72rem;font-weight:800;outline:none;min-width:120px}
+.filter-select:focus{border-color:#005f59;box-shadow:0 0 0 2px rgba(0,95,89,.12)}
+.quality-chip{padding:.5rem .75rem;border-radius:.7rem;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:.72rem;font-weight:800;white-space:nowrap;transition:.2s}
+.quality-chip:hover{background:rgba(255,255,255,.18);border-color:rgba(255,255,255,.3)}
+@media(max-width:640px){.filter-select{min-width:calc(50% - .4rem);flex:1}.quality-chip{font-size:.68rem}}
+</style>
 </head>
 <body class="bg-slate-50 text-slate-900 font-sans antialiased min-h-screen flex flex-col custom-scrollbar">
 
@@ -194,43 +202,52 @@
   <!-- Main Catalog Content -->
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
     
-    <!-- Category Tabs -->
-    <div class="flex flex-col md:flex-row md:items-center justify-between gap-3.5 mb-4">
-      <div class="flex items-center gap-2 overflow-x-auto pb-1.5 sm:pb-0 custom-scrollbar" id="category-tabs-container">
-        <button onclick="setCategory('all', this)" class="category-btn px-4 py-2 text-xs sm:text-sm font-black rounded-xl transition-all shadow-2xs whitespace-nowrap bg-mkgTeal text-white">
-          🌐 All Catalog
-        </button>
-        <button onclick="setCategory('Phone', this)" class="category-btn px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all shadow-2xs whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
-          📱 Smartphones
-        </button>
-        <button onclick="setCategory('Laptop', this)" class="category-btn px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all shadow-2xs whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
-          💻 Laptops
-        </button>
-        <button onclick="setCategory('Accessories', this)" class="category-btn px-4 py-2 text-xs sm:text-sm font-bold rounded-xl transition-all shadow-2xs whitespace-nowrap bg-white text-slate-700 hover:bg-slate-100 border border-slate-200">
-          🔌 Accessories & Audio
-        </button>
+    <!-- Primary Product Categories -->
+    <section class="mb-5">
+      <div class="flex items-center justify-between gap-3 mb-2">
+        <div>
+          <h2 class="text-sm sm:text-base font-black text-slate-900">Shop by Category</h2>
+          <p class="text-[11px] sm:text-xs text-slate-500 font-medium">Choose a product category first</p>
+        </div>
+        <button onclick="resetFilters()" class="text-[11px] font-bold text-slate-500 hover:text-mkgTeal">Reset</button>
       </div>
-
-      <button onclick="openGradingGuide()" class="inline-flex items-center text-xs font-extrabold text-mkgTeal hover:text-mkgTealDark underline decoration-teal-400 underline-offset-4 self-start md:self-auto">
-        <span>ℹ️ Grading & Condition Standard (FG / A+ / Refurb)</span>
-      </button>
-    </div>
-
-    <!-- Condition Filter Pills & Brand Chips -->
-    <div class="flex flex-wrap items-center justify-between gap-3 mb-6 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-2xs">
-      
-      <!-- Condition Quick Filter -->
-      <div class="flex items-center gap-1.5 overflow-x-auto custom-scrollbar">
-        <span class="text-xs font-black text-slate-900 mr-1 shrink-0">Condition:</span>
-        <button onclick="setConditionFilter('all', this)" class="cond-filter-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-900 text-white transition-all whitespace-nowrap">All</button>
-        <button onclick="setConditionFilter('Seal packed', this)" class="cond-filter-pill px-3 py-1 text-xs font-semibold rounded-lg bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-all whitespace-nowrap">✨ Seal Packed</button>
-        <button onclick="setConditionFilter('Open Box', this)" class="cond-filter-pill px-3 py-1 text-xs font-semibold rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 transition-all whitespace-nowrap">📦 Open Box</button>
-        <button onclick="setConditionFilter('Refurbished', this)" class="cond-filter-pill px-3 py-1 text-xs font-semibold rounded-lg bg-teal-50 hover:bg-teal-100 text-teal-800 border border-teal-200 transition-all whitespace-nowrap">♻️ Refurbished</button>
+      <div class="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar" id="category-tabs-container">
+        <button onclick="setCategory('all', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-black rounded-xl whitespace-nowrap bg-mkgTeal text-white shadow-sm">🌐 All</button>
+        <button onclick="setCategory('Phone', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">📱 Phones</button>
+        <button onclick="setCategory('Laptop', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">💻 Laptops</button>
+        <button onclick="setCategory('Accessories', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">🔌 Accessories</button>
+        <button onclick="setCategory('Wearable', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">⌚ Wearables</button>
+        <button onclick="setCategory('LED TV', this)" class="category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200">📺 LED TVs</button>
       </div>
+    </section>
 
-      <!-- Active Catalog Items Counter -->
-      <div class="flex items-center gap-2">
-        <span class="text-xs font-black bg-slate-100 text-slate-700 px-3 py-1 rounded-full" id="item-counter-badge">0 Items</span>
+    <!-- MKG Quality Standard — separate from product category -->
+    <section class="mb-5 bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-4 sm:p-5 text-white shadow-sm">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div>
+          <div class="text-[10px] font-black uppercase tracking-[0.18em] text-teal-300">MKG GLOBAL</div>
+          <h2 class="text-base sm:text-lg font-black mt-0.5">MKG Quality Standard</h2>
+          <p class="text-[11px] text-slate-300 mt-0.5">Product category, condition and grade are shown separately.</p>
+        </div>
+        <button onclick="openGradingGuide()" class="inline-flex items-center justify-center px-3 py-2 rounded-xl bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-black whitespace-nowrap">ℹ️ View Quality Guide</button>
+      </div>
+      <div class="flex flex-wrap gap-2 mt-4">
+        <button onclick="setConditionFilter('all', null)" class="quality-chip">All Conditions</button>
+        <button onclick="setConditionFilter('Seal packed', null)" class="quality-chip">✨ Seal Packed</button>
+        <button onclick="setConditionFilter('Open Box', null)" class="quality-chip">📦 Open Box</button>
+        <button onclick="setConditionFilter('Refurbished', null)" class="quality-chip">♻️ Certified Refurbished</button>
+      </div>
+    </section>
+
+    <!-- Structured Filters: Brand / Category / Grade / Condition -->
+    <div class="mb-6 bg-white p-3.5 sm:p-4 rounded-2xl border border-slate-200 shadow-2xs">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <span class="text-xs font-black text-slate-900 mr-1">Filters:</span>
+        <select id="brand-filter" onchange="setBrandFilter(this.value)" class="filter-select"><option value="all">Brand: All</option></select>
+        <select id="category-filter" onchange="setCategoryFromSelect(this.value)" class="filter-select"><option value="all">Category: All</option></select>
+        <select id="grade-filter" onchange="setGradeFilter(this.value)" class="filter-select"><option value="all">Grade: All</option></select>
+        <select id="condition-filter" onchange="setConditionFromSelect(this.value)" class="filter-select"><option value="all">Condition: All</option></select>
+        <span class="ml-auto text-xs font-black bg-slate-100 text-slate-700 px-3 py-1.5 rounded-full" id="item-counter-badge">0 Items</span>
       </div>
     </div>
 
@@ -2027,6 +2044,8 @@
     let inventory = [];
     let selectedCategory = 'all';
     let selectedCondition = 'all';
+    let selectedBrand = 'all';
+    let selectedGrade = 'all';
     let searchQuery = '';
     let cart = [];
     
@@ -2069,6 +2088,8 @@
         // Keep the storefront usable if the backend is not configured yet.
         inventory = [...DEFAULT_CATALOG];
       }
+      populateCatalogFilters();
+      syncCategoryButtons();
       renderCatalog();
       openProductFromUrl();
     }
@@ -2079,24 +2100,21 @@
       grid.innerHTML = '';
 
       const filtered = inventory.filter(item => {
-        // Category filter
-        const matchCategory = (selectedCategory === 'all') || 
-          (item.Category && item.Category.trim().toLowerCase() === selectedCategory.trim().toLowerCase());
+        const norm = v => String(v || '').trim().toLowerCase();
+        const matchCategory = (selectedCategory === 'all') || norm(item.Category) === norm(selectedCategory);
+        const matchCondition = (selectedCondition === 'all') || norm(item.Condition) === norm(selectedCondition);
+        const matchBrand = (selectedBrand === 'all') || norm(item.Brand) === norm(selectedBrand);
+        const matchGrade = (selectedGrade === 'all') || norm(item.Grade) === norm(selectedGrade);
 
-        // Condition filter
-        const matchCondition = (selectedCondition === 'all') ||
-          (item.Condition && item.Condition.trim().toLowerCase() === selectedCondition.trim().toLowerCase());
-
-        // Text query
         const q = searchQuery.trim().toLowerCase();
-        const matchSearch = !q || 
-          (item.Model && item.Model.toLowerCase().includes(q)) || 
+        const matchSearch = !q ||
+          (item.Model && item.Model.toLowerCase().includes(q)) ||
           (item.Brand && item.Brand.toLowerCase().includes(q)) ||
           (item.SubCategory && item.SubCategory.toLowerCase().includes(q)) ||
           (item.RAM_Storage && item.RAM_Storage.toLowerCase().includes(q)) ||
           (item.Color && item.Color.toLowerCase().includes(q));
 
-        return matchCategory && matchCondition && matchSearch;
+        return matchCategory && matchCondition && matchBrand && matchGrade && matchSearch;
       });
 
       document.getElementById('item-counter-badge').innerText = `${filtered.length} Items Available`;
@@ -2921,20 +2939,82 @@
     }
 
     function setConditionFilter(cond, btn) {
-      selectedCondition = cond;
-      document.querySelectorAll('.cond-filter-pill').forEach(b => {
-        b.className = 'cond-filter-pill px-3 py-1 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all whitespace-nowrap';
+      selectedCondition = cond || 'all';
+      const select = document.getElementById('condition-filter');
+      if (select) select.value = selectedCondition;
+      if (btn) {
+        document.querySelectorAll('.cond-filter-pill').forEach(b => {
+          b.className = 'cond-filter-pill px-3 py-1 text-xs font-semibold rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 transition-all whitespace-nowrap';
+        });
+        btn.className = 'cond-filter-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-900 text-white transition-all whitespace-nowrap';
+      }
+      renderCatalog();
+    }
+
+    function setBrandFilter(value) {
+      selectedBrand = value || 'all';
+      renderCatalog();
+    }
+
+    function setGradeFilter(value) {
+      selectedGrade = value || 'all';
+      renderCatalog();
+    }
+
+    function setCategoryFromSelect(value) {
+      selectedCategory = value || 'all';
+      syncCategoryButtons();
+      renderCatalog();
+    }
+
+    function setConditionFromSelect(value) {
+      setConditionFilter(value || 'all', null);
+    }
+
+    function syncCategoryButtons() {
+      document.querySelectorAll('.category-btn').forEach(b => {
+        b.className = 'category-btn px-4 py-2.5 text-xs sm:text-sm font-bold rounded-xl whitespace-nowrap bg-white text-slate-700 border border-slate-200';
       });
-      btn.className = 'cond-filter-pill px-3 py-1 text-xs font-bold rounded-lg bg-slate-900 text-white transition-all whitespace-nowrap';
+      const active = Array.from(document.querySelectorAll('.category-btn')).find(b => {
+        const m = b.getAttribute('onclick') || '';
+        return m.includes("setCategory('" + selectedCategory + "'");
+      });
+      if (active) active.className = 'category-btn px-4 py-2.5 text-xs sm:text-sm font-black rounded-xl whitespace-nowrap bg-mkgTeal text-white shadow-sm';
+    }
+
+    function populateCatalogFilters() {
+      const unique = key => [...new Set(inventory.map(i => String(i[key] || '').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+      const fill = (id, label, values, selected) => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.innerHTML = '<option value="all">' + label + ': All</option>' +
+          values.map(v => '<option value="' + v.replace(/"/g, '&quot;') + '">' + v + '</option>').join('');
+        el.value = selected;
+      };
+      fill('brand-filter', 'Brand', unique('Brand'), selectedBrand);
+      fill('category-filter', 'Category', unique('Category'), selectedCategory);
+      fill('grade-filter', 'Grade', unique('Grade'), selectedGrade);
+      fill('condition-filter', 'Condition', unique('Condition'), selectedCondition);
+    }
+
+    function setCategory(cat, btn) {
+      selectedCategory = cat;
+      const select = document.getElementById('category-filter');
+      if (select) select.value = cat;
+      syncCategoryButtons();
       renderCatalog();
     }
 
     function resetFilters() {
       selectedCategory = 'all';
       selectedCondition = 'all';
+      selectedBrand = 'all';
+      selectedGrade = 'all';
       searchQuery = '';
       const sInput = document.getElementById('search-input');
       if (sInput) sInput.value = '';
+      populateCatalogFilters();
+      syncCategoryButtons();
       renderCatalog();
     }
 
