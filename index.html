@@ -3004,14 +3004,14 @@
           : `<div class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-lg shrink-0">📦</div>`;
 
         itemDiv.innerHTML = `
-          <div class="flex items-start gap-3 min-w-0 flex-1">
+          <div class="flex items-start gap-3 min-w-0 w-full pr-7">
             ${cartImageHtml}
-            <div class="flex-1 min-w-0">
-              <div class="text-sm font-black text-slate-900 leading-tight">${entry.model} ${entry.ramStorage ? `(${entry.ramStorage})` : ''}</div>
-              <div class="text-[11px] text-slate-500 font-medium mt-1">
+            <div class="min-w-0 flex-1">
+              <div class="text-[13px] sm:text-sm font-black text-slate-900 leading-snug whitespace-normal break-normal">${entry.model} ${entry.ramStorage ? `(${entry.ramStorage})` : ''}</div>
+              <div class="text-[11px] text-slate-500 font-medium mt-1 whitespace-normal leading-snug">
                 ${entry.condition} | <span class="text-teal-700 font-semibold">${entry.warranty}</span>
               </div>
-              <div class="text-xs font-extrabold text-mkgTeal mt-1">${formatINR(entry.unitPrice)} / unit</div>
+              <div class="text-xs font-extrabold text-mkgTeal mt-1 whitespace-nowrap">${formatINR(entry.unitPrice)} / unit</div>
               <div class="mt-2 inline-flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
                 <button onclick="adjustCartQty(${idx}, -1)" class="w-7 h-7 font-black text-slate-700 hover:bg-slate-200">−</button>
                 <span class="w-8 text-center text-xs font-black text-slate-900">${entry.qty}</span>
@@ -3019,7 +3019,7 @@
               </div>
             </div>
           </div>
-          <button onclick="removeFromCart(${idx})" class="text-red-500 hover:text-red-700 text-xs font-bold p-2 shrink-0" title="Remove Item">✕</button>
+          <button onclick="removeFromCart(${idx})" class="absolute top-2 right-2 text-red-500 hover:text-red-700 text-xs font-bold p-1.5" title="Remove Item">✕</button>
         `;
         container.appendChild(itemDiv);
       });
