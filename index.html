@@ -2953,6 +2953,7 @@
         ramStorage: activeModalItem.RAM_Storage || '',
         warranty: activeModalWarrantyLabel || activeModalItem.Warranty || 'Included',
         unitPrice: base + activeModalWarrantyPrice,
+        image: (Array.isArray(activeModalImages) && activeModalImages.length ? activeModalImages[0] : getSafeItemImages(activeModalItem)[0] || ''),
         qty: 1
       };
 
@@ -2995,18 +2996,27 @@
         const isAccessory = String(entry.itemRef?.Category || '').trim().toLowerCase() === 'accessories';
         const itemDiv = document.createElement('div');
         itemDiv.className = 'p-3 bg-white border border-slate-200 rounded-2xl flex items-center justify-between gap-3 shadow-2xs';
+        const cartImage = normalizeGalleryImagePath(entry.image || '');
+        const cartImageHtml = cartImage
+          ? `<div class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-white border border-slate-200 flex items-center justify-center overflow-hidden shrink-0">
+              <img src="${cartImage}" alt="${String(entry.model || 'Product').replace(/"/g, '&quot;')}" class="w-full h-full object-contain p-1.5" onerror="this.closest('div').style.display='none'">
+            </div>`
+          : `<div class="w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-lg shrink-0">📦</div>`;
+
         itemDiv.innerHTML = `
-          <div class="flex-1 min-w-0">
-            <div class="text-xs font-black text-slate-900">${entry.model} ${entry.ramStorage ? `(${entry.ramStorage})` : ''}</div>
-            <div class="text-[11px] text-slate-500 font-medium mt-0.5">
-              ${entry.condition} | <span class="text-teal-700 font-semibold">${entry.warranty}</span>
-            </div>
-            <div class="text-[10px] font-bold ${isAccessory ? 'text-orange-700' : 'text-blue-700'} mt-1">${isAccessory ? 'Accessories-only order: ₹6,000 minimum' : 'If Smartphone/Laptop is in cart: ₹50,000 MOV'}</div>
-            <div class="text-xs font-extrabold text-mkgTeal mt-1">${formatINR(entry.unitPrice)} / unit</div>
-            <div class="mt-2 inline-flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
-              <button onclick="adjustCartQty(${idx}, -1)" class="w-7 h-7 font-black text-slate-700 hover:bg-slate-200">−</button>
-              <span class="w-8 text-center text-xs font-black text-slate-900">${entry.qty}</span>
-              <button onclick="adjustCartQty(${idx}, 1)" class="w-7 h-7 font-black text-slate-700 hover:bg-slate-200">+</button>
+          <div class="flex items-start gap-3 min-w-0 flex-1">
+            ${cartImageHtml}
+            <div class="flex-1 min-w-0">
+              <div class="text-sm font-black text-slate-900 leading-tight">${entry.model} ${entry.ramStorage ? `(${entry.ramStorage})` : ''}</div>
+              <div class="text-[11px] text-slate-500 font-medium mt-1">
+                ${entry.condition} | <span class="text-teal-700 font-semibold">${entry.warranty}</span>
+              </div>
+              <div class="text-xs font-extrabold text-mkgTeal mt-1">${formatINR(entry.unitPrice)} / unit</div>
+              <div class="mt-2 inline-flex items-center border border-slate-200 rounded-lg overflow-hidden bg-slate-50">
+                <button onclick="adjustCartQty(${idx}, -1)" class="w-7 h-7 font-black text-slate-700 hover:bg-slate-200">−</button>
+                <span class="w-8 text-center text-xs font-black text-slate-900">${entry.qty}</span>
+                <button onclick="adjustCartQty(${idx}, 1)" class="w-7 h-7 font-black text-slate-700 hover:bg-slate-200">+</button>
+              </div>
             </div>
           </div>
           <button onclick="removeFromCart(${idx})" class="text-red-500 hover:text-red-700 text-xs font-bold p-2 shrink-0" title="Remove Item">✕</button>
