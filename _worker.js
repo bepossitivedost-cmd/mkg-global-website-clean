@@ -97,20 +97,19 @@ async function getSeed(env, request) {
 }
 
 async function getInventory(env, request) {
-  const saved = await env.MKG_IMAGES.get('inventory');
-  let items;
-  if (saved) { try { items = JSON.parse(saved); } catch { items = []; } }
-  if (!Array.isArray(items) || !items.length) items = await getSeed(env, request);
+  // Recovery: restore the complete pre-CSV 75-item catalog from the repository seed.
+  // This intentionally bypasses the overwritten KV inventory so the storefront returns to the
+  // catalog state that existed before the accidental accessory-only CSV upload.
+  let items = await getSeed(env, request);
+  if (!Array.isArray(items) || !items.length) {
+    const saved = await env.MKG_IMAGES.get('inventory');
+    if (saved) { try { items = JSON.parse(saved); } catch { items = []; } }
+  }
   let imageIndex = {};
   const imageIndexRaw = await env.MKG_IMAGES.get('image-index');
   if (imageIndexRaw) { try { imageIndex = JSON.parse(imageIndexRaw) || {}; } catch {} }
   return items.map(item => {
     const record = { ...item };
-    // MKG Global Open Box Dizo Watch 2 Sports carries 1 Month MKG warranty.
-    // Do not treat the legacy CSV/seed value as brand warranty.
-    if (/^realme\\s+dizo\\s+watch\\s+2\\s+sports$/i.test(cleanText(record.Model))) {
-      record.Warranty = '15 Days Replacement Warranty';
-    }
     const imgs = Array.isArray(imageIndex[item.id]) ? imageIndex[item.id] : [];
     if (imgs.length) {
       const old = String(record.ImageUrl || '').split(/[|;]/).map(s => s.trim()).filter(Boolean);
