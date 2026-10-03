@@ -188,6 +188,24 @@ function isPlaceholderMrp(value) {
   return num(value) <= 0;
 }
 
+async function handleClearAllImages(request, env) {
+  if (!(await isAdmin(request, env))) return json({ error: 'Unauthorized. Please sign in to the private admin first.' }, 401);
+  if (!env.MKG_IMAGES) return json({ error: 'KV binding MKG_IMAGES is not configured.' }, 500);
+  let cursor;
+  let deleted = 0;
+  do {
+    const page = await env.MKG_IMAGES.list({ prefix: 'media/', limit: 1000, cursor });
+    for (const key of page.keys || []) {
+      await env.MKG_IMAGES.delete(key.name);
+      deleted++;
+    }
+    cursor = page.list_complete ? undefined : page.cursor;
+  } while (cursor);
+  await env.MKG_IMAGES.put('image-index', '{}');
+  await env.MKG_IMAGES.put('image-overrides', '{}');
+  return json({ ok: true, deleted, message: 'All product images removed successfully (' + deleted + ' files).' });
+}
+
 async function handleCsvUpload(request, env) {
   if (!(await isAdmin(request, env))) return json({ error: 'Unauthorized. Please sign in to the private admin first.' }, 401);
   if (!env.MKG_IMAGES) return json({ error: 'KV binding MKG_IMAGES is not configured.' }, 500);
@@ -245,6 +263,7 @@ export default {
     if (url.pathname === '/api/admin/session' && request.method === 'GET') return json({ authenticated: await isAdmin(request, env) });
     if (url.pathname === '/api/inventory' && request.method === 'GET') return json(await getInventory(env, request), 200, { 'cache-control': 'no-store' });
     if (url.pathname === '/api/admin/image' && request.method === 'POST') return handleImageUpload(request, env);
+    if (url.pathname === '/api/admin/clear-images' && request.method === 'POST') return handleClearAllImages(request, env);
     if (url.pathname === '/api/admin/csv' && request.method === 'POST') return handleCsvUpload(request, env);
     if (url.pathname.startsWith('/media/')) {
       const key = `media/${url.pathname.slice('/media/'.length)}`;
