@@ -687,7 +687,7 @@
       </div>
 
       <div class="p-4 border-t border-slate-200 bg-slate-50 space-y-3">
-        <div id="cart-moq-status" class="text-[10px] font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2">📦 Order minimums: Accessories-only ₹6,000 minimum • Any Smartphone/Laptop order ₹50,000 MOV.</div>
+        <div id="cart-moq-status" class="hidden" aria-hidden="true"></div>
         <div class="space-y-2">
           <input type="text" id="cust-name" placeholder="Your Full Name *" class="w-full text-xs font-bold px-3 py-2 bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-mkgTeal">
           <input type="tel" id="cust-phone" placeholder="Your WhatsApp Mobile Number *" class="w-full text-xs font-bold px-3 py-2 bg-white border border-slate-300 rounded-xl focus:outline-none focus:border-mkgTeal">
@@ -3030,62 +3030,27 @@
     }
 
     function getMoqStatus() {
-      const accessoryValue = cart.reduce((sum, item) => {
-        const isAccessory = String(item.itemRef?.Category || '').trim().toLowerCase() === 'accessories';
-        return sum + (isAccessory ? item.unitPrice * item.qty : 0);
-      }, 0);
-
       const cartTotal = cart.reduce((sum, item) => sum + (item.unitPrice * item.qty), 0);
-
-      const hasAccessories = cart.some(item =>
-        String(item.itemRef?.Category || '').trim().toLowerCase() === 'accessories'
-      );
-
-      const hasDevices = cart.some(item => {
-        const cat = String(item.itemRef?.Category || '').trim().toLowerCase();
-        return cat === 'phone' || cat === 'smartphone' || cat === 'laptop';
-      });
-
-      // Business rule:
-      // Accessories ONLY -> minimum order value ₹6,000.
-      // Any Smartphone/Laptop (with or without accessories) -> total cart MOV ₹50,000.
-      const accessoriesOnly = hasAccessories && !hasDevices;
-      const requiredMov = hasDevices ? 50000 : (accessoriesOnly ? 6000 : 0);
-      const orderValueOk = !requiredMov || cartTotal >= requiredMov;
-
-      return { accessoryValue, cartTotal, hasAccessories, hasDevices, accessoriesOnly, requiredMov, orderValueOk };
+      return {
+        accessoryValue: 0,
+        cartTotal,
+        hasAccessories: cart.some(item => String(item.itemRef?.Category || '').trim().toLowerCase() === 'accessories'),
+        hasDevices: cart.some(item => {
+          const cat = String(item.itemRef?.Category || '').trim().toLowerCase();
+          return cat === 'phone' || cat === 'smartphone' || cat === 'laptop';
+        }),
+        accessoriesOnly: false,
+        requiredMov: 0,
+        orderValueOk: true
+      };
     }
 
     function renderMoqStatus(total) {
       const existing = document.getElementById('cart-moq-status');
-      if (!existing) return;
-      const s = getMoqStatus();
-
-      if (!s.hasAccessories && !s.hasDevices) {
-        existing.innerHTML = '<span>📦 Order minimums: Accessories-only ₹6,000 minimum • Any Smartphone/Laptop order ₹50,000 MOV.</span>';
-        existing.className = 'text-[10px] font-semibold text-slate-600 bg-slate-100 border border-slate-200 rounded-xl px-3 py-2';
-        return;
-      }
-
-      if (s.hasDevices) {
-        existing.innerHTML = `<div>${s.orderValueOk ? '✓' : '⚠'} Minimum Order Value: ${formatINR(s.cartTotal)} / ₹50,000</div><div class="mt-0.5 font-medium">Smartphone/Laptop present — accessories can be added to the same ₹50,000 order.</div>`;
-      } else {
-        existing.innerHTML = `<div>${s.orderValueOk ? '✓' : '⚠'} Accessories-only minimum: ${formatINR(s.cartTotal)} / ₹6,000</div>`;
-      }
-
-      existing.className = `text-[10px] font-bold rounded-xl px-3 py-2 border ${s.orderValueOk ? 'text-emerald-700 bg-emerald-50 border-emerald-200' : 'text-amber-800 bg-amber-50 border-amber-200'}`;
+      if (existing) existing.style.display = 'none';
     }
 
     function validateMoqBeforeCheckout() {
-      const s = getMoqStatus();
-      if (s.hasDevices && !s.orderValueOk) {
-        alert(`Minimum Order Value is ₹50,000 when a Smartphone or Laptop is in the cart. Please add ${formatINR(50000 - s.cartTotal)} more value before checkout.`);
-        return false;
-      }
-      if (s.accessoriesOnly && !s.orderValueOk) {
-        alert(`Accessories-only orders require a minimum order value of ₹6,000. Please add ${formatINR(6000 - s.cartTotal)} more accessories before checkout.`);
-        return false;
-      }
       return true;
     }
 
