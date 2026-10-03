@@ -97,6 +97,11 @@ async function getSeed(env, request) {
 }
 
 async function getInventory(env, request) {
+  // Catalog is intentionally held blank until the next fresh CSV upload.
+  // This prevents any old live inventory/image mapping from appearing during reset.
+  const catalogReady = await env.MKG_IMAGES.get('catalog-ready');
+  if (catalogReady !== '1') return [];
+
   // The latest admin-uploaded inventory is the storefront source of truth.
   // Fall back to the bundled seed only when no live inventory has been uploaded.
   const saved = await env.MKG_IMAGES.get('inventory');
@@ -252,6 +257,8 @@ async function handleCsvUpload(request, env) {
   });
 
   await env.MKG_IMAGES.put('inventory', JSON.stringify(merged));
+  // A successful fresh upload re-enables the storefront catalog.
+  await env.MKG_IMAGES.put('catalog-ready', '1');
 
   // Fresh inventory upload starts with a clean product-image mapping.
   // Old image assignments must never carry over to the new product list.
@@ -260,7 +267,7 @@ async function handleCsvUpload(request, env) {
 
   return json({
     ok: true,
-    message: `Fresh inventory uploaded successfully: ${merged.length} products. Existing MRP preserved for ${preservedMrpCount} matching products. Product images have been reset.`
+    message: `Fresh inventory uploaded successfully: ${merged.length} products. Existing MRP preserved for ${preservedMrpCount} matching products. Product images have been reset and the catalog is live.`
   });
 }
 
