@@ -107,11 +107,30 @@ async function getInventory(env, request) {
   let imageIndex = {};
   const imageIndexRaw = await env.MKG_IMAGES.get('image-index');
   if (imageIndexRaw) { try { imageIndex = JSON.parse(imageIndexRaw) || {}; } catch {} }
+  // Phone creative sequence was uploaded with one missing creative at the
+  // 11th phone listing. Keep listings 1-10 untouched and shift only the
+  // affected phone images forward by one position (11 <- 12, ... 22 <- 23).
+  // The Tecno Flip (item_23) is left without a creative rather than showing
+  // the wrong Samsung Flip image.
+  const shiftedPhoneImages = {};
+  for (let n = 11; n <= 22; n++) {
+    const sourceId = `item_${n + 1}`;
+    const targetId = `item_${n}`;
+    if (Array.isArray(imageIndex[sourceId])) shiftedPhoneImages[targetId] = imageIndex[sourceId];
+  }
+
   return items.map(item => {
     const record = { ...item };
-    const imgs = Array.isArray(imageIndex[item.id]) ? imageIndex[item.id] : [];
+    let imgs = Array.isArray(imageIndex[item.id]) ? imageIndex[item.id] : [];
+
+    if (/^item_(1[1-9]|2[0-3])$/.test(String(item.id || '')) &&
+        String(item.Category || '').trim().toLowerCase() === 'phone') {
+      if (shiftedPhoneImages[item.id]) imgs = shiftedPhoneImages[item.id];
+      else if (item.id === 'item_23') imgs = [];
+    }
+
     // Image-index is the source of truth for uploaded product creatives.
-    // Do not fall back to a stale ImageUrl from an older CSV/inventory snapshot.
+    // Never fall back to a stale ImageUrl from an older CSV/inventory snapshot.
     record.ImageUrl = imgs.map(x => x?.url).filter(Boolean).join(' | ');
     return record;
   });
