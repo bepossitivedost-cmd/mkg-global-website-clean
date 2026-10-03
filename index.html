@@ -2293,14 +2293,17 @@
         const response = await fetch('/api/inventory', { cache: 'no-store' });
         if (!response.ok) throw new Error('Inventory API unavailable');
         const remote = await response.json();
-        if (Array.isArray(remote) && remote.length) {
+        // The API is the single source of truth. An empty response means
+        // the catalog is intentionally blank until the next fresh CSV upload.
+        if (Array.isArray(remote)) {
           inventory = remote;
         } else {
-          inventory = [...DEFAULT_CATALOG];
+          inventory = [];
         }
       } catch (e) {
-        // Keep the storefront usable if the backend is not configured yet.
-        inventory = [...DEFAULT_CATALOG];
+        // Do not fall back to the bundled legacy catalog. During a reset,
+        // backend/API failures must not resurrect old products.
+        inventory = [];
       }
       populateCatalogFilters();
       syncCategoryButtons();
