@@ -2531,15 +2531,26 @@
 
     function getSafeItemImages(item) {
       const id = String(item?.id || '').trim().toLowerCase();
+      const category = String(item?.Category || '').trim().toLowerCase();
 
-      // Product images must belong to the exact product ID. No sequence
-      // fallback is allowed, so a manual upload can never appear elsewhere.
+      // For phones/laptops, only a media URL physically stored under the
+      // exact product ID is allowed. Legacy/shared /image/* creatives are
+      // rejected so one product can never display another product's image.
+      const requireExactMedia = category === 'phone' || category === 'laptop';
+
       return parseImages(item?.ImageUrl)
         .filter(src => {
           const raw = String(src || '').trim();
           if (!raw) return false;
+
           const m = raw.match(/\/media\/(item_\d+)\//i);
           if (m) return m[1].toLowerCase() === id;
+
+          // Never allow a legacy/shared image for a phone or laptop.
+          if (requireExactMedia) return false;
+
+          // Accessories/wearables may still use their existing non-media
+          // catalog creatives, but media files must always match the ID.
           return !/\/media\/item_\d+\//i.test(raw);
         })
         .map(normalizeGalleryImagePath)
