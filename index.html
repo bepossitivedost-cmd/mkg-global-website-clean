@@ -2535,7 +2535,7 @@
         .filter(src => {
           const raw = String(src || '').trim();
           if (!raw) return false;
-          const m = raw.match(/\/media\/item_(item_\d+)\//i);
+          const m = raw.match(/\/media\/(item_\d+)\//i);
           if (m) return m[1].toLowerCase() === id;
           return !/\/media\/item_\d+\//i.test(raw);
         })
