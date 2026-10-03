@@ -65,6 +65,10 @@
       <p id="imageNames" class="text-xs text-slate-500 mt-3">JPG / PNG / WEBP • max 8MB each</p>
     </div>
     <button id="imageUpload" onclick="uploadImages()" class="mt-4 w-full py-3 rounded-xl bg-orange-600 text-white font-black disabled-btn" disabled>Upload & Attach Images</button>
+    <div class="mt-5 pt-5 border-t">
+      <button id="clearImages" onclick="clearAllImages()" class="w-full py-3 rounded-xl bg-red-700 text-white font-black">Remove All Product Images</button>
+      <p class="text-xs text-red-600 mt-2 font-bold">This removes every uploaded product image from live storage. Inventory, prices and products will not be deleted.</p>
+    </div>
   </section>
 
   <section class="bg-slate-900 text-white rounded-2xl p-5">
@@ -123,6 +127,21 @@ async function uploadCsv(){
   }
   const fd=new FormData();fd.append('file',blob,'inventory.csv');
   try{const r=await fetch('/api/admin/csv',{method:'POST',body:fd});const d=await r.json().catch(()=>({}));if(!r.ok)return status(d.error||`CSV upload failed (${r.status}).`);status(d.message||'Inventory uploaded successfully.',true);await load(true)}catch(e){status('CSV upload failed. Check your admin sign-in, ADMIN_KEY secret and KV binding MKG_IMAGES.')}
+}
+async function clearAllImages(){
+  if(!confirm('Remove ALL product images from live storage? Inventory and product details will remain unchanged.')) return;
+  const b=$('clearImages'); b.disabled=true; b.textContent='Removing all product images…';
+  try{
+    const r=await fetch('/api/admin/clear-images',{method:'POST'});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok){status(d.error||('Remove images failed ('+r.status+').'));return}
+    $('imagePreview').innerHTML='';
+    $('imageNames').textContent='JPG / PNG / WEBP • max 8MB each';
+    $('images').value='';
+    status(d.message||'All product images removed successfully.',true);
+    await load(true);
+  }catch(e){status('Could not remove product images. Check your admin session and KV binding.')}
+  finally{b.disabled=false;b.textContent='Remove All Product Images'}
 }
 async function uploadImages(){
   const files=Array.from($('images').files), productId=$('product').value;
