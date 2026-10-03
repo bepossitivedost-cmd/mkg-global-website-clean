@@ -107,6 +107,12 @@ async function getInventory(env, request) {
   let imageIndex = {};
   const imageIndexRaw = await env.MKG_IMAGES.get('image-index');
   if (imageIndexRaw) { try { imageIndex = JSON.parse(imageIndexRaw) || {}; } catch {} }
+
+  // Manual product uploads are explicit overrides and must always win over
+  // the historical phone-sequence repair.
+  let imageOverrides = {};
+  const overrideRaw = await env.MKG_IMAGES.get('image-overrides');
+  if (overrideRaw) { try { imageOverrides = JSON.parse(overrideRaw) || {}; } catch {} }
   // The phone sequence is known to be shifted starting with the 10th PHONE
   // listing (item_11). Keep item_1..item_10 exactly as stored. For item_11..21,
   // use the next stored creative. item_22 keeps the original Samsung Z Flip 6
@@ -127,7 +133,10 @@ async function getInventory(env, request) {
     const record = { ...item };
     let imgs = Array.isArray(imageIndex[item.id]) ? imageIndex[item.id] : [];
 
-    if (/^item_(1[1-9]|2[0-3])$/.test(String(item.id || '')) &&
+    // Explicit manual upload always wins for that exact product.
+    if (Array.isArray(imageOverrides[item.id]) && imageOverrides[item.id].length) {
+      imgs = imageOverrides[item.id];
+    } else if (/^item_(1[1-9]|2[0-3])$/.test(String(item.id || '')) &&
         String(item.Category || '').trim().toLowerCase() === 'phone') {
       if (item.id === 'item_22') imgs = flip6Images;
       else if (shiftedPhoneImages[item.id]) imgs = shiftedPhoneImages[item.id];
@@ -163,6 +172,15 @@ async function handleImageUpload(request, env) {
   if (replace) { for (const old of current) if (old?.key) await env.MKG_IMAGES.delete(old.key); imageIndex[productId] = added; }
   else imageIndex[productId] = [...added, ...current];
   await env.MKG_IMAGES.put('image-index', JSON.stringify(imageIndex));
+
+  // Mark this product as manually overridden so future sequence repairs can
+  // never redirect its newly uploaded image to another product.
+  let overrides = {};
+  const overrideRaw = await env.MKG_IMAGES.get('image-overrides');
+  if (overrideRaw) { try { overrides = JSON.parse(overrideRaw) || {}; } catch {} }
+  overrides[productId] = imageIndex[productId];
+  await env.MKG_IMAGES.put('image-overrides', JSON.stringify(overrides));
+
   return json({ ok: true, urls: added.map(x => x.url), count: imageIndex[productId].length });
 }
 
