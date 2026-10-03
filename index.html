@@ -3381,7 +3381,13 @@
     }
 
     // App Startup
+    // Prevent the browser from restoring the previous scroll position on a
+    // hard refresh. A refresh of the storefront should always start at the
+    // top/header instead of reopening at the footer or previous position.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
     window.addEventListener('DOMContentLoaded', () => {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
       loadInventory();
       updateCartUI();
     });
