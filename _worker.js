@@ -151,7 +151,14 @@ async function getInventory(env, request) {
 
     if (/^item_(1[2-9]|2[0-3])$/.test(String(item.id || '')) &&
         String(item.Category || '').trim().toLowerCase() === 'phone') {
-      if (shiftedPhoneImages[item.id]) imgs = shiftedPhoneImages[item.id];
+      // A manually uploaded image for a product always takes priority.
+      // This is especially important for item_22 (Samsung Z Flip 6), where
+      // the historical sequence fallback must never overwrite a fresh upload.
+      if (item.id === 'item_22' && Array.isArray(imageIndex[item.id]) && imageIndex[item.id].length) {
+        imgs = imageIndex[item.id];
+      } else if (shiftedPhoneImages[item.id]) {
+        imgs = shiftedPhoneImages[item.id];
+      }
       // item_23 uses its own current image-index entries so manual Tecno
       // uploads remain attached to Tecno instead of being redirected.
 
