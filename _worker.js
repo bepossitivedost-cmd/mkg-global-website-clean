@@ -107,10 +107,9 @@ async function getInventory(env, request) {
   return items.map(item => {
     const record = { ...item };
     const imgs = Array.isArray(imageIndex[item.id]) ? imageIndex[item.id] : [];
-    if (imgs.length) {
-      const old = String(record.ImageUrl || '').split(/[|;]/).map(s => s.trim()).filter(Boolean);
-      record.ImageUrl = [...imgs.map(x => x.url).filter(Boolean), ...old].join(' | ');
-    }
+    // Image-index is the source of truth for uploaded product creatives.
+    // Do not fall back to a stale ImageUrl from an older CSV/inventory snapshot.
+    record.ImageUrl = imgs.map(x => x?.url).filter(Boolean).join(' | ');
     return record;
   });
 }
