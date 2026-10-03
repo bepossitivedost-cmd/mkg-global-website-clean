@@ -2304,9 +2304,9 @@
       }
       populateCatalogFilters();
       syncCategoryButtons();
-      renderHeroSlides();
-      renderCatalog();
-      openProductFromUrl();
+      try { renderHeroSlides(); } catch (error) { console.warn('MKG hero render issue:', error); }
+      renderCatalogSafely();
+      try { openProductFromUrl(); } catch (error) { console.warn('MKG product URL issue:', error); }
     }
 
     let heroIndex = 0;
