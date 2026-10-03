@@ -97,13 +97,12 @@ async function getSeed(env, request) {
 }
 
 async function getInventory(env, request) {
-  // Keep the complete 75-item seed catalog as the storefront source of truth.
-  // The KV inventory may contain an incomplete/stale CSV snapshot.
-  let items = await getSeed(env, request);
-  if (!Array.isArray(items) || !items.length) {
-    const saved = await env.MKG_IMAGES.get('inventory');
-    if (saved) { try { items = JSON.parse(saved); } catch { items = []; } }
-  }
+  // The latest admin-uploaded inventory is the storefront source of truth.
+  // Fall back to the bundled seed only when no live inventory has been uploaded.
+  const saved = await env.MKG_IMAGES.get('inventory');
+  let items = [];
+  if (saved) { try { items = JSON.parse(saved); } catch { items = []; } }
+  if (!Array.isArray(items) || !items.length) items = await getSeed(env, request);
   let imageIndex = {};
   const imageIndexRaw = await env.MKG_IMAGES.get('image-index');
   if (imageIndexRaw) { try { imageIndex = JSON.parse(imageIndexRaw) || {}; } catch {} }
@@ -248,9 +247,15 @@ async function handleCsvUpload(request, env) {
   });
 
   await env.MKG_IMAGES.put('inventory', JSON.stringify(merged));
+
+  // Fresh inventory upload starts with a clean product-image mapping.
+  // Old image assignments must never carry over to the new product list.
+  await env.MKG_IMAGES.put('image-index', '{}');
+  await env.MKG_IMAGES.put('image-overrides', '{}');
+
   return json({
     ok: true,
-    message: `Inventory uploaded successfully: ${merged.length} products. Existing MRP preserved for ${preservedMrpCount} matching products.`
+    message: `Fresh inventory uploaded successfully: ${merged.length} products. Existing MRP preserved for ${preservedMrpCount} matching products. Product images have been reset.`
   });
 }
 
