@@ -97,10 +97,13 @@ async function getSeed(env, request) {
 }
 
 async function getInventory(env, request) {
-  const saved = await env.MKG_IMAGES.get('inventory');
-  let items;
-  if (saved) { try { items = JSON.parse(saved); } catch { items = []; } }
-  if (!Array.isArray(items) || !items.length) items = await getSeed(env, request);
+  // Keep the complete 75-item seed catalog as the storefront source of truth.
+  // The KV inventory may contain an incomplete/stale CSV snapshot.
+  let items = await getSeed(env, request);
+  if (!Array.isArray(items) || !items.length) {
+    const saved = await env.MKG_IMAGES.get('inventory');
+    if (saved) { try { items = JSON.parse(saved); } catch { items = []; } }
+  }
   let imageIndex = {};
   const imageIndexRaw = await env.MKG_IMAGES.get('image-index');
   if (imageIndexRaw) { try { imageIndex = JSON.parse(imageIndexRaw) || {}; } catch {} }
