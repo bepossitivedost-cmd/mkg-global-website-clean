@@ -106,10 +106,6 @@ async function getInventory(env, request) {
   if (imageIndexRaw) { try { imageIndex = JSON.parse(imageIndexRaw) || {}; } catch {} }
   return items.map(item => {
     const record = { ...item };
-    // Requested reset: keep legacy 3-month warranty value for all accessories.
-    if (String(record.Category || '').trim().toLowerCase().includes('accessor')) {
-      record.Warranty = '3 Months';
-    }
     const imgs = Array.isArray(imageIndex[item.id]) ? imageIndex[item.id] : [];
     if (imgs.length) {
       const old = String(record.ImageUrl || '').split(/[|;]/).map(s => s.trim()).filter(Boolean);
@@ -193,10 +189,6 @@ async function handleCsvUpload(request, env) {
   let preservedMrpCount = 0;
   const merged = items.map(item => {
     const copy = { ...item };
-    // Requested reset: keep legacy 3-month warranty value for all accessories.
-    if (String(copy.Category || '').trim().toLowerCase().includes('accessor')) {
-      copy.Warranty = '3 Months';
-    }
     if (isPlaceholderMrp(copy.MRP)) {
       const oldMrp = previousMrp.get(inventoryMatchKey(copy));
       if (oldMrp) {
