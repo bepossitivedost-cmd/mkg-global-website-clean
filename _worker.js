@@ -109,7 +109,7 @@ async function getInventory(env, request) {
     // MKG Global Open Box Dizo Watch 2 Sports carries 1 Month MKG warranty.
     // Do not treat the legacy CSV/seed value as brand warranty.
     if (/^realme\\s+dizo\\s+watch\\s+2\\s+sports$/i.test(cleanText(record.Model))) {
-      record.Warranty = '1 Month MKG Warranty';
+      record.Warranty = '15 Days Replacement Warranty';
     }
     const imgs = Array.isArray(imageIndex[item.id]) ? imageIndex[item.id] : [];
     if (imgs.length) {
@@ -196,7 +196,7 @@ async function handleCsvUpload(request, env) {
     const copy = { ...item };
     // Correct legacy warranty data for the Dizo Watch 2 Sports.
     if (/^realme\\s+dizo\\s+watch\\s+2\\s+sports$/i.test(cleanText(copy.Model))) {
-      copy.Warranty = '1 Month MKG Warranty';
+      copy.Warranty = '15 Days Replacement Warranty';
     }
     if (isPlaceholderMrp(copy.MRP)) {
       const oldMrp = previousMrp.get(inventoryMatchKey(copy));
