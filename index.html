@@ -2663,9 +2663,23 @@
       const isSealPacked = conditionText.includes('seal');
       const isDevice = categoryText === 'phone' || categoryText === 'smartphone' || categoryText === 'laptop' || subCategoryText === 'smartphone' || subCategoryText === 'laptop';
       const isRefurbOrOpenDevice = isDevice && (conditionText.includes('refurb') || conditionText.includes('open'));
+      const isAccessory = categoryText.includes('accessor');
       const defaultWarranty = item.Warranty || (isSealPacked ? '1 year' : '6 months');
 
-      if (isSealPacked) {
+      if (isAccessory) {
+        // All accessories carry MKG Global's 15-day replacement warranty only.
+        activeModalWarrantyPrice = 0;
+        activeModalWarrantyLabel = '15 Days Replacement Warranty';
+        warrantyContainer.innerHTML = 
+          '<div class="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs flex items-center justify-between gap-3">' +
+            '<span class="font-black text-slate-800">🛡️ 15 Days Replacement Warranty</span>' +
+            '<span class="font-black text-emerald-700">Included @ ₹0</span>' +
+          '</div>' +
+          '<p class="mt-1.5 text-[10px] text-slate-500">MKG Global replacement coverage for eligible accessory issues.</p>' +
+          '<button type="button" onclick="openWarrantyTermsModal()" class="mt-2.5 w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100 text-slate-700 text-[11px] font-black transition-all">' +
+            '<span class="text-sm">📄</span> Warranty Terms &amp; Claim Process' +
+          '</button>';
+      } else if (isSealPacked) {
         // Seal packed items: brand warranty is included. No paid percentage plan.
         activeModalWarrantyPrice = 0;
         activeModalWarrantyLabel = `${defaultWarranty} Brand Warranty Included`;
