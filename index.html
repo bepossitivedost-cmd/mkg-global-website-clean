@@ -2531,12 +2531,24 @@
 
     function getSafeItemImages(item) {
       const id = String(item?.id || '').trim().toLowerCase();
+
+      // Phone creatives from the 11th listing onward were shifted by one
+      // position because the original 11th creative was missing. The worker
+      // intentionally serves item_12 images for item_11, item_13 for item_12,
+      // ... item_23 for item_22. Allow those mapped source IDs here so the
+      // storefront safety filter does not discard the corrected images.
+      const allowedSourceIds = new Set([id]);
+      const phoneMatch = id.match(/^item_(1[1-9]|2[0-2])$/);
+      if (phoneMatch) {
+        allowedSourceIds.add(`item_${Number(phoneMatch[1]) + 1}`);
+      }
+
       return parseImages(item?.ImageUrl)
         .filter(src => {
           const raw = String(src || '').trim();
           if (!raw) return false;
           const m = raw.match(/\/media\/(item_\d+)\//i);
-          if (m) return m[1].toLowerCase() === id;
+          if (m) return allowedSourceIds.has(m[1].toLowerCase());
           return !/\/media\/item_\d+\//i.test(raw);
         })
         .map(normalizeGalleryImagePath)
