@@ -113,11 +113,37 @@ async function getInventory(env, request) {
   // item_12 <- item_13, ... item_22 <- item_23.
   // Leave Tecno Flip item_23 without a creative.
   const shiftedPhoneImages = {};
-  for (let n = 12; n <= 22; n++) {
+  for (let n = 12; n <= 21; n++) {
     const sourceId = `item_${n + 1}`;
     const targetId = `item_${n}`;
     if (Array.isArray(imageIndex[sourceId])) shiftedPhoneImages[targetId] = imageIndex[sourceId];
   }
+
+  // item_22 (Samsung Z Flip 6) must keep the original Flip 6 creatives even
+  // after a new image is manually uploaded for item_23 (Tecno Flip AD11).
+  // Otherwise the sequence remap would incorrectly move the new Tecno image
+  // into the Samsung listing.
+  const legacyFlip6Images = [
+    {
+      key: 'media/item_23/1790939351723-b4e02607-0792-4670-8c37-170d2c110dcf.png',
+      url: '/media/item_23/1790939351723-b4e02607-0792-4670-8c37-170d2c110dcf.png',
+      name: 'Flip 6 g.png',
+      type: 'image/png'
+    },
+    {
+      key: 'media/item_23/1790939349517-b75494b6-dba7-44ae-aed4-d456cf7404c9.png',
+      url: '/media/item_23/1790939349517-b75494b6-dba7-44ae-aed4-d456cf7404c9.png',
+      name: 'Flip 6 g.png',
+      type: 'image/png'
+    },
+    {
+      key: 'media/item_23/1790939302536-c2bc20be-7cc6-4778-97b5-83e40ef81926.png',
+      url: '/media/item_23/1790939302536-c2bc20be-7cc6-4778-97b5-83e40ef81926.png',
+      name: 'Flip 6.png',
+      type: 'image/png'
+    }
+  ];
+  shiftedPhoneImages.item_22 = legacyFlip6Images;
 
   return items.map(item => {
     const record = { ...item };
@@ -126,7 +152,9 @@ async function getInventory(env, request) {
     if (/^item_(1[2-9]|2[0-3])$/.test(String(item.id || '')) &&
         String(item.Category || '').trim().toLowerCase() === 'phone') {
       if (shiftedPhoneImages[item.id]) imgs = shiftedPhoneImages[item.id];
-      else if (item.id === 'item_23') imgs = [];
+      // item_23 uses its own current image-index entries so manual Tecno
+      // uploads remain attached to Tecno instead of being redirected.
+
     }
 
     // Image-index is the source of truth for uploaded product creatives.
