@@ -113,21 +113,8 @@ async function getInventory(env, request) {
   let imageOverrides = {};
   const overrideRaw = await env.MKG_IMAGES.get('image-overrides');
   if (overrideRaw) { try { imageOverrides = JSON.parse(overrideRaw) || {}; } catch {} }
-  // The phone sequence is known to be shifted starting with the 10th PHONE
-  // listing (item_11). Keep item_1..item_10 exactly as stored. For item_11..21,
-  // use the next stored creative. item_22 keeps the original Samsung Z Flip 6
-  // creatives so Tecno/manual uploads cannot leak into Flip 6.
-  const shiftedPhoneImages = {};
-  for (let n = 11; n <= 21; n++) {
-    const sourceId = `item_${n + 1}`;
-    if (Array.isArray(imageIndex[sourceId])) shiftedPhoneImages[`item_${n}`] = imageIndex[sourceId];
-  }
-
-  const flip6Images = [
-    { key:'media/item_23/1790939351723-b4e02607-0792-4670-8c37-170d2c110dcf.png', url:'/media/item_23/1790939351723-b4e02607-0792-4670-8c37-170d2c110dcf.png', name:'Flip 6 g.png', type:'image/png' },
-    { key:'media/item_23/1790939349517-b75494b6-dba7-44ae-aed4-d456cf7404c9.png', url:'/media/item_23/1790939349517-b75494b6-dba7-44ae-aed4-d456cf7404c9.png', name:'Flip 6 g.png', type:'image/png' },
-    { key:'media/item_23/1790939302536-c2bc20be-7cc6-4778-97b5-83e40ef81926.png', url:'/media/item_23/1790939302536-c2bc20be-7cc6-4778-97b5-83e40ef81926.png', name:'Flip 6.png', type:'image/png' }
-  ];
+  // No cross-product image remapping.
+  // Each product keeps its own uploaded image-index entry.
 
   return items.map(item => {
     const record = { ...item };
@@ -136,11 +123,13 @@ async function getInventory(env, request) {
     // Explicit manual upload always wins for that exact product.
     if (Array.isArray(imageOverrides[item.id]) && imageOverrides[item.id].length) {
       imgs = imageOverrides[item.id];
-    } else if (/^item_(1[1-9]|2[0-3])$/.test(String(item.id || '')) &&
-        String(item.Category || '').trim().toLowerCase() === 'phone') {
-      if (item.id === 'item_22') imgs = flip6Images;
-      else if (shiftedPhoneImages[item.id]) imgs = shiftedPhoneImages[item.id];
-      else if (item.id === 'item_23') imgs = Array.isArray(imageIndex.item_23) ? imageIndex.item_23 : [];
+    }
+
+    // item_11 is the known missing 10th-phone creative. Do not display the
+    // duplicated 9th-phone image; leave it blank until its correct creative
+    // is uploaded manually.
+    if (item.id === 'item_11' && !(Array.isArray(imageOverrides[item.id]) && imageOverrides[item.id].length)) {
+      imgs = [];
     }
 
     record.ImageUrl = imgs.map(x => x?.url).filter(Boolean).join(' | ');
