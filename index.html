@@ -2532,13 +2532,12 @@
     function getSafeItemImages(item) {
       const id = String(item?.id || '').trim().toLowerCase();
 
-      // Phone creatives from the 11th listing onward were shifted by one
-      // position because the original 11th creative was missing. The worker
-      // intentionally serves item_12 images for item_11, item_13 for item_12,
-      // ... item_23 for item_22. Allow those mapped source IDs here so the
-      // storefront safety filter does not discard the corrected images.
+      // Phone creatives from the 11th PHONE listing onward were shifted by
+      // one position because the original 11th phone creative was missing.
+      // item_11 is the 10th phone and remains untouched. The worker serves
+      // item_13 images for item_12, ... item_23 for item_22.
       const allowedSourceIds = new Set([id]);
-      const phoneMatch = id.match(/^item_(1[1-9]|2[0-2])$/);
+      const phoneMatch = id.match(/^item_(1[2-9]|2[0-2])$/);
       if (phoneMatch) {
         allowedSourceIds.add(`item_${Number(phoneMatch[1]) + 1}`);
       }
