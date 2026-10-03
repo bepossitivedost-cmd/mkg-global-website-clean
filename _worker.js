@@ -103,6 +103,11 @@ async function getInventory(env, request) {
   let items = [];
   if (saved) { try { items = JSON.parse(saved); } catch { items = []; } }
   if (!Array.isArray(items) || !items.length) items = await getSeed(env, request);
+
+  // Accessories are intentionally removed from the current MKG Global catalog.
+  // Filter them at the API layer as well, so old live KV data cannot bring them back.
+  items = items.filter(item => cleanText(item?.Category).toLowerCase() !== 'accessories');
+
   let imageIndex = {};
   const imageIndexRaw = await env.MKG_IMAGES.get('image-index');
   if (imageIndexRaw) { try { imageIndex = JSON.parse(imageIndexRaw) || {}; } catch {} }
