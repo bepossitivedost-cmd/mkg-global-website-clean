@@ -1,3 +1,29 @@
+function slugifyProductSeo(item) {
+  const parts = [item?.Brand, item?.Model, item?.Color, item?.RAM_Storage].filter(Boolean).join('-');
+  return String(parts || item?.id || 'product').toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,120);
+}
+function schemaCondition(item) {
+  const c=String(item?.Condition||'').toLowerCase();
+  if(c.includes('refurb')) return 'https://schema.org/RefurbishedCondition';
+  if(c.includes('open')) return 'https://schema.org/UsedCondition';
+  return 'https://schema.org/NewCondition';
+}
+function productSeoHtml(item, requestUrl, html) {
+  const origin=new URL(requestUrl).origin, slug=slugifyProductSeo(item), url=origin+'/product/'+slug;
+  const name=[item?.Brand,item?.Model,item?.RAM_Storage].filter(Boolean).join(' ').trim()||'MKG GLOBAL Product';
+  const title=name+' | MKG GLOBAL';
+  const desc=[item?.Brand,item?.Model,item?.RAM_Storage,item?.Condition,item?.Grade,item?.Specs].filter(Boolean).join(' • ').slice(0,300);
+  const images=String(item?.ImageUrl||'').split('|').map(x=>x.trim()).filter(Boolean).map(x=>x.startsWith('http')?x:origin+'/'+x.replace(/^\//,''));
+  const data={'@context':'https://schema.org','@type':'Product',name,image:images,description:desc,sku:item?.id||slug,brand:item?.Brand?{'@type':'Brand',name:item.Brand}:undefined,category:item?.Category||undefined,offers:{'@type':'Offer',url,priceCurrency:'INR',price:Number(item?.SuperDealPrice||0),availability:Number(item?.Qty||0)>0?'https://schema.org/InStock':'https://schema.org/OutOfStock',itemCondition:schemaCondition(item)}};
+  const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  const head='<link rel="canonical" href="'+url+'">\n<meta name="description" content="'+esc(desc)+'">\n<meta name="robots" content="index,follow,max-image-preview:large">\n<meta property="og:type" content="product">\n<meta property="og:title" content="'+esc(title)+'">\n<meta property="og:description" content="'+esc(desc)+'">\n<meta property="og:url" content="'+url+'">'+(images[0]? '\n<meta property="og:image" content="'+images[0]+'">':'')+'\n<script type="application/ld+json">'+JSON.stringify(data).replace(/</g,'\\u003c')+'</script>';
+  return html.replace(/<title>[^<]*<\/title>/i,'<title>'+esc(title)+'</title>').replace('</head>',head+'\n</head>');
+}
+function sitemapXml(items,origin) {
+  const urls=[origin+'/'].concat(items.map(x=>origin+'/product/'+slugifyProductSeo(x)));
+  return '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+[...new Set(urls)].map(u=>'<url><loc>'+u.replace(/&/g,'&amp;')+'</loc></url>').join('')+'</urlset>';
+}
+
 function json(data, status = 200, extra = {}) {
   return new Response(JSON.stringify(data), {
     status,
@@ -287,7 +313,22 @@ export default {
       const type = value.metadata?.contentType || 'application/octet-stream';
       return new Response(value.value, { headers: { 'content-type': type, 'cache-control': 'public, max-age=31536000, immutable' } });
     }
-    if (url.pathname.startsWith('/product/')) return env.ASSETS.fetch(new Request(new URL('/index.html', request.url), request));
+    if (url.pathname === '/robots.txt') {
+      return new Response('User-agent: *\\nAllow: /\\nSitemap: ' + new URL('/sitemap.xml', request.url).toString() + '\\n', { headers: { 'content-type':'text/plain; charset=utf-8', 'cache-control':'public, max-age=3600' } });
+    }
+    if (url.pathname === '/sitemap.xml') {
+      const items=await getInventory(env,request);
+      return new Response(sitemapXml(items,new URL(request.url).origin), { headers:{'content-type':'application/xml; charset=utf-8','cache-control':'public, max-age=300'} });
+    }
+    if (url.pathname.startsWith('/product/')) {
+      const slug=decodeURIComponent(url.pathname.split('/')[2]||'').toLowerCase();
+      const items=await getInventory(env,request);
+      const item=items.find(x=>slugifyProductSeo(x).toLowerCase()===slug);
+      const asset=await env.ASSETS.fetch(new Request(new URL('/index.html',request.url),request));
+      if(!asset.ok || !item) return asset;
+      const html=await asset.text();
+      return new Response(productSeoHtml(item,request.url,html),{status:200,headers:{'content-type':'text/html; charset=utf-8','cache-control':'public, max-age=60'}});
+    }
     return env.ASSETS.fetch(request);
   }
 };
