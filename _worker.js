@@ -14,7 +14,7 @@ function productSeoHtml(item, requestUrl, html) {
   const title=name+' | MKG GLOBAL';
   const desc=[item?.Brand,item?.Model,item?.RAM_Storage,item?.Condition,item?.Grade,item?.Specs].filter(Boolean).join(' • ').slice(0,300);
   const images=String(item?.ImageUrl||'').split('|').map(x=>x.trim()).filter(Boolean).map(x=>x.startsWith('http')?x:origin+'/'+x.replace(/^\//,''));
-  const data={'@context':'https://schema.org','@type':'Product',name,image:images,description:desc,sku:item?.id||slug,brand:item?.Brand?{'@type':'Brand',name:item.Brand}:undefined,category:item?.Category||undefined,offers:{'@type':'Offer',url,priceCurrency:'INR',price:Number(item?.SuperDealPrice||0),availability:Number(item?.Qty||0)>0?'https://schema.org/InStock':'https://schema.org/OutOfStock',itemCondition:schemaCondition(item)}};
+  const data={'@context':'https://schema.org','@type':'Product',name,image:images,description:desc,sku:item?.id||slug,brand:item?.Brand?{'@type':'Brand',name:item.Brand}:undefined,category:item?.Category||undefined,video:item?.Video_URL?{'@type':'VideoObject','contentUrl':item.Video_URL,'name':name+' product video'}:undefined,offers:{'@type':'Offer',url,priceCurrency:'INR',price:Number(item?.SuperDealPrice||0),availability:Number(item?.Qty||0)>0?'https://schema.org/InStock':'https://schema.org/OutOfStock',itemCondition:schemaCondition(item)}};
   const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
   const head='<link rel="canonical" href="'+url+'">\n<meta name="description" content="'+esc(desc)+'">\n<meta name="robots" content="index,follow,max-image-preview:large">\n<meta property="og:type" content="product">\n<meta property="og:title" content="'+esc(title)+'">\n<meta property="og:description" content="'+esc(desc)+'">\n<meta property="og:url" content="'+url+'">'+(images[0]? '\n<meta property="og:image" content="'+images[0]+'">':'')+'\n<script type="application/ld+json">'+JSON.stringify(data).replace(/</g,'\\u003c')+'</script>';
   return html.replace(/<title>[^<]*<\/title>/i,'<title>'+esc(title)+'</title>').replace('</head>',head+'\n</head>');
@@ -66,7 +66,7 @@ function normalizeInventory(csvText) {
     specs: find('specs/description','specs','description'), box: find('box and accessories','box & accessories','boxandacc'),
     grade: find('grade'), qty: find('qty.','qty','quantity'), warranty: find('warranty'), mrp: find('mrp'),
     deal: find('super deal price','superdealprice','deal price'), image: find('imageurl','image url','image_url'),
-    remarks: find('special remarks','specialremarks','remarks','remark')
+    remarks: find('special remarks','specialremarks','remarks','remark'), video: find('video_url','video url','video')
   };
   return rows.slice(1).map((r, i) => ({
     Category: cleanText(r[idx.category]), SubCategory: cleanText(r[idx.sub]), Condition: cleanText(r[idx.condition]),
@@ -74,7 +74,7 @@ function normalizeInventory(csvText) {
     RAM_Storage: cleanText(r[idx.ram]), Specs: cleanText(r[idx.specs]), BoxAndAcc: cleanText(r[idx.box]),
     Grade: cleanText(r[idx.grade]), Qty: num(r[idx.qty]), Warranty: cleanText(r[idx.warranty]),
     MRP: num(r[idx.mrp]), SuperDealPrice: num(r[idx.deal]), ImageUrl: cleanText(r[idx.image]),
-    SpecialRemarks: cleanText(r[idx.remarks]), id: `item_${i + 1}`
+    SpecialRemarks: cleanText(r[idx.remarks]), Video_URL: cleanText(r[idx.video]), id: `item_${i + 1}`
   })).filter(x => x.Brand || x.Model || x.Category);
 }
 
