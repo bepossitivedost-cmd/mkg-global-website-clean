@@ -471,7 +471,8 @@
         
         <!-- Left: Gallery Section (Slider Viewport + Thumbnails) -->
         <div class="w-full lg:w-[62%] flex flex-col items-center">
-          <div class="relative w-full h-80 sm:h-[26rem] lg:h-[34rem] rounded-2xl bg-slate-100 border border-slate-200/90 overflow-hidden flex items-center justify-center p-3">
+          <div id="modal-product-video-wrap" class="hidden mt-3"><div class="text-[10px] font-black uppercase tracking-wide text-slate-500 mb-1.5">Product Video</div><video id="modal-product-video" class="w-full max-h-72 rounded-2xl bg-slate-950 object-contain border border-slate-200" controls playsinline preload="metadata"></video></div>
+<div class="relative w-full h-80 sm:h-[26rem] lg:h-[34rem] rounded-2xl bg-slate-100 border border-slate-200/90 overflow-hidden flex items-center justify-center p-3">
             
             <!-- Main Featured Image -->
             <img 
@@ -2463,6 +2464,8 @@
       const imagesList = getSafeItemImages(item);
       const isPhoneItem = String(item.Category || '').trim().toLowerCase() === 'phone';
       const primaryImage = imagesList.length > 0 ? normalizeGalleryImagePath(imagesList[0]) : '/image/mkg_m_placeholder.png';
+      const productVideo = String(item.Video_URL || item.VideoUrl || item.video_url || '').trim();
+      const safeVideoUrl = productVideo.replace(/&/g, '&amp;').replace(/"/g, '&quot;');
 
       const card = document.createElement('div');
       card.className = `bg-white rounded-3xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between cursor-pointer ${isOutOfStock ? 'opacity-70' : ''}`;
@@ -2505,8 +2508,9 @@
               </div>
             ` : ''}
 
-            <!-- Primary Image -->
-            ${primaryImage ? `<img src="${primaryImage}" alt="${item.Model}" class="w-full h-full object-contain p-0 hover:scale-105 transition-transform duration-300" onerror="handleImageFallback(this)">` : ''}
+            <!-- Primary Product Media -->
+            ${productVideo ? `<video src="${safeVideoUrl}" poster="${primaryImage}" class="w-full h-full object-contain p-0" autoplay muted loop playsinline preload="metadata" aria-label="${String(item.Model || 'Product').replace(/"/g, '&quot;')} product video"></video>` : ''}
+            ${primaryImage ? `<img src="${primaryImage}" alt="${item.Model}" class="w-full h-full object-contain p-0 ${productVideo ? 'hidden' : ''} hover:scale-105 transition-transform duration-300" onerror="handleImageFallback(this)">` : ''}
           </div>
 
           <div class="p-4 sm:p-5">
@@ -2630,6 +2634,13 @@
       activeImageIndex = 0;
 
       updateGalleryView();
+      const modalVideoWrap = document.getElementById('modal-product-video-wrap');
+      const modalVideo = document.getElementById('modal-product-video');
+      const modalVideoUrl = String(item.Video_URL || item.VideoUrl || item.video_url || '').trim();
+      if (modalVideoWrap && modalVideo) {
+        if (modalVideoUrl) { modalVideo.src = modalVideoUrl; modalVideo.poster = activeModalImages[0] || ''; modalVideoWrap.classList.remove('hidden'); }
+        else { modalVideo.pause(); modalVideo.removeAttribute('src'); modalVideo.load(); modalVideoWrap.classList.add('hidden'); }
+      }
 
       // Brand & Header tags
       document.getElementById('modal-brand-tag').innerText = `${item.Brand || ''} • ${item.SubCategory || item.Category}`;
