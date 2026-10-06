@@ -2360,10 +2360,40 @@
         openbox: inventory.filter(i => /open\s*box/i.test(String(i.Condition||'')) && heroImage(i)),
         deals: inventory.filter(i => heroImage(i))
       };
+
+      // Keep the hero visually representative of MKG GLOBAL's multi-brand phone range.
+      // Prefer one device each from Apple, Samsung, OnePlus and Tecno, then fill any
+      // missing slots from the remaining inventory. This prevents the banner from
+      // showing four products from the same brand simply because of CSV ordering.
+      const chooseHeroItems = (items) => {
+        const preferredBrands = ['apple', 'samsung', 'oneplus', 'tecno'];
+        const chosen = [];
+        const used = new Set();
+
+        preferredBrands.forEach(brand => {
+          const match = items.find(item => String(item.Brand || '').trim().toLowerCase() === brand && !used.has(String(item.id)));
+          if (match) {
+            chosen.push(match);
+            used.add(String(match.id));
+          }
+        });
+
+        items.forEach(item => {
+          if (chosen.length >= 4) return;
+          const id = String(item.id || '');
+          if (!used.has(id)) {
+            chosen.push(item);
+            used.add(id);
+          }
+        });
+
+        return chosen.slice(0, 4);
+      };
+
       document.querySelectorAll('[data-hero-products]').forEach(el => {
         const key = el.getAttribute('data-hero-products');
         const items = groups[key] || [];
-        const chosen = items.slice(0, 4);
+        const chosen = chooseHeroItems(items);
         el.innerHTML = chosen.map((item, idx) => {
           const img = heroImage(item);
           return '<button class="hero-product" onclick="openProductModal(' + JSON.stringify(item.id || '') + ')" aria-label="' + String(item.Model||'Product').replace(/"/g,'&quot;') + '">' +
