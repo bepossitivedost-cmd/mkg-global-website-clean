@@ -212,8 +212,8 @@
 .hero-products{position:static!important;width:100%;height:255px;display:flex!important;align-items:center;justify-content:center;gap:3px;z-index:2;visibility:visible!important;min-width:0}
 .hero-product{position:relative;width:185px;height:245px!important;margin-top:0!important;border:0;background:transparent;padding:30px 0 0;cursor:pointer;filter:drop-shadow(0 13px 14px rgba(15,23,42,.18));transition:transform .2s;display:flex;align-items:flex-end;justify-content:center}
 .hero-product:hover{transform:translateY(-5px) scale(1.03)}
-.hero-product img{width:185px;height:215px;object-fit:contain;border-radius:0;display:block;mix-blend-mode:darken;background:transparent;filter:contrast(1.04) saturate(1.04)}
-.hero-product:nth-child(2) img,.hero-product:nth-child(3) img,.hero-product:nth-child(4) img{height:205px}
+.hero-product img{width:185px;height:215px;object-fit:contain;border-radius:0;display:block;background:transparent;filter:url("#hero-remove-white") contrast(1.04) saturate(1.04)}
+.hero-product:nth-child(2) img,.hero-product:nth-child(3) img,.hero-product:nth-child(4) img{height:215px}
 .hero-product-tag{position:absolute;top:0;left:50%;transform:translateX(-50%);min-width:112px;height:27px;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#0b203d;color:#fff;border-radius:999px;padding:4px 10px;font-size:10px;line-height:1;font-weight:950;white-space:nowrap;box-sizing:border-box;box-shadow:0 4px 9px rgba(15,23,42,.10)}
 .hero-brand-logo{width:16px;height:16px;display:block;object-fit:contain;flex:0 0 16px;background:transparent!important;border:0!important;box-shadow:none!important}
 .hero-brand-logo[src]{background-color:transparent}
@@ -2375,7 +2375,7 @@
       const chooseHeroItems = (items) => {
         const preferredBrands = ['apple', 'samsung', 'oneplus', 'tecno'];
         const preferredModels = {
-          apple: ['iphone 17', 'iphone 16', 'iphone 15', 'iphone 14', 'iphone 13', 'iphone 12'],
+          apple: ['iphone 13 pro', 'iphone 13 pro max', 'iphone 13', 'iphone 17', 'iphone 16', 'iphone 15', 'iphone 14', 'iphone 12'],
           samsung: ['galaxy z flip6', 'galaxy z flip 6', 'z flip6', 'z flip 6', 'flip6', 'flip 6'],
           oneplus: ['oneplus 13s', 'oneplus 13', 'oneplus 12'],
           tecno: ['phantom v flip', 'phantom flip', 'flip ad11', 'ad11']
