@@ -215,6 +215,11 @@
 .hero-product img{width:100%;height:181px;object-fit:contain;border-radius:15px;display:block}
 .hero-product:nth-child(2) img{height:172px}.hero-product:nth-child(3) img{height:164px}.hero-product:nth-child(4) img{height:156px}
 .hero-product-tag{position:absolute;top:0;left:50%;transform:translateX(-50%);min-width:112px;height:27px;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#0b203d;color:#fff;border-radius:999px;padding:4px 10px;font-size:10px;line-height:1;font-weight:950;white-space:nowrap;box-sizing:border-box;box-shadow:0 4px 9px rgba(15,23,42,.10)}
+.hero-brand-logo{width:15px;height:15px;display:block;object-fit:contain;flex:0 0 15px}
+.hero-product-tag.apple .hero-brand-logo{width:14px;height:14px;flex-basis:14px}
+.hero-product-tag.samsung .hero-brand-logo{width:16px;height:16px;flex-basis:16px}
+.hero-product-tag.oneplus .hero-brand-logo{width:15px;height:15px;flex-basis:15px}
+.hero-product-tag.tecno .hero-brand-logo{width:16px;height:16px;flex-basis:16px}
 .hero-product-tag.apple{background:#0b203d}.hero-product-tag.samsung{background:#1428a0}.hero-product-tag.oneplus{background:#e31b2b}.hero-product-tag.tecno{background:#1478d4}
 .hero-accessories{display:flex;justify-content:center;flex-wrap:wrap;gap:5px;width:100%;margin-top:2px}
 .hero-accessories span{font-size:8.5px;font-weight:900;color:#17253d;background:#fff;border:1px solid #ead28b;border-radius:999px;padding:5px 8px;white-space:nowrap}
@@ -2368,11 +2373,25 @@
       // showing four products from the same brand simply because of CSV ordering.
       const chooseHeroItems = (items) => {
         const preferredBrands = ['apple', 'samsung', 'oneplus', 'tecno'];
+        const preferredModels = {
+          apple: ['iphone 17', 'iphone 16', 'iphone 15', 'iphone 14', 'iphone 13', 'iphone 12'],
+          samsung: ['galaxy z flip6', 'galaxy z flip 6', 'z flip6', 'z flip 6', 'flip6', 'flip 6'],
+          oneplus: ['oneplus 13s', 'oneplus 13', 'oneplus 12'],
+          tecno: ['phantom v flip', 'phantom flip', 'flip ad11', 'ad11']
+        };
         const chosen = [];
         const used = new Set();
 
         preferredBrands.forEach(brand => {
-          const match = items.find(item => String(item.Brand || '').trim().toLowerCase() === brand && !used.has(String(item.id)));
+          const brandItems = items.filter(item =>
+            String(item.Brand || '').trim().toLowerCase() === brand &&
+            !used.has(String(item.id))
+          );
+          const modelPrefs = preferredModels[brand] || [];
+          const match = brandItems.find(item => {
+            const model = String(item.Model || '').trim().toLowerCase();
+            return modelPrefs.some(pref => model.includes(pref));
+          }) || brandItems[0];
           if (match) {
             chosen.push(match);
             used.add(String(match.id));
@@ -2399,10 +2418,18 @@
           const img = heroImage(item);
           const brand = String(item.Brand || '').trim();
           const brandKey = brand.toLowerCase().replace(/[^a-z0-9]+/g, '');
-          const brandIcon = brandKey === 'apple' ? '●' : brandKey === 'samsung' ? 'S' : brandKey === 'oneplus' ? '1+' : brandKey === 'tecno' ? 'T' : '•';
+          const brandIconUrl = {
+            apple: 'https://cdn.simpleicons.org/apple/ffffff',
+            samsung: 'https://cdn.simpleicons.org/samsung/ffffff',
+            oneplus: 'https://cdn.simpleicons.org/oneplus/ffffff',
+            tecno: 'https://cdn.simpleicons.org/tecno/ffffff'
+          }[brandKey] || '';
           const brandClass = ['apple','samsung','oneplus','tecno'].includes(brandKey) ? brandKey : '';
+          const brandIcon = brandIconUrl
+            ? '<img class="hero-brand-logo" src="' + brandIconUrl + '" alt="" aria-hidden="true" loading="eager">'
+            : '';
           return '<button class="hero-product" onclick="openProductModal(' + JSON.stringify(item.id || '') + ')" aria-label="' + String(item.Model||'Product').replace(/"/g,'&quot;') + '">' +
-            '<span class="hero-product-tag ' + brandClass + '"><span aria-hidden="true">' + brandIcon + '</span><span>' + brand.replace(/</g,'&lt;') + '</span></span>' +
+            '<span class="hero-product-tag ' + brandClass + '">' + brandIcon + '<span>' + brand.replace(/</g,'&lt;') + '</span></span>' +
             '<img src="' + img.replace(/"/g,'&quot;') + '" alt="' + String(item.Model||'Product').replace(/"/g,'&quot;') + '" loading="eager">' +
           '</button>';
         }).join('');
