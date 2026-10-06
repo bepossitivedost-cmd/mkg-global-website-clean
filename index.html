@@ -212,8 +212,7 @@
 .hero-products{position:static!important;width:100%;height:255px;display:flex!important;align-items:center;justify-content:center;gap:3px;z-index:2;visibility:visible!important;min-width:0}
 .hero-product{position:relative;width:185px;height:245px!important;margin-top:0!important;border:0;background:transparent;padding:30px 0 0;cursor:pointer;filter:drop-shadow(0 13px 14px rgba(15,23,42,.18));transition:transform .2s;display:flex;align-items:flex-end;justify-content:center}
 .hero-product:hover{transform:translateY(-5px) scale(1.03)}
-.hero-product img,.hero-product-canvas{width:185px;height:215px;object-fit:contain;border-radius:0;display:block;background:transparent}
-.hero-product-canvas{pointer-events:none}
+.hero-product img{width:185px;height:215px;object-fit:contain;border-radius:0;display:block;background:transparent;mix-blend-mode:multiply}
 .hero-product-tag{position:absolute;top:0;left:50%;transform:translateX(-50%);min-width:112px;height:27px;display:inline-flex;align-items:center;justify-content:center;gap:6px;background:#0b203d;color:#fff;border-radius:999px;padding:4px 10px;font-size:10px;line-height:1;font-weight:950;white-space:nowrap;box-sizing:border-box;box-shadow:0 4px 9px rgba(15,23,42,.10)}
 .hero-brand-logo{width:16px;height:16px;display:block;object-fit:contain;flex:0 0 16px;background:transparent!important;border:0!important;box-shadow:none!important}
 .hero-brand-logo[src]{background-color:transparent}
@@ -2361,108 +2360,6 @@
       return imgs[0] || '';
     }
 
-    // Convert the hero source image into a real transparent cutout in-browser.
-    // This avoids the white/dark rectangular cards baked into many catalog creatives.
-    function prepareHeroCutout(img) {
-      if (!img || img.dataset.cutoutReady === '1' || img.dataset.cutoutBusy === '1') return;
-      img.dataset.cutoutBusy = '1';
-
-      const run = () => {
-        try {
-          if (!img.naturalWidth || !img.naturalHeight) throw new Error('Hero image has no dimensions');
-          const maxSide = 520;
-          const scale = Math.min(1, maxSide / Math.max(img.naturalWidth, img.naturalHeight));
-          const w = Math.max(1, Math.round(img.naturalWidth * scale));
-          const h = Math.max(1, Math.round(img.naturalHeight * scale));
-
-          const canvas = document.createElement('canvas');
-          canvas.className = 'hero-product-canvas';
-          canvas.width = w;
-          canvas.height = h;
-          canvas.setAttribute('aria-hidden', 'true');
-
-          const ctx = canvas.getContext('2d', { willReadFrequently: true });
-          if (!ctx) throw new Error('Canvas unavailable');
-          ctx.drawImage(img, 0, 0, w, h);
-
-          const frame = ctx.getImageData(0, 0, w, h);
-          const px = frame.data;
-
-          // Estimate the baked background from the four corners.
-          const cornerCoords = [
-            [0, 0], [w - 1, 0], [0, h - 1], [w - 1, h - 1]
-          ];
-          let br = 0, bg = 0, bb = 0;
-          cornerCoords.forEach(([x, y]) => {
-            const p = (y * w + x) * 4;
-            br += px[p]; bg += px[p + 1]; bb += px[p + 2];
-          });
-          br /= 4; bg /= 4; bb /= 4;
-
-          const luminance = 0.299 * br + 0.587 * bg + 0.114 * bb;
-          const threshold = luminance > 210 ? 62 : (luminance < 90 ? 52 : 48);
-          const soft = 12;
-          const total = w * h;
-          const seen = new Uint8Array(total);
-          const queue = new Int32Array(total);
-          let head = 0, tail = 0;
-
-          const colorDistance = (index) => {
-            const r = px[index], g = px[index + 1], b = px[index + 2];
-            return Math.sqrt((r - br) ** 2 + (g - bg) ** 2 + (b - bb) ** 2);
-          };
-
-          const seed = (x, y) => {
-            const pos = y * w + x;
-            if (seen[pos]) return;
-            const idx = pos * 4;
-            if (colorDistance(idx) <= threshold) {
-              seen[pos] = 1;
-              queue[tail++] = pos;
-            }
-          };
-
-          for (let x = 0; x < w; x++) { seed(x, 0); seed(x, h - 1); }
-          for (let y = 0; y < h; y++) { seed(0, y); seed(w - 1, y); }
-
-          const neighbors = (pos) => {
-            const x = pos % w, y = (pos / w) | 0;
-            if (x > 0) seed(x - 1, y);
-            if (x < w - 1) seed(x + 1, y);
-            if (y > 0) seed(x, y - 1);
-            if (y < h - 1) seed(x, y + 1);
-          };
-
-          while (head < tail) neighbors(queue[head++]);
-
-          for (let pos = 0; pos < total; pos++) {
-            if (!seen[pos]) continue;
-            const idx = pos * 4;
-            const d = colorDistance(idx);
-            if (d <= threshold - soft) px[idx + 3] = 0;
-            else if (d < threshold) px[idx + 3] = Math.round(255 * (d - (threshold - soft)) / soft);
-          }
-
-          ctx.putImageData(frame, 0, 0);
-          img.parentNode.insertBefore(canvas, img);
-          img.style.display = 'none';
-          img.dataset.cutoutReady = '1';
-          img.dataset.cutoutBusy = '0';
-        } catch (err) {
-          img.dataset.cutoutBusy = '0';
-          // Keep the original image visible if the browser blocks pixel access.
-          img.style.display = '';
-        }
-      };
-
-      if (img.complete) run();
-      else img.addEventListener('load', run, { once: true });
-    }
-
-    function prepareAllHeroCutouts() {
-      document.querySelectorAll('.hero-product img').forEach(prepareHeroCutout);
-    }
-
     function renderHeroSlides() {
       const groups = {
         phones: inventory.filter(i => String(i.Category||'').toLowerCase() === 'phone' && heroImage(i)),
@@ -2477,7 +2374,7 @@
       const chooseHeroItems = (items) => {
         const preferredBrands = ['apple', 'samsung', 'oneplus', 'tecno'];
         const preferredModels = {
-          apple: ['iphone 17 pro max', 'iphone 17 pro', 'iphone 17', 'iphone 13 pro', 'iphone 13 pro max', 'iphone 13', 'iphone 16', 'iphone 15', 'iphone 14', 'iphone 12'],
+          apple: ['iphone 13 pro gold', 'iphone 13 pro', 'iphone 13 pro max', 'iphone 13', 'iphone 17 pro max', 'iphone 17 pro', 'iphone 17', 'iphone 16', 'iphone 15', 'iphone 14', 'iphone 12'],
           samsung: ['galaxy z flip6', 'galaxy z flip 6', 'z flip6', 'z flip 6', 'flip6', 'flip 6'],
           oneplus: ['oneplus 13s', 'oneplus 13', 'oneplus 12'],
           tecno: ['phantom v flip', 'phantom flip', 'flip ad11', 'ad11']
@@ -2536,7 +2433,6 @@
             '<img src="' + img.replace(/"/g,'&quot;') + '" alt="' + String(item.Model||'Product').replace(/"/g,'&quot;') + '" loading="eager">' +
           '</button>';
         }).join('');
-        prepareAllHeroCutouts();
         if (!chosen.length) {
           el.innerHTML = '<div class="hero-fallback-device">📱</div><div class="hero-fallback-device second">⌚</div><div class="hero-fallback-device third">💻</div>';
         }
