@@ -123,10 +123,11 @@ async function getSeed(env, request) {
 }
 
 async function getInventory(env, request) {
-  // Catalog is intentionally held blank until the next fresh CSV upload.
-  // This prevents any old live inventory/image mapping from appearing during reset.
+  // Keep the storefront resilient if the readiness flag is missing.
+  // Only an explicit "0" means the catalog was intentionally disabled.
+  // This prevents a deployment/KV flag mismatch from rendering a completely blank store.
   const catalogReady = await env.MKG_IMAGES.get('catalog-ready');
-  if (catalogReady !== '1') return [];
+  if (catalogReady === '0') return [];
 
   // The latest admin-uploaded inventory is the storefront source of truth.
   // Fall back to the bundled seed only when no live inventory has been uploaded.
