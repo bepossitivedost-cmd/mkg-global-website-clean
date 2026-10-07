@@ -123,11 +123,11 @@ async function getSeed(env, request) {
 }
 
 async function getInventory(env, request) {
-  // The storefront should always render the latest saved inventory when it exists.
-  // Do not let the catalog-ready flag blank the live store: a stale/missing KV flag
-  // must never hide the catalogue after a deployment.
-  // The latest admin-uploaded inventory remains the storefront source of truth.
-  // Fall back to the bundled seed only when no live inventory has been uploaded.
+  // The storefront must remain usable even if the KV binding is temporarily
+  // missing from a deployment. In that case use the bundled seed catalog.
+  // When KV is available, saved inventory remains the storefront source of truth.
+  if (!env.MKG_IMAGES) return await getSeed(env, request);
+
   const saved = await env.MKG_IMAGES.get('inventory');
   let items = [];
   if (saved) { try { items = JSON.parse(saved); } catch { items = []; } }
