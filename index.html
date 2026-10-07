@@ -2330,7 +2330,7 @@
       const key = String(brand || '').trim().toLowerCase().replace(/[^a-z0-9]+/g,'');
       const map = {
         apple:'apple', samsung:'samsung', oneplus:'oneplus', tecno:'tecno',
-        xiaomi:'xiaomi', redmi:'xiaomi', poco:'poco', iqoo:'iqoo',
+        xiaomi:'xiaomi', redmi:'redmi', poco:'poco', iqoo:'iqoo',
         vivo:'vivo', oppo:'oppo', realme:'realme', motorola:'motorola',
         nothing:'nothing', google:'google', sony:'sony', nokia:'nokia',
         lenovo:'lenovo', hp:'hp', dell:'dell', asus:'asus', acer:'acer',
@@ -2339,7 +2339,7 @@
         noise:'noise', fireboltt:'fireboltt', dizo:'realme'
       };
       const slug = map[key];
-      return slug ? 'https://cdn.simpleicons.org/' + slug + '/0f5f5a' : '';
+      return slug ? 'https://cdn.simpleicons.org/' + slug : '';
     }
 
     function heroBrandIconHtml(brand) {
