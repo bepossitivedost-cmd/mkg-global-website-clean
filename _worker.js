@@ -257,7 +257,10 @@ async function handlePriceMergeUpload(request, env) {
     ram: find('ram/storage','ram_storage','ram storage'),
     mrp: find('mrp'), deal: find('super deal price','superdealprice','deal price'),
     remarks: find('special remarks','specialremarks','remarks','remark'),
-    specs: find('specs/description','specs','description')
+    specs: find('specs/description','specs','description'),
+    category: find('category'), sub: find('sub-category','subcategory','sub category'),
+    condition: find('condition'), box: find('box and accessories','box & accessories','boxandacc'),
+    grade: find('grade'), qty: find('qty.','qty','quantity'), warranty: find('warranty')
   };
   if (idx.id < 0) return json({ error: 'Product ID column is required.' }, 400);
 
@@ -283,6 +286,13 @@ async function handlePriceMergeUpload(request, env) {
       if (idx.model >= 0 && cleanText(row[idx.model])) copy.Model = cleanText(row[idx.model]);
       if (idx.color >= 0 && cleanText(row[idx.color])) copy.Color = cleanText(row[idx.color]);
       if (idx.ram >= 0 && cleanText(row[idx.ram])) copy.RAM_Storage = cleanText(row[idx.ram]);
+      if (idx.category >= 0 && cleanText(row[idx.category])) copy.Category = cleanText(row[idx.category]);
+      if (idx.sub >= 0 && cleanText(row[idx.sub])) copy.SubCategory = cleanText(row[idx.sub]);
+      if (idx.condition >= 0 && cleanText(row[idx.condition])) copy.Condition = cleanText(row[idx.condition]);
+      if (idx.box >= 0 && cleanText(row[idx.box])) copy.BoxAndAcc = cleanText(row[idx.box]);
+      if (idx.grade >= 0 && cleanText(row[idx.grade])) copy.Grade = cleanText(row[idx.grade]);
+      if (idx.qty >= 0 && num(row[idx.qty]) > 0) copy.Qty = num(row[idx.qty]);
+      if (idx.warranty >= 0 && cleanText(row[idx.warranty])) copy.Warranty = cleanText(row[idx.warranty]);
       if (idx.specs >= 0 && cleanText(row[idx.specs])) copy.Specs = cleanText(row[idx.specs]);
       if (idx.remarks >= 0 && cleanText(row[idx.remarks])) copy.SpecialRemarks = cleanText(row[idx.remarks]);
       if (mrp > 0) copy.MRP = mrp;
