@@ -113,6 +113,24 @@ async function load(force=false){
   }
 }
 $('csv').onchange=()=>{$('csvName').textContent=$('csv').files[0]?.name||'15-column format • CSV or XLSX'};
+$('priceMergeCsv').onchange=()=>{$('priceMergeName').textContent=$('priceMergeCsv').files[0]?.name||'Product ID + price columns required.'};
+async function uploadPriceMerge(){
+  const f=$('priceMergeCsv').files[0];
+  if(!f) return status('Please choose the safe price / new product CSV.');
+  if(!f.name.toLowerCase().endsWith('.csv')) return status('Please use the CSV file for this safe update.');
+  const fd=new FormData(); fd.append('file',f);
+  const b=$('priceMergeUpload'); b.disabled=true; b.textContent='Applying safe update…';
+  try{
+    const r=await fetch('/api/admin/price-merge',{method:'POST',body:fd});
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok) return status(d.error||`Safe update failed (${r.status}).`);
+    status(d.message||'Safe update completed successfully.',true);
+    $('priceMergeCsv').value=''; $('priceMergeName').textContent='Product ID + price columns required.';
+    await load(true);
+  }catch(e){status('Safe update failed. Check your admin sign-in and KV connection.')}
+  finally{b.disabled=false;b.textContent='Apply Safe Price Update'}
+}
+
 $('images').onchange=()=>{const fs=Array.from($('images').files);$('imageNames').textContent=fs.map(f=>f.name).join(', ')||'JPG / PNG / WEBP • max 8MB each'; const p=$('imagePreview'); p.innerHTML=''; fs.forEach(f=>{const u=URL.createObjectURL(f); const d=document.createElement('div'); d.className='border rounded-xl p-2 bg-slate-50'; d.innerHTML=`<img src="${u}" class="w-full h-28 object-contain rounded-lg bg-white"><div class="mini text-slate-500 mt-1 truncate">${f.name}</div>`; p.appendChild(d);});};
 async function loginAdmin(){
   const key=$('adminKey').value.trim(); if(!key)return status('Please enter your admin access key.');
