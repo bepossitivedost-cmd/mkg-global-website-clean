@@ -411,6 +411,14 @@ export default {
     if (url.pathname === '/api/admin/logout' && request.method === 'POST') return logout(request, env);
     if (url.pathname === '/api/admin/session' && request.method === 'GET') return json({ authenticated: await isAdmin(request, env) });
     if (url.pathname === '/api/inventory' && request.method === 'GET') return json(await getInventory(env, request), 200, { 'cache-control': 'no-store' });
+    if (url.pathname === '/api/product' && request.method === 'GET') {
+      const slug = String(url.searchParams.get('slug') || '').trim().toLowerCase();
+      if (!slug) return json({ error: 'Product slug is required.' }, 400, { 'cache-control': 'no-store' });
+      const items = await getInventory(env, request);
+      const item = items.find(x => productSlugMatches(x, slug));
+      if (!item) return json({ error: 'Product not found.' }, 404, { 'cache-control': 'no-store' });
+      return json(item, 200, { 'cache-control': 'no-store' });
+    }
     if (url.pathname === '/api/admin/image' && request.method === 'POST') return handleImageUpload(request, env);
     if (url.pathname === '/api/admin/clear-images' && request.method === 'POST') return handleClearAllImages(request, env);
     if (url.pathname === '/api/admin/csv' && request.method === 'POST') return handleCsvUpload(request, env);
@@ -434,9 +442,15 @@ export default {
       const items=await getInventory(env,request);
       const item=items.find(x=>productSlugMatches(x,slug));
       const asset=await env.ASSETS.fetch(new Request(new URL('/index.html',request.url),request));
-      if(!asset.ok || !item) return asset;
+      if(!asset.ok) return asset;
       const html=await asset.text();
-      return new Response(productSeoHtml(item,request.url,html),{status:200,headers:{'content-type':'text/html; charset=utf-8','cache-control':'public, max-age=60'}});
+      if(!item) {
+        // Always return the storefront shell. The frontend will resolve the
+        // exact slug through /api/product, so a stale/partial KV catalog
+        // cannot turn a direct product URL into a plain homepage.
+        return new Response(html,{status:200,headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store'}});
+      }
+      return new Response(productSeoHtml(item,request.url,html),{status:200,headers:{'content-type':'text/html; charset=utf-8','cache-control':'no-store'}});
     }
     return env.ASSETS.fetch(request);
   }
