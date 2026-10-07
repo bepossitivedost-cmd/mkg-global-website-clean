@@ -239,6 +239,91 @@ async function handleClearAllImages(request, env) {
   return json({ ok: true, deleted, message: 'All product images removed successfully (' + deleted + ' files).' });
 }
 
+
+async function handlePriceMergeUpload(request, env) {
+  if (!(await isAdmin(request, env))) return json({ error: 'Unauthorized. Please sign in to the private admin first.' }, 401);
+  if (!env.MKG_IMAGES) return json({ error: 'KV binding MKG_IMAGES is not configured.' }, 500);
+  const form = await request.formData();
+  const file = form.get('file');
+  if (!file || typeof file.text !== 'function') return json({ error: 'CSV file is required.' }, 400);
+
+  const rows = parseCsv(await file.text());
+  if (rows.length < 2) return json({ error: 'No product rows found in the CSV.' }, 400);
+  const h = rows[0].map(x => cleanText(x).toLowerCase());
+  const find = (...names) => names.map(n => h.indexOf(n.toLowerCase())).find(i => i >= 0) ?? -1;
+  const idx = {
+    id: find('product id','productid','id'),
+    brand: find('brand'), model: find('model'), color: find('color'),
+    ram: find('ram/storage','ram_storage','ram storage'),
+    mrp: find('mrp'), deal: find('super deal price','superdealprice','deal price'),
+    remarks: find('special remarks','specialremarks','remarks','remark'),
+    specs: find('specs/description','specs','description')
+  };
+  if (idx.id < 0) return json({ error: 'Product ID column is required.' }, 400);
+
+  const saved = await env.MKG_IMAGES.get('inventory');
+  let current = [];
+  if (saved) { try { current = JSON.parse(saved); } catch {} }
+  if (!Array.isArray(current)) current = [];
+  const byId = new Map(current.map(item => [cleanText(item.id), item]));
+  let updated = 0, added = 0;
+
+  for (const row of rows.slice(1)) {
+    const id = cleanText(row[idx.id]);
+    if (!id) continue;
+    const existing = byId.get(id);
+    const mrp = idx.mrp >= 0 ? num(row[idx.mrp]) : 0;
+    const deal = idx.deal >= 0 ? num(row[idx.deal]) : 0;
+
+    if (existing) {
+      // Existing products: prices only. All catalog fields and image mappings remain untouched.
+      const copy = { ...existing };
+      if (mrp > 0) copy.MRP = mrp;
+      if (deal > 0) copy.SuperDealPrice = deal;
+      byId.set(id, copy);
+      updated++;
+      continue;
+    }
+
+    const brand = cleanText(row[idx.brand]);
+    const model = cleanText(row[idx.model]);
+    if (!brand && !model) continue;
+
+    // New products use the agreed Open Box defaults and do not touch existing products/images.
+    const item = {
+      Category: 'Phone',
+      SubCategory: 'Smartphone',
+      Condition: 'Open Box',
+      Brand: brand,
+      Model: model,
+      Color: idx.color >= 0 ? cleanText(row[idx.color]) : '',
+      RAM_Storage: idx.ram >= 0 ? cleanText(row[idx.ram]) : '',
+      Specs: idx.specs >= 0 ? cleanText(row[idx.specs]) : '',
+      BoxAndAcc: 'Brand Box and Original Accessories',
+      Grade: 'A+',
+      Qty: 1,
+      Warranty: '15 Days QC',
+      MRP: mrp,
+      SuperDealPrice: deal,
+      ImageUrl: '',
+      SpecialRemarks: idx.remarks >= 0 ? cleanText(row[idx.remarks]) : '',
+      Video_URL: '',
+      id
+    };
+    byId.set(id, item);
+    added++;
+  }
+
+  const merged = [...byId.values()];
+  await env.MKG_IMAGES.put('inventory', JSON.stringify(merged));
+  await env.MKG_IMAGES.put('catalog-ready', '1');
+
+  return json({
+    ok: true,
+    message: `Safe update completed: ${updated} existing product prices updated and ${added} new products added. Existing product images were preserved.`
+  });
+}
+
 async function handleCsvUpload(request, env) {
   if (!(await isAdmin(request, env))) return json({ error: 'Unauthorized. Please sign in to the private admin first.' }, 401);
   if (!env.MKG_IMAGES) return json({ error: 'KV binding MKG_IMAGES is not configured.' }, 500);
@@ -306,6 +391,7 @@ export default {
     if (url.pathname === '/api/admin/image' && request.method === 'POST') return handleImageUpload(request, env);
     if (url.pathname === '/api/admin/clear-images' && request.method === 'POST') return handleClearAllImages(request, env);
     if (url.pathname === '/api/admin/csv' && request.method === 'POST') return handleCsvUpload(request, env);
+    if (url.pathname === '/api/admin/price-merge' && request.method === 'POST') return handlePriceMergeUpload(request, env);
     if (url.pathname.startsWith('/media/')) {
       const key = `media/${url.pathname.slice('/media/'.length)}`;
       const value = await env.MKG_IMAGES.getWithMetadata(key, 'arrayBuffer');
