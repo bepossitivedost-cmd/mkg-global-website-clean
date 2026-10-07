@@ -2347,7 +2347,7 @@
       const initials = label.slice(0,2).toUpperCase();
       const url = getHeroBrandIconUrl(label);
       if (!url) return '<span class="brand-fallback" style="display:flex">' + initials + '</span>';
-      return '<img src="' + url + '" alt="" aria-hidden="true" loading="eager" onerror="this.style.display=\\'none\\';this.nextElementSibling.style.display=\\'flex\\';">' +
+      return '<img src="' + url + '" alt="" aria-hidden="true" loading="eager" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">' +
              '<span class="brand-fallback">' + initials + '</span>';
     }
 
@@ -2355,7 +2355,7 @@
       const model = String(item?.Model || '').toLowerCase();
       const category = String(item?.Category || '').toLowerCase();
       let score = 0;
-      const nums = model.match(/\\d+/g) || [];
+      const nums = model.match(/\d+/g) || [];
       nums.forEach(n => { score += Math.min(parseInt(n,10), 999) * (category === 'phone' ? 1 : .2); });
       if (/pro|max|ultra|plus|premium|flagship|5g|fold|flip/i.test(model)) score += 180;
       if (/new|latest/i.test(model)) score += 250;
