@@ -2316,9 +2316,17 @@
           inventory = [];
         }
       } catch (e) {
-        // Do not fall back to the bundled legacy catalog. During a reset,
-        // backend/API failures must not resurrect old products.
         inventory = [];
+      }
+
+      // The Worker embeds the exact product requested by /product/... .
+      // Keep it available even if the API is temporarily unavailable or
+      // its response is cached differently from the page request.
+      const directProduct = window.__MKG_DIRECT_PRODUCT__;
+      if (directProduct && (directProduct.Brand || directProduct.Model)) {
+        const directSlug = slugifyProduct(directProduct).toLowerCase();
+        const alreadyPresent = inventory.some(item => slugifyProduct(item).toLowerCase() === directSlug);
+        if (!alreadyPresent) inventory.push(directProduct);
       }
       populateCatalogFilters();
       try { renderHeroBrandFilters(); } catch (e) { console.error('Brand filter render failed:', e); }
