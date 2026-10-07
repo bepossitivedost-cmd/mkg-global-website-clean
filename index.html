@@ -2347,7 +2347,7 @@
       const initials = label.slice(0,2).toUpperCase();
       const url = getHeroBrandIconUrl(label);
       if (!url) return '<span class="brand-fallback" style="display:flex">' + initials + '</span>';
-      return "<img src="" + url + "" alt="" aria-hidden="true" loading="eager" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">" +
+      return "<img src=\"" + url + "\" alt=\"\" aria-hidden=\"true\" loading=\"eager\" onerror=\"this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';\">" +
              '<span class="brand-fallback">' + initials + '</span>';
     }
     function heroModelScore(item) {
