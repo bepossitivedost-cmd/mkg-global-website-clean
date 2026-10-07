@@ -16,16 +16,60 @@ function schemaCondition(item) {
   return 'https://schema.org/NewCondition';
 }
 function productSeoHtml(item, requestUrl, html) {
-  const origin=new URL(requestUrl).origin, slug=slugifyProductSeo(item), url=origin+'/product/'+slug;
-  const name=[item?.Brand,item?.Model,item?.RAM_Storage].filter(Boolean).join(' ').trim()||'MKG GLOBAL Product';
-  const title=name+' | MKG GLOBAL';
-  const desc=[item?.Brand,item?.Model,item?.RAM_Storage,item?.Condition,item?.Grade,item?.Specs].filter(Boolean).join(' • ').slice(0,300);
+  const origin=new URL(requestUrl).origin;
+  const slug=slugifyProductSeo(item);
+  const url=origin+'/product/'+slug;
+  const brand=cleanText(item?.Brand);
+  const model=cleanText(item?.Model);
+  const storage=cleanText(item?.RAM_Storage);
+  const colour=cleanText(item?.Color);
+  const condition=cleanText(item?.Condition).toLowerCase();
+  const grade=cleanText(item?.Grade);
+  const warranty=cleanText(item?.Warranty);
+  const isRefurb=condition.includes('refurb');
+  const isUsed=condition.includes('used') || condition.includes('second') || condition.includes('open box') || condition.includes('open');
+  const conditionLabel=isRefurb ? 'Refurbished' : isUsed ? 'Used / Second Hand' : 'New';
+  const nameParts=[brand,model,storage].filter(Boolean);
+  const coreName=nameParts.join(' ').trim() || 'MKG GLOBAL Product';
+  const titlePrefix=isRefurb ? 'Refurbished by MKG GLOBAL' : isUsed ? 'Used / Second Hand' : '';
+  const title=[titlePrefix,coreName,colour,grade ? grade+' Condition' : ''].filter(Boolean).join(' - ');
+  const safeTitle=(title+' | MKG GLOBAL').slice(0,150);
+  const descriptionParts=[
+    isRefurb ? 'Certified refurbished' : isUsed ? 'Second-hand pre-owned' : 'Brand new',
+    coreName,
+    colour,
+    grade ? grade+' condition' : '',
+    warranty ? warranty+' warranty' : '',
+    item?.BoxAndAcc ? item.BoxAndAcc : '',
+    item?.Specs ? item.Specs : ''
+  ].filter(Boolean);
+  const desc=descriptionParts.join(' • ').slice(0,500);
   const images=String(item?.ImageUrl||'').split('|').map(x=>x.trim()).filter(Boolean).map(x=>x.startsWith('http')?x:origin+'/'+x.replace(/^\//,''));
-  const data={'@context':'https://schema.org','@type':'Product',name,image:images,description:desc,sku:item?.id||slug,brand:item?.Brand?{'@type':'Brand',name:item.Brand}:undefined,category:item?.Category||undefined,video:item?.Video_URL?{'@type':'VideoObject','contentUrl':item.Video_URL,'name':name+' product video'}:undefined,offers:{'@type':'Offer',url,priceCurrency:'INR',price:Number(item?.SuperDealPrice||0),availability:Number(item?.Qty||0)>0?'https://schema.org/InStock':'https://schema.org/OutOfStock',itemCondition:schemaCondition(item)}};
+  const data={
+    '@context':'https://schema.org',
+    '@type':'Product',
+    name:coreName,
+    image:images,
+    description:desc,
+    sku:item?.id||slug,
+    brand:brand?{'@type':'Brand',name:brand}:undefined,
+    category:item?.Category||undefined,
+    color:colour||undefined,
+    offers:{
+      '@type':'Offer',
+      url,
+      priceCurrency:'INR',
+      price:Number(item?.SuperDealPrice||0),
+      availability:Number(item?.Qty||0)>0?'https://schema.org/InStock':'https://schema.org/OutOfStock',
+      itemCondition:schemaCondition(item)
+    }
+  };
+  if(item?.Video_URL) data.video={'@type':'VideoObject','contentUrl':item.Video_URL,'name':coreName+' product video'};
   const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
-  const head='<link rel="canonical" href="'+url+'">\n<meta name="description" content="'+esc(desc)+'">\n<meta name="robots" content="index,follow,max-image-preview:large">\n<meta property="og:type" content="product">\n<meta property="og:title" content="'+esc(title)+'">\n<meta property="og:description" content="'+esc(desc)+'">\n<meta property="og:url" content="'+url+'">'+(images[0]? '\n<meta property="og:image" content="'+images[0]+'">':'')+'\n<script type="application/ld+json">'+JSON.stringify(data).replace(/</g,'\\u003c')+'</script>';
-  const directProductScript = '<script>window.__MKG_DIRECT_PRODUCT__=' + JSON.stringify(item).replace(/</g,'\\u003c') + ';</script>';
-  return html.replace(/<title>[^<]*<\/title>/i,'<title>'+esc(title)+'</title>').replace('</head>',head+'\n'+directProductScript+'\n</head>');
+  const head='<link rel="canonical" href="'+url+'">\n<meta name="description" content="'+esc(desc)+'">\n<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">\n<meta property="og:type" content="product">\n<meta property="og:title" content="'+esc(safeTitle)+'">\n<meta property="og:description" content="'+esc(desc)+'">\n<meta property="og:url" content="'+url+'">'+(images[0]?'\n<meta property="og:image" content="'+images[0]+'">':'')+'\n<script type="application/ld+json">'+JSON.stringify(data).replace(/</g,'\\u003c')+'</script>';
+  const directProductScript='<script>window.__MKG_DIRECT_PRODUCT__='+JSON.stringify(item).replace(/</g,'\\u003c')+';</script>';
+  const seoBody='<section id="mkg-product-seo" aria-label="Product information" style="max-width:1100px;margin:18px auto;padding:0 20px;font-family:Arial,sans-serif"><h1 style="font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0">'+esc(safeTitle)+'</h1><p style="font-size:14px;color:#475569;margin:0">'+esc(desc)+'</p></section>';
+  return html.replace(/<title>[^<]*<\\/title>/i,'<title>'+esc(safeTitle)+'</title>').replace('</head>',head+'\n'+directProductScript+'\n</head>').replace('</body>',seoBody+'\n</body>');
 }
 function sitemapXml(items,origin) {
   const urls=[origin+'/'].concat(items.map(x=>origin+'/product/'+slugifyProductSeo(x)));
