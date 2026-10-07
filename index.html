@@ -195,10 +195,10 @@
 <style>
 /* MKG HERO — Super Deal Hub / brand-first */
 .mkg-hero-wrap{display:block!important;max-width:1280px;margin:10px auto 0;padding:0 16px}
-.mkg-hero{position:relative;width:100%;height:350px;overflow:hidden;border-radius:20px;background:linear-gradient(115deg,#edf8f7 0%,#dff5f2 48%,#fff7df 100%);box-shadow:0 12px 32px rgba(15,23,42,.10);border:1px solid #d7e8e5}
+.mkg-hero{position:relative;width:100%;height:300px;overflow:hidden;border-radius:20px;background:linear-gradient(115deg,#edf8f7 0%,#dff5f2 48%,#fff7df 100%);box-shadow:0 12px 32px rgba(15,23,42,.10);border:1px solid #d7e8e5}
 .mkg-hero-slide{display:grid!important;grid-template-columns:30% 70%;align-items:center;width:100%;height:100%;box-sizing:border-box;padding:18px 30px}
 .hero-brand-panel{height:100%;min-width:0;display:flex;flex-direction:column;justify-content:center;padding:4px 16px 4px 2px;z-index:3}
-.hero-brand-kicker{font-size:9px;font-weight:950;letter-spacing:.16em;color:#00766e;text-transform:uppercase;margin-bottom:4px}
+.hero-brand-kicker{display:none}
 .hero-brand-title{font-size:25px;line-height:1.05;font-weight:950;color:#0f172a;margin:0 0 5px}
 .hero-brand-subtitle{font-size:9.5px;line-height:1.35;color:#64748b;font-weight:700;margin:0 0 10px}
 .hero-brand-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-height:245px;overflow-y:auto;padding:2px 5px 2px 0;scrollbar-width:thin}
@@ -207,18 +207,33 @@
 .hero-brand-btn.active{background:#08756e;color:#fff;border-color:#08756e;box-shadow:0 4px 10px rgba(0,108,100,.20)}
 .hero-brand-btn img{width:18px;height:18px;flex:0 0 18px;object-fit:contain;display:block;background:#fff;border-radius:5px;padding:2px;box-sizing:border-box}
 .hero-brand-btn .brand-fallback{display:none;width:17px;height:17px;flex:0 0 17px;align-items:center;justify-content:center;border-radius:5px;background:#0b203d;color:#fff;font-size:7px;font-weight:950}
-.hero-showcase{position:relative;height:100%;min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2px 0 0}
+.hero-showcase{position:relative;height:100%;min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2px 0 0;overflow:hidden}
 .hero-showcase-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 8px 4px}
 .hero-super-title{font-size:15px;font-weight:950;color:#0b203d;letter-spacing:.02em}
 .hero-showcase-note{font-size:8.5px;color:#526274;font-weight:800;text-align:right}
-.hero-products{width:100%;height:265px;display:flex!important;align-items:center;justify-content:center;gap:5px;z-index:2;min-width:0}
-.hero-product{position:relative;width:145px;height:250px!important;border:0;background:transparent;padding:28px 0 0;cursor:pointer;transition:transform .22s ease,filter .22s ease,background .22s ease,box-shadow .22s ease;display:flex;align-items:flex-end;justify-content:center;z-index:1}
+.hero-products{width:100%;height:225px;display:flex!important;align-items:center;justify-content:center;gap:8px;z-index:2;min-width:0}
+.hero-product{position:relative;width:135px;height:250px!important;border:0;background:transparent;padding:28px 0 0;cursor:pointer;transition:transform .22s ease,filter .22s ease,background .22s ease,box-shadow .22s ease;display:flex;align-items:flex-end;justify-content:center;z-index:1}
 .hero-product:hover{transform:translateY(-12px) scale(1.16);z-index:30;background:rgba(255,255,255,.96);border-radius:18px;box-shadow:0 18px 35px rgba(15,23,42,.18);filter:drop-shadow(0 8px 14px rgba(15,23,42,.10))}
-.hero-product img{width:145px;height:215px;object-fit:contain;object-position:center;background:transparent!important;border:0!important;display:block;mix-blend-mode:normal;filter:drop-shadow(0 10px 10px rgba(15,23,42,.12));transition:transform .22s ease}
+.hero-product img{width:135px;height:190px;object-fit:contain;object-position:center;background:transparent!important;border:0!important;display:block;mix-blend-mode:normal;filter:drop-shadow(0 10px 10px rgba(15,23,42,.12));transition:transform .22s ease}
 .hero-product:hover img{transform:scale(1.08)}
 .hero-product-tag{position:absolute;top:0;left:50%;transform:translateX(-50%);max-width:125px;height:24px;display:inline-flex;align-items:center;justify-content:center;gap:4px;background:#0b203d;color:#fff;border-radius:999px;padding:4px 8px;font-size:8px;line-height:1;font-weight:950;white-space:nowrap;box-sizing:border-box;box-shadow:0 4px 9px rgba(15,23,42,.10);z-index:3}
 .hero-product-tag img{width:13px!important;height:13px!important;object-fit:contain!important;background:#fff!important;border-radius:4px!important;padding:1px!important;box-sizing:border-box;mix-blend-mode:normal!important}
 .hero-product-model{position:absolute;bottom:1px;left:50%;transform:translateX(-50%);max-width:132px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;background:rgba(255,255,255,.9);border:1px solid #e2e8f0;border-radius:999px;padding:4px 7px;color:#17253d;font-size:7.5px;font-weight:900;z-index:4}
+.hero-showcase-tagline{font-size:8px;color:#08756e;font-weight:900;margin-top:1px}
+.latest-showcase{width:100%;height:225px;display:flex;align-items:center;justify-content:center;position:relative}
+.latest-showcase-slide{width:100%;height:100%;display:flex;align-items:center;justify-content:center;gap:12px;animation:showcaseFade .45s ease}
+@keyframes showcaseFade{from{opacity:.15;transform:translateX(12px)}to{opacity:1;transform:translateX(0)}}
+.latest-showcase-card{position:relative;width:145px;height:205px;border-radius:16px;background:rgba(255,255,255,.72);border:1px solid rgba(255,255,255,.8);box-shadow:0 8px 20px rgba(15,23,42,.08);display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding:8px 7px 9px;box-sizing:border-box;transition:transform .22s ease,box-shadow .22s ease}
+.latest-showcase-card:hover{transform:translateY(-7px) scale(1.05);box-shadow:0 18px 32px rgba(15,23,42,.16);z-index:5}
+.latest-showcase-card img{width:118px;height:155px;object-fit:contain;object-position:center;display:block;filter:drop-shadow(0 8px 8px rgba(15,23,42,.13));mix-blend-mode:multiply}
+.latest-showcase-brand{position:absolute;top:8px;left:8px;font-size:7px;font-weight:950;color:#fff;background:#0b203d;border-radius:999px;padding:4px 7px}
+.latest-showcase-model{width:100%;margin-top:4px;text-align:center;font-size:8px;line-height:1.1;color:#0f172a;font-weight:950}
+.latest-showcase-colour{font-size:6.5px;color:#64748b;font-weight:800;margin-top:2px}
+.showcase-dots{display:flex;justify-content:center;gap:4px;height:12px}
+.showcase-dot{width:6px;height:6px;border:0;border-radius:999px;background:#b9d5d1;padding:0;cursor:pointer}
+.showcase-dot.active{width:18px;background:#08756e}
+@media(max-width:900px){.latest-showcase{height:205px}.latest-showcase-slide{gap:5px}.latest-showcase-card{width:105px;height:190px;padding-bottom:7px}.latest-showcase-card img{width:88px;height:140px}.latest-showcase-brand{font-size:6px;padding:3px 5px}.latest-showcase-model{font-size:6.5px}.latest-showcase-colour{font-size:5.5px}}
+@media(max-width:640px){.hero-showcase-tagline{font-size:6.5px}.latest-showcase{height:205px}.latest-showcase-slide{gap:3px}.latest-showcase-card{width:77px;height:180px;border-radius:11px;padding:6px 4px 6px}.latest-showcase-card img{width:66px;height:125px}.latest-showcase-brand{top:5px;left:4px;font-size:5px;padding:3px 4px}.latest-showcase-model{font-size:5.5px}.latest-showcase-colour{font-size:4.8px}}
 .hero-category-strip{display:flex;justify-content:center;flex-wrap:wrap;gap:5px;width:100%;margin-top:0}
 .hero-category-strip span{font-size:7.5px;font-weight:900;color:#17253d;background:rgba(255,255,255,.88);border:1px solid #ead28b;border-radius:999px;padding:4px 7px;white-space:nowrap}
 .hero-category-nav{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:10px 0 0}
@@ -230,7 +245,7 @@
  .hero-product{width:120px}.hero-product img{width:120px;height:200px}.hero-product-model{max-width:110px}
 }
 @media(max-width:900px){
- .mkg-hero{height:320px;border-radius:16px}
+ .mkg-hero{height:285px;border-radius:16px}
  .mkg-hero-slide{grid-template-columns:32% 68%;padding:14px 16px}
  .hero-brand-title{font-size:20px}.hero-brand-subtitle{font-size:8px}
  .hero-brand-list{gap:4px;max-height:225px}.hero-brand-btn{font-size:7.5px;padding:6px 5px;gap:5px}.hero-brand-btn img,.hero-brand-btn .brand-fallback{width:14px;height:14px;flex-basis:14px}
@@ -240,7 +255,7 @@
  .hero-category-nav{grid-template-columns:repeat(3,1fr)}
 }
 @media(max-width:640px){
- .mkg-hero{height:410px;min-height:410px;border-radius:14px}
+ .mkg-hero{height:370px;min-height:370px;border-radius:14px}
  .mkg-hero-slide{display:flex!important;flex-direction:column;align-items:stretch;padding:10px 9px 16px}
  .hero-brand-panel{height:auto;padding:0 0 5px;flex:0 0 auto}
  .hero-brand-kicker{font-size:7px;margin-bottom:2px}.hero-brand-title{font-size:17px;margin-bottom:2px}.hero-brand-subtitle{display:none}
@@ -248,9 +263,9 @@
  .hero-brand-list::-webkit-scrollbar{display:none}
  .hero-brand-btn{flex:0 0 auto;font-size:7px;padding:5px 7px;border-radius:8px}
  .hero-brand-btn img,.hero-brand-btn .brand-fallback{width:12px;height:12px;flex-basis:12px}
- .hero-showcase{height:315px;flex:1}
+ .hero-showcase{height:275px;flex:1}
  .hero-showcase-head{padding:0 2px 1px}.hero-super-title{font-size:11px}.hero-showcase-note{font-size:6.5px}
- .hero-products{height:245px;gap:1px}.hero-product{width:72px;height:220px!important;padding-top:25px}.hero-product img{width:72px;height:180px}
+ .hero-products{height:215px;gap:2px}.hero-product{width:72px;height:220px!important;padding-top:25px}.hero-product img{width:72px;height:180px}
  .hero-product-tag{height:20px;min-width:58px;max-width:68px;font-size:6px;padding:3px 4px}.hero-product-tag img{width:10px!important;height:10px!important}
  .hero-product-model{font-size:5.8px;max-width:68px;padding:3px 4px}
  .hero-category-strip{gap:2px}.hero-category-strip span{font-size:5.8px;padding:3px 4px}
@@ -360,14 +375,15 @@
         </div>
         <div class="hero-showcase">
           <div class="hero-showcase-head">
-            <div class="hero-super-title">🔥 SUPER DEAL HUB</div>
-            <div class="hero-showcase-note">Latest picks across phones, laptops &amp; electronics</div>
+            <div>
+              <div class="hero-super-title">🔥 SUPER DEAL HUB</div>
+              <div class="hero-showcase-tagline">Latest Flagships • Curated Showcase</div>
+            </div>
+            <div class="hero-showcase-note">New generation • Multi-brand • Auto showcase</div>
           </div>
-          <div class="hero-products" data-hero-products="deals"></div>
-          <div class="hero-category-strip">
-            <span>📱 Phones</span><span>💻 Laptops</span><span>🎧 Accessories</span><span>⌚ Wearables</span><span>📺 LED TVs</span>
-          </div>
-        </div>
+          <div id="latest-showcase" class="latest-showcase" aria-label="Latest flagship showcase"></div>
+          <div class="showcase-dots" id="showcase-dots" aria-label="Showcase slides"></div>
+        </div>        </div>
       </div>
     </div>
     <div class="hero-category-nav" aria-label="Shop categories">
@@ -2314,121 +2330,65 @@
 
     let heroIndex = 0;
     let heroTimer = null;
+    let showcaseIndex = 0;
+    let showcaseTimer = null;
 
-    function heroImage(item) {
-      const brand = String(item?.Brand || '').trim().toLowerCase();
-      const model = String(item?.Model || '').trim().toLowerCase();
-      const color = String(item?.Color || '').trim().toLowerCase();
-      const modelAndColor = (model + ' ' + color).replace(/\s+/g, ' ').trim();
-      const imgs = parseImages(item?.ImageUrl || item?.imageUrl || '');
-      return imgs[0] || '';
+    const LATEST_SHOWCASE = [
+      [
+        {brand:'Apple', model:'iPhone Duo', colour:'First Apple Foldable', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-duo.jpg'},
+        {brand:'Samsung', model:'Galaxy Z Fold8 Ultra', colour:'Flagship Foldable', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold8-ultra.jpg'},
+        {brand:'Google', model:'Pixel 11 Pro Fold', colour:'Google Fold', img:'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-11-pro-fold.jpg'},
+        {brand:'Apple', model:'iPhone 18 Pro', colour:'Burgundy', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-18-pro.jpg'}
+      ],
+      [
+        {brand:'Apple', model:'iPhone 17 Pro', colour:'Saffron / Cosmic Orange', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-17-pro.jpg'},
+        {brand:'Samsung', model:'Galaxy S26 Ultra', colour:'Ultra Flagship', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s26-ultra.jpg'},
+        {brand:'Google', model:'Pixel 11 Pro', colour:'Pro Flagship', img:'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-11-pro.jpg'},
+        {brand:'OnePlus', model:'OnePlus 15', colour:'Next-gen Flagship', img:'https://fdn2.gsmarena.com/vv/bigpic/oneplus-15.jpg'}
+      ],
+      [
+        {brand:'Samsung', model:'Galaxy Z Flip8', colour:'Latest Compact Foldable', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-flip8.jpg'},
+        {brand:'Google', model:'Pixel 11 Pro Fold', colour:'Google Fold', img:'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-11-pro-fold.jpg'},
+        {brand:'Apple', model:'iPhone 18 Pro Max', colour:'Burgundy', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-18-pro-max.jpg'},
+        {brand:'Samsung', model:'Galaxy Z Fold8 Ultra', colour:'Ultra Fold', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold8-ultra.jpg'}
+      ],
+      [
+        {brand:'Apple', model:'iPhone Duo', colour:'The new foldable iPhone', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-duo.jpg'},
+        {brand:'Samsung', model:'Galaxy Z Fold8 Ultra', colour:'The Ultra Fold', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold8-ultra.jpg'},
+        {brand:'Apple', model:'iPhone 18 Pro', colour:'Burgundy', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-18-pro.jpg'},
+        {brand:'Apple', model:'iPhone 17 Pro', colour:'Saffron / Cosmic Orange', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-17-pro.jpg'}
+      ]
+    ];
+
+    function renderLatestShowcase(index) {
+      const wrap = document.getElementById('latest-showcase');
+      const dots = document.getElementById('showcase-dots');
+      if (!wrap || !dots) return;
+      showcaseIndex = ((index % LATEST_SHOWCASE.length) + LATEST_SHOWCASE.length) % LATEST_SHOWCASE.length;
+      const slide = LATEST_SHOWCASE[showcaseIndex];
+      wrap.innerHTML = '<div class="latest-showcase-slide">' + slide.map(item =>
+        '<div class="latest-showcase-card">' +
+          '<span class="latest-showcase-brand">' + item.brand + '</span>' +
+          '<img src="' + item.img + '" alt="' + item.model + '" loading="eager" onerror="this.style.display=\'none\'">' +
+          '<div class="latest-showcase-model">' + item.model + '</div>' +
+          '<div class="latest-showcase-colour">' + item.colour + '</div>' +
+        '</div>'
+      ).join('') + '</div>';
+      dots.innerHTML = LATEST_SHOWCASE.map((_,i) =>
+        '<button class="showcase-dot' + (i===showcaseIndex ? ' active' : '') + '" type="button" aria-label="Showcase ' + (i+1) + '" onclick="renderLatestShowcase(' + i + ');restartShowcaseTimer()"></button>'
+      ).join('');
     }
 
-    function getHeroBrandIconUrl(brand) {
-      const key = String(brand || '').trim().toLowerCase().replace(/[^a-z0-9]+/g,'');
-      const map = {
-        apple:'apple', samsung:'samsung', oneplus:'oneplus', tecno:'tecno',
-        xiaomi:'xiaomi', redmi:'redmi', poco:'poco', iqoo:'iqoo',
-        vivo:'vivo', oppo:'oppo', realme:'realme', motorola:'motorola',
-        nothing:'nothing', google:'google', sony:'sony', nokia:'nokia',
-        lenovo:'lenovo', hp:'hp', dell:'dell', asus:'asus', acer:'acer',
-        msi:'msi', huawei:'huawei', honor:'honor', infinix:'infinix',
-        itel:'itel', lava:'lava', boat:'boat', jbl:'jbl', portronics:'portronics',
-        noise:'noise', fireboltt:'fireboltt', dizo:'realme'
-      };
-      const slug = map[key];
-      return slug ? 'https://cdn.simpleicons.org/' + slug : '';
-    }
-
-    function heroBrandIconHtml(brand) {
-      const label = String(brand || '').trim();
-      const initials = label.slice(0,2).toUpperCase();
-      const url = getHeroBrandIconUrl(label);
-      if (!url) return '<span class="brand-fallback" style="display:flex">' + initials + '</span>';
-      return "<img src=\"" + url + "\" alt=\"\" aria-hidden=\"true\" loading=\"eager\" onerror=\"this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\';\">" +
-             '<span class="brand-fallback">' + initials + '</span>';
-    }
-    function heroModelScore(item) {
-      const model = String(item?.Model || '').toLowerCase();
-      const category = String(item?.Category || '').toLowerCase();
-      let score = 0;
-      const nums = model.match(/\d+/g) || [];
-      nums.forEach(n => { score += Math.min(parseInt(n,10), 999) * (category === 'phone' ? 1 : .2); });
-      if (/pro|max|ultra|plus|premium|flagship|5g|fold|flip/i.test(model)) score += 180;
-      if (/new|latest/i.test(model)) score += 250;
-      if (/iphone 17|iphone 16|galaxy s2[4-9]|z flip [6-9]|oneplus 1[3-9]/i.test(model)) score += 500;
-      return score;
-    }
-
-    function chooseHeroItems(items) {
-      const valid = items.filter(i => heroImage(i));
-      if (!valid.length) return [];
-      const categoryOf = item => {
-        const c = String(item.Category || '').trim().toLowerCase();
-        if (c === 'phone') return 'Phone';
-        if (c === 'laptop') return 'Laptop';
-        if (/wearable|watch/i.test(c + ' ' + String(item.SubCategory || '') + ' ' + String(item.Model || ''))) return 'Wearables';
-        if (/led|tv|television/i.test(c + ' ' + String(item.SubCategory || '') + ' ' + String(item.Model || ''))) return 'LED TV';
-        if (c === 'accessories') return 'Accessories';
-        return c || 'Other';
-      };
-      const chosen = [];
-      const used = new Set();
-
-      // First cover every major category that actually has inventory.
-      ['Phone','Laptop','Accessories','Wearables','LED TV'].forEach(cat => {
-        const candidates = valid.filter(i => categoryOf(i) === cat && !used.has(String(i.id)));
-        candidates.sort((a,b) => heroModelScore(b)-heroModelScore(a));
-        if (candidates[0]) {
-          chosen.push(candidates[0]);
-          used.add(String(candidates[0].id));
-        }
-      });
-
-      // Then fill remaining slots with the strongest/latest-looking products,
-      // preferring brands not already represented.
-      const remaining = valid.filter(i => !used.has(String(i.id)));
-      remaining.sort((a,b) => {
-        const brandA = String(a.Brand||'').toLowerCase(), brandB = String(b.Brand||'').toLowerCase();
-        const diversity = (usedBrand => usedBrand ? -100 : 80);
-        const usedBrands = new Set(chosen.map(x => String(x.Brand||'').toLowerCase()));
-        return (heroModelScore(b)-heroModelScore(a)) +
-          diversity(usedBrands.has(brandB)) - diversity(usedBrands.has(brandA));
-      });
-      remaining.forEach(item => {
-        if (chosen.length < 6) {
-          chosen.push(item);
-          used.add(String(item.id));
-        }
-      });
-      return chosen.slice(0,6);
+    function restartShowcaseTimer() {
+      if (showcaseTimer) clearInterval(showcaseTimer);
+      showcaseTimer = setInterval(() => renderLatestShowcase(showcaseIndex + 1), 4200);
     }
 
     function renderHeroSlides() {
-      const groups = {
-        deals: inventory.filter(i => heroImage(i))
-      };
-      document.querySelectorAll('[data-hero-products]').forEach(el => {
-        const chosen = chooseHeroItems(groups.deals);
-        el.innerHTML = chosen.map(item => {
-          const img = heroImage(item);
-          const brand = String(item.Brand || '').trim();
-          const brandKey = brand.toLowerCase().replace(/[^a-z0-9]+/g,'');
-          const tagClass = ['apple','samsung','oneplus','tecno'].includes(brandKey) ? brandKey : '';
-          const icon = getHeroBrandIconUrl(brand);
-          const iconHtml = icon
-            ? '<img src="' + icon + '" alt="" aria-hidden="true" loading="eager">'
-            : '';
-          return '<button class="hero-product" onclick="openProductModal(' + JSON.stringify(item.id || '') + ')" aria-label="' +
-            String((brand ? brand + ' ' : '') + (item.Model || 'Product')).replace(/"/g,'&quot;') + '">' +
-            '<span class="hero-product-tag ' + tagClass + '">' + iconHtml + '<span>' + brand.replace(/</g,'&lt;') + '</span></span>' +
-            '<img src="' + img.replace(/"/g,'&quot;') + '" alt="' + String(item.Model||'Product').replace(/"/g,'&quot;') + '" loading="eager">' +
-            '<span class="hero-product-model">' + String(item.Model||'Product').replace(/</g,'&lt;') + '</span>' +
-          '</button>';
-        }).join('');
-        if (!chosen.length) el.innerHTML = '<div class="hero-fallback-device">No featured products</div>';
-      });
+      renderLatestShowcase(showcaseIndex);
+      restartShowcaseTimer();
     }
+
     function showHero(index) {
       const slides = document.querySelectorAll('.mkg-hero-slide');
       const dots = document.querySelectorAll('#hero-dots button');
