@@ -194,7 +194,7 @@
 </style>
 <style>
 /* MKG HERO — Super Deal Hub / brand-first */
-.mkg-hero-wrap{display:block!important;max-width:1280px;margin:10px auto 0;padding:0 16px}
+.mkg-hero-wrap{display:block!important;max-width:none;width:100%;margin:10px auto 0;padding:0 20px;box-sizing:border-box}
 .mkg-hero{position:relative;width:100%;height:300px;overflow:hidden;border-radius:20px;background:linear-gradient(115deg,#edf8f7 0%,#dff5f2 48%,#fff7df 100%);box-shadow:0 12px 32px rgba(15,23,42,.10);border:1px solid #d7e8e5}
 .mkg-hero-slide{display:grid!important;grid-template-columns:30% 70%;align-items:center;width:100%;height:100%;box-sizing:border-box;padding:18px 30px}
 .hero-brand-panel{height:100%;min-width:0;display:flex;flex-direction:column;justify-content:center;padding:4px 16px 4px 2px;z-index:3}
@@ -2334,30 +2334,41 @@
     let showcaseTimer = null;
 
     const LATEST_SHOWCASE = [
-      [
-        {brand:'Apple', model:'iPhone Duo', colour:'First Apple Foldable', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-duo.jpg'},
-        {brand:'Samsung', model:'Galaxy Z Fold8 Ultra', colour:'Flagship Foldable', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold8-ultra.jpg'},
-        {brand:'Google', model:'Pixel 11 Pro Fold', colour:'Google Fold', img:'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-11-pro-fold.jpg'},
-        {brand:'Apple', model:'iPhone 18 Pro', colour:'Burgundy', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-18-pro.jpg'}
-      ],
-      [
-        {brand:'Apple', model:'iPhone 17 Pro', colour:'Saffron / Cosmic Orange', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-17-pro.jpg'},
-        {brand:'Samsung', model:'Galaxy S26 Ultra', colour:'Ultra Flagship', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s26-ultra.jpg'},
-        {brand:'Google', model:'Pixel 11 Pro', colour:'Pro Flagship', img:'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-11-pro.jpg'},
-        {brand:'OnePlus', model:'OnePlus 15', colour:'Next-gen Flagship', img:'https://fdn2.gsmarena.com/vv/bigpic/oneplus-15.jpg'}
-      ],
-      [
-        {brand:'Samsung', model:'Galaxy Z Flip8', colour:'Latest Compact Foldable', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-flip8.jpg'},
-        {brand:'Google', model:'Pixel 11 Pro Fold', colour:'Google Fold', img:'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-11-pro-fold.jpg'},
-        {brand:'Apple', model:'iPhone 18 Pro Max', colour:'Burgundy', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-18-pro-max.jpg'},
-        {brand:'Samsung', model:'Galaxy Z Fold8 Ultra', colour:'Ultra Fold', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold8-ultra.jpg'}
-      ],
-      [
-        {brand:'Apple', model:'iPhone Duo', colour:'The new foldable iPhone', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-duo.jpg'},
-        {brand:'Samsung', model:'Galaxy Z Fold8 Ultra', colour:'The Ultra Fold', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold8-ultra.jpg'},
-        {brand:'Apple', model:'iPhone 18 Pro', colour:'Burgundy', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-18-pro.jpg'},
-        {brand:'Apple', model:'iPhone 17 Pro', colour:'Saffron / Cosmic Orange', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-17-pro.jpg'}
-      ]
+      {
+        title:'LATEST MARKET MIX',
+        tagline:'New models • Current market • Multi-brand',
+        items:[
+          {model:'iPhone 18 Pro', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone18-pro.jpg'},
+          {model:'Galaxy S26', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s26.jpg'},
+          {model:'Pixel 11', img:'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-11.jpg'},
+          {model:'OnePlus 15', img:'https://fdn2.gsmarena.com/vv/bigpic/oneplus-15.jpg'},
+          {model:'Xiaomi 17', img:'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-17.jpg'},
+          {model:'vivo X300', img:'https://fdn2.gsmarena.com/vv/bigpic/vivo-x300.jpg'}
+        ]
+      },
+      {
+        title:'FOLDABLES & FLIPS',
+        tagline:'Latest foldables • One showcase pile',
+        items:[
+          {model:'Galaxy Z Fold8 Ultra', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold8-ultra-r1.jpg'},
+          {model:'Galaxy Z Fold8', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold8.jpg'},
+          {model:'Galaxy Z Flip8', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-flip8.jpg'},
+          {model:'Pixel 11 Pro Fold', img:'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-11-pro-fold.jpg'},
+          {model:'Motorola Razr 2026', img:'https://fdn2.gsmarena.com/vv/bigpic/motorola-razr-2026.jpg'}
+        ]
+      },
+      {
+        title:'NEW-GEN + VALUE',
+        tagline:'Latest choices • Not just premium flagships',
+        items:[
+          {model:'iPhone 17', img:'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-17.jpg'},
+          {model:'Galaxy S26 FE', img:'https://fdn2.gsmarena.com/vv/bigpic/samsung-samsung-galaxy-s26-fe.jpg'},
+          {model:'Pixel 10a', img:'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-10a.jpg'},
+          {model:'Xiaomi 17T', img:'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-17t.jpg'},
+          {model:'OnePlus 15', img:'https://fdn2.gsmarena.com/vv/bigpic/oneplus-15.jpg'},
+          {model:'vivo X300', img:'https://fdn2.gsmarena.com/vv/bigpic/vivo-x300.jpg'}
+        ]
+      }
     ];
 
     function renderLatestShowcase(index) {
@@ -2366,14 +2377,19 @@
       if (!wrap || !dots) return;
       showcaseIndex = ((index % LATEST_SHOWCASE.length) + LATEST_SHOWCASE.length) % LATEST_SHOWCASE.length;
       const slide = LATEST_SHOWCASE[showcaseIndex];
-      wrap.innerHTML = '<div class="latest-showcase-slide">' + slide.map(item =>
-        '<div class="latest-showcase-card">' +
-          '<span class="latest-showcase-brand">' + item.brand + '</span>' +
-          '<img src="' + item.img + '" alt="' + item.model + '" loading="eager" onerror="this.style.display=\'none\'">' +
-          '<div class="latest-showcase-model">' + item.model + '</div>' +
-          '<div class="latest-showcase-colour">' + item.colour + '</div>' +
-        '</div>'
-      ).join('') + '</div>';
+      const safe = value => String(value || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      wrap.innerHTML =
+        '<div class="latest-showcase-slide" aria-label="' + safe(slide.title) + '">' +
+          slide.items.map((item,i) =>
+            '<div class="latest-showcase-item" title="' + safe(item.model) + '" style="--pile-index:' + i + '">' +
+              '<img src="' + safe(item.img) + '" alt="' + safe(item.model) + '" loading="eager" onerror="this.closest(\'.latest-showcase-item\').style.display=\'none\'">' +
+            '</div>'
+          ).join('') +
+        '</div>';
+      const title = document.querySelector('.hero-super-title');
+      const tagline = document.querySelector('.hero-showcase-tagline');
+      if (title) title.textContent = '🔥 SUPER DEAL HUB • ' + slide.title;
+      if (tagline) tagline.textContent = slide.tagline;
       dots.innerHTML = LATEST_SHOWCASE.map((_,i) =>
         '<button class="showcase-dot' + (i===showcaseIndex ? ' active' : '') + '" type="button" aria-label="Showcase ' + (i+1) + '" onclick="renderLatestShowcase(' + i + ');restartShowcaseTimer()"></button>'
       ).join('');
@@ -3309,38 +3325,28 @@
 
     function heroBrandIconHtml(brand) {
       const key = String(brand || '').trim().toLowerCase();
-      const icons = {
-        apple: '',
-        samsung: '📱',
-        google: 'G',
-        oneplus: '1+',
-        xiaomi: 'MI',
-        redmi: 'R',
-        vivo: 'V',
-        oppo: 'O',
-        realme: 'R',
-        motorola: 'M',
-        iqoo: 'iQ',
-        poco: 'P',
-        infinix: 'I',
-        tecno: 'T',
-        itel: 'i',
-        lava: 'L',
-        nothing: 'N',
-        boat: '🎧',
-        noise: '⌚',
-        kraze: 'K',
-        lenovo: 'L',
-        hp: 'HP',
-        dell: 'D',
-        asus: 'A',
-        acer: 'A',
-        sony: 'S',
-        lg: 'LG',
-        jbl: 'JBL'
+      const slugs = {
+        apple:'apple', samsung:'samsung', google:'google', oneplus:'oneplus',
+        xiaomi:'xiaomi', redmi:'xiaomi', vivo:'vivo', oppo:'oppo', realme:'realme',
+        motorola:'motorola', iqoo:'iqoo', poco:'poco', infinix:'infinix', tecno:'tecno',
+        itel:'itel', lava:'lava', nothing:'nothing', boat:'boat', noise:'noise',
+        lenovo:'lenovo', hp:'hp', dell:'dell', asus:'asus', acer:'acer', sony:'sony',
+        lg:'lg', jbl:'jbl'
       };
-      const label = icons[key] || '•';
-      return '<span class="brand-fallback" style="display:flex">' + label + '</span>';
+      const fallback = {
+        mkg:'MKG', kraze:'K', apple:'', samsung:'S', google:'G', oneplus:'1+',
+        xiaomi:'MI', redmi:'R', vivo:'V', oppo:'O', realme:'R', motorola:'M',
+        iqoo:'iQ', poco:'P', infinix:'I', tecno:'T', itel:'i', lava:'L',
+        nothing:'N', boat:'B', noise:'N', lenovo:'L', hp:'HP', dell:'D',
+        asus:'A', acer:'A', sony:'S', lg:'LG', jbl:'JBL'
+      };
+      const slug = slugs[key];
+      const src = key === 'mkg'
+        ? '/image/mkg_official_logo.png'
+        : (slug ? 'https://cdn.simpleicons.org/' + slug + '?viewbox=auto&size=24' : '');
+      const label = fallback[key] || '•';
+      if (!src) return '<span class="brand-fallback" style="display:flex">' + label + '</span>';
+      return '<img src="' + src + '" alt="' + key + ' logo" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><span class="brand-fallback">' + label + '</span>';
     }
 
     function renderHeroBrandFilters() {
