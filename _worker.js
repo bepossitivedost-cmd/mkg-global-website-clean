@@ -123,13 +123,10 @@ async function getSeed(env, request) {
 }
 
 async function getInventory(env, request) {
-  // Keep the storefront resilient if the readiness flag is missing.
-  // Only an explicit "0" means the catalog was intentionally disabled.
-  // This prevents a deployment/KV flag mismatch from rendering a completely blank store.
-  const catalogReady = await env.MKG_IMAGES.get('catalog-ready');
-  if (catalogReady === '0') return [];
-
-  // The latest admin-uploaded inventory is the storefront source of truth.
+  // The storefront should always render the latest saved inventory when it exists.
+  // Do not let the catalog-ready flag blank the live store: a stale/missing KV flag
+  // must never hide the catalogue after a deployment.
+  // The latest admin-uploaded inventory remains the storefront source of truth.
   // Fall back to the bundled seed only when no live inventory has been uploaded.
   const saved = await env.MKG_IMAGES.get('inventory');
   let items = [];
