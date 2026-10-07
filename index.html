@@ -2325,7 +2325,22 @@
       try { syncCategoryButtons(); } catch (e) { console.error('Category sync failed:', e); }
       try { renderHeroSlides(); } catch (e) { console.error('Hero showcase render failed:', e); }
       try { renderCatalog(); } catch (e) { console.error('Catalog render failed:', e); }
-      try { openProductFromUrl(); } catch (e) { console.error('Product URL render failed:', e); }
+
+      // Direct product URLs can arrive before the API response is ready.
+      // Retry the URL resolver briefly so a direct /product/... link never
+      // falls back to the homepage just because inventory loading was late.
+      const resolveDirectProduct = (attempt = 0) => {
+        if (!window.location.pathname.startsWith('/product/')) return;
+        try {
+          if (openProductFromUrl()) return;
+        } catch (e) {
+          console.error('Product URL render failed:', e);
+        }
+        if (attempt < 8) {
+          window.setTimeout(() => resolveDirectProduct(attempt + 1), 350);
+        }
+      };
+      resolveDirectProduct();
     }
 
     let heroIndex = 0;
