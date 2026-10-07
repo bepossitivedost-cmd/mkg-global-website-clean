@@ -2303,7 +2303,27 @@
     function formatINR(val) {
       return "₹" + Number(val || 0).toLocaleString('en-IN');
     }
+    async function resolveProductFromApi() {
+      const match = window.location.pathname.match(/^\/product\/([^/]+)\/?$/i);
+      if (!match) return null;
+      const slug = decodeURIComponent(match[1]).trim();
+      try {
+        const response = await fetch('/api/product?slug=' + encodeURIComponent(slug), { cache: 'no-store' });
+        if (!response.ok) return null;
+        const item = await response.json();
+        if (!item || (!item.Brand && !item.Model)) return null;
+        const existingIndex = inventory.findIndex(x => String(x.id) === String(item.id));
+        if (existingIndex >= 0) inventory[existingIndex] = item;
+        else inventory.push(item);
+        return item;
+      } catch (e) {
+        console.error('Direct product API failed:', e);
+        return null;
+      }
+    }
+
     async function loadInventory() {
+      const directItem = await resolveProductFromApi();
       try {
         const response = await fetch('/api/inventory', { cache: 'no-store' });
         if (!response.ok) throw new Error('Inventory API unavailable');
@@ -2322,11 +2342,11 @@
       // The Worker embeds the exact product requested by /product/... .
       // Keep it available even if the API is temporarily unavailable or
       // its response is cached differently from the page request.
-      const directProduct = window.__MKG_DIRECT_PRODUCT__;
+      const directProduct = window.__MKG_DIRECT_PRODUCT__ || directItem;
       if (directProduct && (directProduct.Brand || directProduct.Model)) {
-        const directSlug = slugifyProduct(directProduct).toLowerCase();
-        const alreadyPresent = inventory.some(item => slugifyProduct(item).toLowerCase() === directSlug);
-        if (!alreadyPresent) inventory.push(directProduct);
+        const existingIndex = inventory.findIndex(item => String(item.id) === String(directProduct.id));
+        if (existingIndex >= 0) inventory[existingIndex] = directProduct;
+        else inventory.push(directProduct);
       }
       populateCatalogFilters();
       try { renderHeroBrandFilters(); } catch (e) { console.error('Brand filter render failed:', e); }
@@ -2344,9 +2364,7 @@
         } catch (e) {
           console.error('Product URL render failed:', e);
         }
-        if (attempt < 8) {
-          window.setTimeout(() => resolveDirectProduct(attempt + 1), 350);
-        }
+        if (attempt < 8) window.setTimeout(() => resolveDirectProduct(attempt + 1), 350);
       };
       resolveDirectProduct();
     }
