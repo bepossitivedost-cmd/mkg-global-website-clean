@@ -2981,11 +2981,19 @@
       }
     }
 
-    function openProductFromUrl() {
+    function productSlugMatches(item, slug) {
+      const target = String(slug || '').trim().toLowerCase();
+      const exact = slugifyProduct(item).toLowerCase();
+      if (exact === target) return true;
+      const compact = value => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+      return compact(exact) === compact(target);
+    }
+
+function openProductFromUrl() {
       const match = window.location.pathname.match(/^\/product\/([^/]+)\/?$/i);
       if (!match || !inventory.length) return false;
       const wanted = decodeURIComponent(match[1]).toLowerCase();
-      const item = inventory.find(i => slugifyProduct(i).toLowerCase() === wanted);
+      const item = inventory.find(i => productSlugMatches(i, wanted));
       if (item) {
         openProductModal(item.id, false);
         return true;
