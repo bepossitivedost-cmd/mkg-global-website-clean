@@ -3334,18 +3334,17 @@
       const escapeHtml = value => String(value).replace(/[&<>"']/g, ch => ({
         '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
       }[ch]));
-      wrap.innerHTML = [
-        '<button class="hero-brand-btn active" data-brand="all" onclick="setBrandFilter(\\'all\\')">All Brands</button>',
-        ...brands.map(brand =>
-          '<button class="hero-brand-btn" data-brand="' + escapeHtml(brand) + '" onclick="setBrandFilter(' + JSON.stringify(brand) + ')">' +
+      wrap.innerHTML =
+        '<button class="hero-brand-btn" data-brand="all" type="button">All Brands</button>' +
+        brands.map(brand =>
+          '<button class="hero-brand-btn" data-brand="' + escapeHtml(brand) + '" type="button">' +
           escapeHtml(brand) + '</button>'
-        )
-      ].join('');
-      wrap.querySelectorAll('.hero-brand-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.brand === selectedBrand);
+        ).join('');
+      wrap.querySelectorAll('.hero-brand-btn').forEach(btn => {
+        btn.addEventListener('click', () => setBrandFilter(btn.dataset.brand || 'all'));
+        btn.classList.toggle('active', btn.dataset.brand === selectedBrand);
       });
     }
-
     function setGradeFilter(value) {
       selectedGrade = value || 'all';
       renderCatalog();
