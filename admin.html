@@ -52,6 +52,25 @@
   </section>
 
   <section class="bg-white rounded-2xl border p-5 shadow-sm">
+    <h2 class="text-lg font-black">2. Safe Price Update & New Products</h2>
+    <p class="text-sm text-slate-500 mt-1">
+      Update prices by Product ID and add new products without changing existing product images or Product IDs.
+      This is the recommended option for price changes.
+    </p>
+    <div class="drop rounded-2xl p-6 text-center mt-4">
+      <input id="priceMergeCsv" type="file" accept=".csv,text/csv" class="hidden">
+      <button onclick="document.getElementById('priceMergeCsv').click()" class="w-auto px-6 py-3 rounded-xl bg-teal-700 text-white font-black">Choose Price Update CSV</button>
+      <p id="priceMergeName" class="text-xs text-slate-500 mt-3">Product ID + MRP + Super Deal Price required</p>
+    </div>
+    <button id="priceMergeUpload" onclick="uploadPriceMerge()" class="mt-4 w-full py-3 rounded-xl bg-emerald-700 text-white font-black">
+      Apply Safe Price Update
+    </button>
+    <div class="mt-3 rounded-xl bg-emerald-50 border border-emerald-200 p-3 text-xs text-emerald-800 font-semibold">
+      ✓ Existing product images are preserved &nbsp;•&nbsp; ✓ Existing Product IDs are preserved &nbsp;•&nbsp; ✓ New products are appended safely
+    </div>
+  </section>
+
+  <section class="bg-white rounded-2xl border p-5 shadow-sm">
     <h2 class="text-lg font-black">2. Product Image Upload</h2>
     <p class="text-sm text-slate-500 mt-1">Select a product, choose one or more images, then attach them to that product.</p>
     <label class="block text-xs font-black text-slate-700 mt-4 mb-1">Select Product</label>
@@ -113,7 +132,7 @@ async function load(force=false){
   }
 }
 $('csv').onchange=()=>{$('csvName').textContent=$('csv').files[0]?.name||'15-column format • CSV or XLSX'};
-$('priceMergeCsv').onchange=()=>{$('priceMergeName').textContent=$('priceMergeCsv').files[0]?.name||'Product ID + price columns required.'};
+if ($('priceMergeCsv')) $('priceMergeCsv').onchange=()=>{$('priceMergeName').textContent=$('priceMergeCsv').files[0]?.name||'Product ID + price columns required.'};
 async function uploadPriceMerge(){
   const f=$('priceMergeCsv').files[0];
   if(!f) return status('Please choose the safe price / new product CSV.');
