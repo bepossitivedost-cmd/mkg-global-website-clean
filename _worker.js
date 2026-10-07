@@ -2,6 +2,13 @@ function slugifyProductSeo(item) {
   const parts = [item?.Brand, item?.Model, item?.Color, item?.RAM_Storage].filter(Boolean).join('-');
   return String(parts || item?.id || 'product').toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,120);
 }
+function productSlugMatches(item, slug) {
+  const target = String(slug || '').trim().toLowerCase();
+  const exact = slugifyProductSeo(item).toLowerCase();
+  if (exact === target) return true;
+  const compact = value => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g,'');
+  return compact(exact) === compact(target);
+}
 function schemaCondition(item) {
   const c=String(item?.Condition||'').toLowerCase();
   if(c.includes('refurb')) return 'https://schema.org/RefurbishedCondition';
@@ -424,7 +431,7 @@ export default {
     if (url.pathname.startsWith('/product/')) {
       const slug=decodeURIComponent(url.pathname.split('/')[2]||'').toLowerCase();
       const items=await getInventory(env,request);
-      const item=items.find(x=>slugifyProductSeo(x).toLowerCase()===slug);
+      const item=items.find(x=>productSlugMatches(x,slug));
       const asset=await env.ASSETS.fetch(new Request(new URL('/index.html',request.url),request));
       if(!asset.ok || !item) return asset;
       const html=await asset.text();
