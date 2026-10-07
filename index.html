@@ -2321,11 +2321,11 @@
         inventory = [];
       }
       populateCatalogFilters();
-      renderHeroBrandFilters();
-      syncCategoryButtons();
-      renderHeroSlides();
-      renderCatalog();
-      openProductFromUrl();
+      try { renderHeroBrandFilters(); } catch (e) { console.error('Brand filter render failed:', e); }
+      try { syncCategoryButtons(); } catch (e) { console.error('Category sync failed:', e); }
+      try { renderHeroSlides(); } catch (e) { console.error('Hero showcase render failed:', e); }
+      try { renderCatalog(); } catch (e) { console.error('Catalog render failed:', e); }
+      try { openProductFromUrl(); } catch (e) { console.error('Product URL render failed:', e); }
     }
 
     let heroIndex = 0;
@@ -3305,6 +3305,42 @@
       if (grid && selectedBrand !== 'all') {
         setTimeout(() => grid.scrollIntoView({behavior:'smooth', block:'start'}), 40);
       }
+    }
+
+    function heroBrandIconHtml(brand) {
+      const key = String(brand || '').trim().toLowerCase();
+      const icons = {
+        apple: '',
+        samsung: '📱',
+        google: 'G',
+        oneplus: '1+',
+        xiaomi: 'MI',
+        redmi: 'R',
+        vivo: 'V',
+        oppo: 'O',
+        realme: 'R',
+        motorola: 'M',
+        iqoo: 'iQ',
+        poco: 'P',
+        infinix: 'I',
+        tecno: 'T',
+        itel: 'i',
+        lava: 'L',
+        nothing: 'N',
+        boat: '🎧',
+        noise: '⌚',
+        kraze: 'K',
+        lenovo: 'L',
+        hp: 'HP',
+        dell: 'D',
+        asus: 'A',
+        acer: 'A',
+        sony: 'S',
+        lg: 'LG',
+        jbl: 'JBL'
+      };
+      const label = icons[key] || '•';
+      return '<span class="brand-fallback" style="display:flex">' + label + '</span>';
     }
 
     function renderHeroBrandFilters() {
