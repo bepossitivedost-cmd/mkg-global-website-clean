@@ -176,7 +176,7 @@ function normalizeInventory(csvText) {
     specs: find('specs/description','specs','description'), box: find('box and accessories','box & accessories','boxandacc'),
     grade: find('grade'), qty: find('qty.','qty','quantity'), warranty: find('warranty'), mrp: find('mrp'),
     deal: find('super deal price','superdealprice','deal price'), image: find('imageurl','image url','image_url'),
-    remarks: find('special remarks','specialremarks','remarks','remark'), video: find('video_url','video url','video')
+    remarks: find('special remarks','specialremarks','remarks','remark'), video: find('video_url','video url','video'), gtin: find('gtin','gtin13','ean','upc','barcode'), mpn: find('mpn','model number','model no')
   };
   return rows.slice(1).map((r, i) => ({
     Category: cleanText(r[idx.category]), SubCategory: cleanText(r[idx.sub]), Condition: cleanText(r[idx.condition]),
@@ -184,7 +184,7 @@ function normalizeInventory(csvText) {
     RAM_Storage: cleanText(r[idx.ram]), Specs: cleanText(r[idx.specs]), BoxAndAcc: cleanText(r[idx.box]),
     Grade: cleanText(r[idx.grade]), Qty: num(r[idx.qty]), Warranty: cleanText(r[idx.warranty]),
     MRP: num(r[idx.mrp]), SuperDealPrice: num(r[idx.deal]), ImageUrl: cleanText(r[idx.image]),
-    SpecialRemarks: cleanText(r[idx.remarks]), Video_URL: cleanText(r[idx.video]), id: `item_${i + 1}`
+    SpecialRemarks: cleanText(r[idx.remarks]), Video_URL: cleanText(r[idx.video]), GTIN: cleanText(r[idx.gtin]), MPN: cleanText(r[idx.mpn]), id: `item_${i + 1}`
   })).filter(x => x.Brand || x.Model || x.Category);
 }
 
