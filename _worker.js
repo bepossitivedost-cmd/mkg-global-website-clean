@@ -24,7 +24,8 @@ function productSeoHtml(item, requestUrl, html) {
   const data={'@context':'https://schema.org','@type':'Product',name,image:images,description:desc,sku:item?.id||slug,brand:item?.Brand?{'@type':'Brand',name:item.Brand}:undefined,category:item?.Category||undefined,video:item?.Video_URL?{'@type':'VideoObject','contentUrl':item.Video_URL,'name':name+' product video'}:undefined,offers:{'@type':'Offer',url,priceCurrency:'INR',price:Number(item?.SuperDealPrice||0),availability:Number(item?.Qty||0)>0?'https://schema.org/InStock':'https://schema.org/OutOfStock',itemCondition:schemaCondition(item)}};
   const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
   const head='<link rel="canonical" href="'+url+'">\n<meta name="description" content="'+esc(desc)+'">\n<meta name="robots" content="index,follow,max-image-preview:large">\n<meta property="og:type" content="product">\n<meta property="og:title" content="'+esc(title)+'">\n<meta property="og:description" content="'+esc(desc)+'">\n<meta property="og:url" content="'+url+'">'+(images[0]? '\n<meta property="og:image" content="'+images[0]+'">':'')+'\n<script type="application/ld+json">'+JSON.stringify(data).replace(/</g,'\\u003c')+'</script>';
-  return html.replace(/<title>[^<]*<\/title>/i,'<title>'+esc(title)+'</title>').replace('</head>',head+'\n</head>');
+  const directProductScript = '<script>window.__MKG_DIRECT_PRODUCT__=' + JSON.stringify(item).replace(/</g,'\\u003c') + ';</script>';
+  return html.replace(/<title>[^<]*<\/title>/i,'<title>'+esc(title)+'</title>').replace('</head>',head+'\n'+directProductScript+'\n</head>');
 }
 function sitemapXml(items,origin) {
   const urls=[origin+'/'].concat(items.map(x=>origin+'/product/'+slugifyProductSeo(x)));
