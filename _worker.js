@@ -70,6 +70,65 @@ function productSeoHtml(item, requestUrl, html) {
   const seoBody='<section id="mkg-product-seo" aria-label="Product information" style="max-width:1100px;margin:18px auto 40px;padding:16px 20px;border:1px solid #e2e8f0;border-radius:14px;background:#fff;font-family:Arial,sans-serif"><h1 style="font-size:18px;line-height:1.35;margin:0 0 6px;color:#0f172a">'+esc(safeTitle)+'</h1><p style="font-size:13px;line-height:1.6;color:#475569;margin:0">'+esc(desc)+'</p></section>';
   return html.replace(/<title>[^<]*<\/title>/i,'<title>'+esc(safeTitle)+'</title>').replace('</head>',head+'\n'+directProductScript+'\n</head>').replace('</body>',seoBody+'\n</body>');
 }
+function googleProductCondition(item) {
+  const c=String(item?.Condition||'').toLowerCase();
+  if (c.includes('refurb')) return 'refurbished';
+  if (c.includes('used') || c.includes('second') || c.includes('open')) return 'used';
+  return 'new';
+}
+function googleProductTitle(item) {
+  const brand=cleanText(item?.Brand), model=cleanText(item?.Model);
+  const storage=cleanText(item?.RAM_Storage), colour=cleanText(item?.Color);
+  const condition=googleProductCondition(item);
+  const conditionText=condition==='refurbished' ? 'Refurbished' : condition==='used' ? 'Used / Second Hand' : '';
+  return [conditionText, [brand,model,storage].filter(Boolean).join(' '), colour].filter(Boolean).join(' - ').slice(0,150);
+}
+function googleProductDescription(item) {
+  const condition=googleProductCondition(item);
+  const conditionText=condition==='refurbished' ? 'Certified refurbished' : condition==='used' ? 'Second-hand / pre-owned' : 'Brand new';
+  return [conditionText,
+    [item?.Brand,item?.Model,item?.RAM_Storage].filter(Boolean).join(' '),
+    item?.Color,
+    item?.Grade ? item.Grade+' condition' : '',
+    item?.Warranty ? item.Warranty+' warranty' : '',
+    item?.BoxAndAcc,
+    item?.Specs
+  ].filter(Boolean).join(' • ').slice(0,5000);
+}
+function googleProductXml(items,origin) {
+  const esc=v=>String(v??'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&apos;');
+  const rows=items.filter(x=>Number(x?.Qty||0)>0).map(item=>{
+    const slug=slugifyProductSeo(item);
+    const link=origin+'/product/'+slug;
+    const images=String(item?.ImageUrl||'').split('|').map(x=>x.trim()).filter(Boolean);
+    const image=images[0] ? (images[0].startsWith('http') ? images[0] : origin+'/'+images[0].replace(/^\//,'')) : '';
+    const condition=googleProductCondition(item);
+    const price=Number(item?.SuperDealPrice||0);
+    if(!image || !price) return '';
+    const gtin=cleanText(item?.GTIN||item?.GTIN13||item?.EAN||item?.UPC||item?.Barcode);
+    const mpn=cleanText(item?.MPN||item?.ModelNumber);
+    const googleCategory=String(item?.Category||'').toLowerCase().includes('laptop')
+      ? 'Electronics > Computers > Laptops'
+      : 'Electronics > Communications > Telephony > Mobile Phones';
+    return '<item>'+
+      '<g:id>'+esc(item?.id||slug)+'</g:id>'+
+      '<g:title>'+esc(googleProductTitle(item))+'</g:title>'+
+      '<g:description>'+esc(googleProductDescription(item))+'</g:description>'+
+      '<g:link>'+esc(link)+'</g:link>'+
+      '<g:image_link>'+esc(image)+'</g:image_link>'+
+      '<g:availability>in_stock</g:availability>'+
+      '<g:price>'+esc(price.toFixed(2))+' INR</g:price>'+
+      '<g:condition>'+condition+'</g:condition>'+
+      (item?.Brand?'<g:brand>'+esc(item.Brand)+'</g:brand>':'')+
+      (gtin?'<g:gtin>'+esc(gtin)+'</g:gtin>':'')+
+      (mpn?'<g:mpn>'+esc(mpn)+'</g:mpn>':'')+
+      '<g:google_product_category>'+esc(googleCategory)+'</g:google_product_category>'+
+      '<g:product_type>'+esc([item?.Category,item?.SubCategory].filter(Boolean).join(' > '))+'</g:product_type>'+
+      '<g:custom_label_0>'+esc(condition)+'</g:custom_label_0>'+
+      '</item>';
+  }).filter(Boolean).join('');
+  return '<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:g="http://base.google.com/ns/1.0"><channel><title>MKG GLOBAL Product Feed</title><link>'+esc(origin)+'</link><description>MKG GLOBAL mobile phones, laptops and electronics</description>'+rows+'</channel></rss>';
+}
 function sitemapXml(items,origin) {
   const urls=[origin+'/'].concat(items.map(x=>origin+'/product/'+slugifyProductSeo(x)));
   return '<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'+[...new Set(urls)].map(u=>'<url><loc>'+u.replace(/&/g,'&amp;')+'</loc></url>').join('')+'</urlset>';
@@ -475,6 +534,12 @@ export default {
     }
     if (url.pathname === '/robots.txt') {
       return new Response('User-agent: *\\nAllow: /\\nSitemap: ' + new URL('/sitemap.xml', request.url).toString() + '\\n', { headers: { 'content-type':'text/plain; charset=utf-8', 'cache-control':'public, max-age=3600' } });
+    }
+    if (url.pathname === '/google-product-feed.xml') {
+      const items=await getInventory(env,request);
+      return new Response(googleProductXml(items,new URL(request.url).origin), {
+        headers:{'content-type':'application/xml; charset=utf-8','cache-control':'public, max-age=300'}
+      });
     }
     if (url.pathname === '/sitemap.xml') {
       const items=await getInventory(env,request);
