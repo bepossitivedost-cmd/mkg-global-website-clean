@@ -276,8 +276,15 @@ async function handlePriceMergeUpload(request, env) {
     const deal = idx.deal >= 0 ? num(row[idx.deal]) : 0;
 
     if (existing) {
-      // Existing products: prices only. All catalog fields and image mappings remain untouched.
+      // Existing products: update only the fields explicitly supplied by the safe CSV.
+      // ImageUrl is intentionally never changed, so existing image mappings remain untouched.
       const copy = { ...existing };
+      if (idx.brand >= 0 && cleanText(row[idx.brand])) copy.Brand = cleanText(row[idx.brand]);
+      if (idx.model >= 0 && cleanText(row[idx.model])) copy.Model = cleanText(row[idx.model]);
+      if (idx.color >= 0 && cleanText(row[idx.color])) copy.Color = cleanText(row[idx.color]);
+      if (idx.ram >= 0 && cleanText(row[idx.ram])) copy.RAM_Storage = cleanText(row[idx.ram]);
+      if (idx.specs >= 0 && cleanText(row[idx.specs])) copy.Specs = cleanText(row[idx.specs]);
+      if (idx.remarks >= 0 && cleanText(row[idx.remarks])) copy.SpecialRemarks = cleanText(row[idx.remarks]);
       if (mrp > 0) copy.MRP = mrp;
       if (deal > 0) copy.SuperDealPrice = deal;
       byId.set(id, copy);
