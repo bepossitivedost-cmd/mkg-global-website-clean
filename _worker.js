@@ -28,8 +28,7 @@ function productSeoHtml(item, requestUrl, html) {
   const warranty=cleanText(item?.Warranty);
   const isRefurb=condition.includes('refurb');
   const isUsed=condition.includes('used') || condition.includes('second') || condition.includes('open box') || condition.includes('open');
-  const conditionLabel=isRefurb ? 'Refurbished' : isUsed ? 'Used / Second Hand' : 'New';
-  const nameParts=[brand,model,storage].filter(Boolean);
+    const nameParts=[brand,model,storage].filter(Boolean);
   const coreName=nameParts.join(' ').trim() || 'MKG GLOBAL Product';
   const titlePrefix=isRefurb ? 'Refurbished by MKG GLOBAL' : isUsed ? 'Used / Second Hand' : '';
   const title=[titlePrefix,coreName,colour,grade ? grade+' Condition' : ''].filter(Boolean).join(' - ');
@@ -68,8 +67,8 @@ function productSeoHtml(item, requestUrl, html) {
   const esc=s=>String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
   const head='<link rel="canonical" href="'+url+'">\n<meta name="description" content="'+esc(desc)+'">\n<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1,max-video-preview:-1">\n<meta property="og:type" content="product">\n<meta property="og:title" content="'+esc(safeTitle)+'">\n<meta property="og:description" content="'+esc(desc)+'">\n<meta property="og:url" content="'+url+'">'+(images[0]?'\n<meta property="og:image" content="'+images[0]+'">':'')+'\n<script type="application/ld+json">'+JSON.stringify(data).replace(/</g,'\\u003c')+'</script>';
   const directProductScript='<script>window.__MKG_DIRECT_PRODUCT__='+JSON.stringify(item).replace(/</g,'\\u003c')+';</script>';
-  const seoBody='<section id="mkg-product-seo" aria-label="Product information" style="max-width:1100px;margin:18px auto;padding:0 20px;font-family:Arial,sans-serif"><h1 style="font-size:1px;line-height:1px;height:1px;overflow:hidden;margin:0">'+esc(safeTitle)+'</h1><p style="font-size:14px;color:#475569;margin:0">'+esc(desc)+'</p></section>';
-  return html.replace(/<title>[^<]*<\\/title>/i,'<title>'+esc(safeTitle)+'</title>').replace('</head>',head+'\n'+directProductScript+'\n</head>').replace('</body>',seoBody+'\n</body>');
+  const seoBody='<section id="mkg-product-seo" aria-label="Product information" style="max-width:1100px;margin:18px auto 40px;padding:16px 20px;border:1px solid #e2e8f0;border-radius:14px;background:#fff;font-family:Arial,sans-serif"><h1 style="font-size:18px;line-height:1.35;margin:0 0 6px;color:#0f172a">'+esc(safeTitle)+'</h1><p style="font-size:13px;line-height:1.6;color:#475569;margin:0">'+esc(desc)+'</p></section>';
+  return html.replace(/<title>[^<]*<\/title>/i,'<title>'+esc(safeTitle)+'</title>').replace('</head>',head+'\n'+directProductScript+'\n</head>').replace('</body>',seoBody+'\n</body>');
 }
 function sitemapXml(items,origin) {
   const urls=[origin+'/'].concat(items.map(x=>origin+'/product/'+slugifyProductSeo(x)));
