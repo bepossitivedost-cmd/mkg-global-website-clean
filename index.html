@@ -3395,7 +3395,7 @@ function openProductFromUrl() {
       const slug = slugs[key];
       const src = key === 'mkg'
         ? '/image/mkg_official_logo.png'
-        : (slug ? 'https://cdn.simpleicons.org/' + slug + '?viewbox=auto&size=24' : '');
+        : (slug ? 'https://cdn.simpleicons.org/' + slug : '');
       const label = fallback[key] || '•';
       if (!src) return '<span class="brand-fallback" style="display:flex">' + label + '</span>';
       return '<img src="' + src + '" alt="' + key + ' logo" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"><span class="brand-fallback">' + label + '</span>';
