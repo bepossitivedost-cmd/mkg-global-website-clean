@@ -3688,3 +3688,17 @@ document.addEventListener('keydown', function(e) {
   border:0!important;
 }
 </style>
+
+<style>
+/* All Brands button: show only the M mark from the MKG logo */
+.hero-brand-btn[data-brand="all"] img{
+  width:20px!important;
+  height:20px!important;
+  object-fit:cover!important;
+  object-position:left center!important;
+  border-radius:0!important;
+  padding:0!important;
+  background:transparent!important;
+}
+.hero-brand-btn[data-brand="all"] .brand-fallback{display:none!important}
+</style>
