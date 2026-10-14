@@ -3721,4 +3721,29 @@ document.addEventListener('keydown', function(e) {
   background:transparent!important;
 }
 .hero-brand-btn[data-brand="all"] .brand-fallback{display:none!important}
+
+/* Brand-led button styling: preserve each brand's recognizable wordmark feel */
+.hero-brand-btn{justify-content:center;gap:6px;min-height:42px;background:#fff;border-color:#e5e7eb}
+.hero-brand-btn img{width:22px;height:22px;object-fit:contain;flex:0 0 22px;background:transparent!important;padding:0!important}
+.hero-brand-btn span:not(.brand-fallback){font-size:12px;font-weight:900;letter-spacing:-.35px;line-height:1.05}
+.hero-brand-btn[data-brand="Samsung"] span:not(.brand-fallback){color:#1428a0;font-family:Arial,sans-serif;letter-spacing:.15px;font-weight:800}
+.hero-brand-btn[data-brand="Nothing"] span:not(.brand-fallback){color:#111;font-family:Arial,sans-serif;letter-spacing:1.2px;font-weight:950;text-transform:uppercase}
+.hero-brand-btn[data-brand="Apple"] span:not(.brand-fallback){color:#111;font-weight:800}
+.hero-brand-btn[data-brand="OnePlus"] span:not(.brand-fallback){color:#eb0029;font-weight:950}
+.hero-brand-btn[data-brand="iQOO"] span:not(.brand-fallback){color:#202020;font-weight:950;font-style:italic}
+.hero-brand-btn[data-brand="POCO"] span:not(.brand-fallback){color:#111;font-weight:950}
+.hero-brand-btn[data-brand="Xiaomi"] span:not(.brand-fallback),
+.hero-brand-btn[data-brand="Redmi"] span:not(.brand-fallback){color:#ff6900;font-weight:950}
+.hero-brand-btn[data-brand="Vivo"] span:not(.brand-fallback){color:#415fff;font-weight:900}
+.hero-brand-btn[data-brand="Oppo"] span:not(.brand-fallback){color:#087c42;font-weight:900}
+.hero-brand-btn[data-brand="realme"] span:not(.brand-fallback){color:#f5c400;font-weight:950}
+.hero-brand-btn[data-brand="boAt"] span:not(.brand-fallback){color:#f04b23;font-weight:950}
+.hero-brand-btn[data-brand="Google"] span:not(.brand-fallback){font-weight:700;letter-spacing:-.5px}
+.hero-brand-btn[data-brand="Nothing"] img{filter:grayscale(1)}
+.hero-brand-btn:hover{border-color:#94a3b8;box-shadow:0 2px 8px rgba(15,23,42,.08)}
+@media(max-width:640px){
+ .hero-brand-btn{min-height:34px;gap:4px;padding:5px 7px}
+ .hero-brand-btn img{width:17px;height:17px;flex-basis:17px}
+ .hero-brand-btn span:not(.brand-fallback){font-size:10px}
+}
 </style>
