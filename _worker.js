@@ -364,6 +364,7 @@ async function handlePriceMergeUpload(request, env) {
     brand: find('brand'), model: find('model'), color: find('color'),
     ram: find('ram/storage','ram_storage','ram storage'),
     mrp: find('mrp'), deal: find('super deal price','superdealprice','deal price'),
+    b2b: find('b2b price','b2bprice','wholesale price','wholesaleprice'),
     remarks: find('special remarks','specialremarks','remarks','remark'),
     specs: find('specs/description','specs','description'),
     category: find('category'), sub: find('sub-category','subcategory','sub category'),
@@ -377,11 +378,17 @@ async function handlePriceMergeUpload(request, env) {
   if (saved) { try { current = JSON.parse(saved); } catch {} }
   if (!Array.isArray(current)) current = [];
   const byId = new Map(current.map(item => [cleanText(item.id), item]));
-  let updated = 0, added = 0;
+  let updated = 0, added = 0, nextNewId = 1;
 
   for (const row of rows.slice(1)) {
-    const id = cleanText(row[idx.id]);
-    if (!id) continue;
+    let id = cleanText(row[idx.id]);
+    const brand = idx.brand >= 0 ? cleanText(row[idx.brand]) : '';
+    const model = idx.model >= 0 ? cleanText(row[idx.model]) : '';
+    // Blank Product ID means a new product. Generate a unique ID without touching existing IDs.
+    if (!id) {
+      if (!brand && !model) continue;
+      do { id = `mkg_new_${nextNewId++}`; } while (byId.has(id));
+    }
     const existing = byId.get(id);
     const mrp = idx.mrp >= 0 ? num(row[idx.mrp]) : 0;
     const deal = idx.deal >= 0 ? num(row[idx.deal]) : 0;
@@ -405,16 +412,18 @@ async function handlePriceMergeUpload(request, env) {
       if (idx.remarks >= 0 && cleanText(row[idx.remarks])) copy.SpecialRemarks = cleanText(row[idx.remarks]);
       if (mrp > 0) copy.MRP = mrp;
       if (deal > 0) copy.SuperDealPrice = deal;
+      if (idx.b2b >= 0 && cleanText(row[idx.b2b]) !== '') {
+        const b2bValue = num(row[idx.b2b]);
+        if (b2bValue > 0) copy.B2BPrice = b2bValue;
+      }
       byId.set(id, copy);
       updated++;
       continue;
     }
 
-    const brand = cleanText(row[idx.brand]);
-    const model = cleanText(row[idx.model]);
     if (!brand && !model) continue;
 
-    // New products use the agreed Open Box defaults and do not touch existing products/images.
+    // New products use safe defaults and are appended without changing existing products/images.
     const item = {
       Category: 'Phone',
       SubCategory: 'Smartphone',
@@ -430,6 +439,7 @@ async function handlePriceMergeUpload(request, env) {
       Warranty: '15 Days QC',
       MRP: mrp,
       SuperDealPrice: deal,
+      B2BPrice: idx.b2b >= 0 && num(row[idx.b2b]) > 0 ? num(row[idx.b2b]) : 0,
       ImageUrl: '',
       SpecialRemarks: idx.remarks >= 0 ? cleanText(row[idx.remarks]) : '',
       Video_URL: '',
