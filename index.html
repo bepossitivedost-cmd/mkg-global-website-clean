@@ -3404,9 +3404,29 @@ function openProductFromUrl() {
     function renderHeroBrandFilters() {
       const wrap = document.getElementById('hero-brand-list');
       if (!wrap) return;
-      const brands = [...new Set(
-        inventory.map(i => String(i.Brand || '').trim()).filter(Boolean)
-      )].sort((a,b) => a.localeCompare(b));
+      const canonicalBrand = value => {
+        const raw = String(value || '').trim();
+        const key = raw.toLowerCase().replace(/[^a-z0-9]/g, '');
+        const names = {
+          apple:'Apple', samsung:'Samsung', iqoo:'iQOO', oneplus:'OnePlus',
+          oppo:'Oppo', vivo:'Vivo', xiaomi:'Xiaomi', redmi:'Redmi',
+          realme:'Realme', motorola:'Motorola', infinix:'Infinix',
+          tecno:'Tecno', itel:'Itel', poco:'POCO', google:'Google',
+          nothing:'Nothing', kraze:'Kraze', boat:'boAt', noise:'Noise',
+          lenovo:'Lenovo', hp:'HP', dell:'Dell', asus:'ASUS', acer:'Acer',
+          sony:'Sony', lg:'LG', jbl:'JBL', lava:'Lava'
+        };
+        return names[key] || raw;
+      };
+      const brandMap = new Map();
+      inventory.forEach(item => {
+        const raw = String(item.Brand || '').trim();
+        if (!raw || raw.toLowerCase() === 'mkg' || raw.toLowerCase() === 'mkg global') return;
+        const canonical = canonicalBrand(raw);
+        const key = canonical.toLowerCase();
+        if (!brandMap.has(key)) brandMap.set(key, canonical);
+      });
+      const brands = [...brandMap.values()].sort((a,b) => a.localeCompare(b));
       const escapeHtml = value => String(value).replace(/[&<>"']/g, ch => ({
         '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
       }[ch]));
