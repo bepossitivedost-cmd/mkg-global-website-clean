@@ -57,6 +57,8 @@
       Update prices by Product ID and add new products without changing existing product images or Product IDs.
       This is the recommended option for price changes.
     </p>
+    <button type="button" onclick="exportInventoryCsv()" class="mt-4 w-full py-3 rounded-xl border-2 border-teal-700 text-teal-800 bg-teal-50 font-black">Download Existing Products CSV</button>
+    <p class="text-xs text-slate-500 mt-2">Exports current Product IDs, names, categories and available prices from the inventory currently loaded by this admin panel.</p>
     <div class="drop rounded-2xl p-6 text-center mt-4">
       <input id="priceMergeCsv" type="file" accept=".csv,text/csv" class="hidden">
       <button onclick="document.getElementById('priceMergeCsv').click()" class="w-auto px-6 py-3 rounded-xl bg-teal-700 text-white font-black">Choose Price Update CSV</button>
@@ -101,6 +103,39 @@ const $=id=>document.getElementById(id);
 function status(msg,ok=false){const el=$('status');el.className='mt-4 rounded-xl p-4 text-sm font-bold '+(ok?'bg-emerald-50 text-emerald-800':'bg-red-50 text-red-800');el.textContent=msg;el.classList.remove('hidden')}
 function setButtons(enabled){['chooseImages','imageUpload'].forEach(id=>{const b=$(id);b.disabled=!enabled;b.classList.toggle('disabled-btn',!enabled)})}
 function productLabel(x){return `${x.Brand||''} ${x.Model||''} • ${x.Color||''} • ${x.Condition||''} • ${x.id}`.replace(/^\s+/,'')}
+function exportInventoryCsv(){
+  if(!Array.isArray(inventory) || !inventory.length) return status('No products are loaded to export. Refresh the inventory and try again.');
+  const rows=inventory.map(x=>{
+    const first=(...keys)=>{for(const k of keys){const v=x?.[k];if(v!==undefined&&v!==null&&String(v).trim()!=='')return v;}return '';};
+    const productName=[first('Brand','brand'),first('Model','model')].filter(Boolean).join(' ').trim();
+    return {
+      'Product ID':first('id','Product ID','ProductID'),
+      'Product Name':productName || first('Product Name','Item Name','name','title'),
+      'Brand':first('Brand','brand'),
+      'Model':first('Model','model'),
+      'Color':first('Color','Colour','color','colour'),
+      'RAM/Storage':first('RAM_Storage','RAM/Storage','RAM Storage','RAMStorage','Variant'),
+      'MRP':first('MRP','mrp'),
+      'Super Deal Price':first('SuperDealPrice','Super Deal Price','Selling Price','Price'),
+      'B2B Price':first('B2BPrice','B2B Price','WholesalePrice','Wholesale Price'),
+      'Category':first('Category','category'),
+      'Sub-Category':first('SubCategory','Sub-Category','Sub Category'),
+      'Condition':first('Condition','condition'),
+      'Box and Accessories':first('BoxAndAccessories','Box and Accessories'),
+      'Grade':first('Grade','grade'),
+      'Qty':first('Qty','Qty.','Quantity','Stock'),
+      'Warranty':first('Warranty','warranty'),
+      'Specs':first('Specs','Specifications','specs')
+    };
+  });
+  const headers=Object.keys(rows[0]);
+  const csvCell=v=>{const t=String(v??'');return /[",\r\n]/.test(t)?'"'+t.replace(/"/g,'""')+'"':t;};
+  const csv=[headers.map(csvCell).join(','),...rows.map(row=>headers.map(h=>csvCell(row[h])).join(','))].join('\r\n');
+  const blob=new Blob(['\uFEFF',csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='MKG_GLOBAL_Existing_Products.csv';document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+  status('Exported '+rows.length+' products. Edit only price cells for existing items and keep Product IDs unchanged.',true);
+}
 function fillProducts(){
   $('product').innerHTML=inventory.length ? inventory.map(x=>`<option value="${String(x.id).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;')}">${productLabel(x).replace(/&/g,'&amp;').replace(/</g,'&lt;')}</option>`).join('') : '<option value="">No products found</option>';
   $('productState').textContent=inventory.length ? `${inventory.length} products loaded` : 'No products loaded. Upload inventory first.';
