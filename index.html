@@ -2335,8 +2335,12 @@
       const match = window.location.pathname.match(/^\/product\/([^/]+)\/?$/i);
       if (!match) return null;
       const slug = decodeURIComponent(match[1]).trim();
+      const productId = new URLSearchParams(window.location.search).get('id') || '';
       try {
-        const response = await fetch('/api/product?slug=' + encodeURIComponent(slug), { cache: 'no-store' });
+        const lookup = productId
+          ? '/api/product?id=' + encodeURIComponent(productId)
+          : '/api/product?slug=' + encodeURIComponent(slug);
+        const response = await fetch(lookup, { cache: 'no-store' });
         if (!response.ok) return null;
         const item = await response.json();
         if (!item || (!item.Brand && !item.Model)) return null;
@@ -2707,14 +2711,14 @@
     }
 
     function productUrl(item) {
-      return `${window.location.origin}/product/${slugifyProduct(item)}`;
+      return `${window.location.origin}/product/${slugifyProduct(item)}?id=${encodeURIComponent(String(item?.id || ''))}`;
     }
 
     function openProductModal(id, updateUrl = true) {
       const item = inventory.find(i => String(i.id) === String(id));
       if (!item) return;
       if (updateUrl) {
-        history.pushState({ productId: item.id }, '', `/product/${slugifyProduct(item)}`);
+        history.pushState({ productId: item.id }, '', `/product/${slugifyProduct(item)}?id=${encodeURIComponent(String(item.id || ''))}`);
       }
       document.title = `${item.Brand || ''} ${item.Model || 'Product'} | MKG GLOBAL`.replace(/\s+/g, ' ').trim();
 
@@ -3058,8 +3062,10 @@
 function openProductFromUrl() {
       const match = window.location.pathname.match(/^\/product\/([^/]+)\/?$/i);
       if (!match || !inventory.length) return false;
+      const productId = new URLSearchParams(window.location.search).get('id') || '';
       const wanted = decodeURIComponent(match[1]).toLowerCase();
-      const item = inventory.find(i => productSlugMatches(i, wanted));
+      const item = (productId ? inventory.find(i => String(i.id) === String(productId)) : null)
+        || inventory.find(i => productSlugMatches(i, wanted));
       if (item) {
         openProductModal(item.id, false);
         return true;
