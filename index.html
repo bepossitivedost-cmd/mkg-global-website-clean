@@ -338,7 +338,7 @@
             class="relative flex items-center gap-2 px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-black text-white bg-mkgTeal hover:bg-mkgTealDark rounded-xl shadow-sm transition-all active:scale-95"
             aria-label="Shopping Cart"
           >
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l2.2 11.2a2 2 0 002 1.6h8.9a2 2 0 002-1.6L22 7H6M10 21a1 1 0 100-2 1 1 0 000 2zm8 0a1 1 0 100-2 1 1 0 000 2z"></path></svg>
             <span class="hidden sm:inline">Cart</span>
             <span id="cart-counter-badge" class="bg-mkgAmber text-white text-[11px] font-black px-2 py-0.5 rounded-full shadow-2xs">0</span>
           </button>
@@ -383,7 +383,7 @@
             <div>
               <div class="hero-super-title">🔥 SUPER DEAL HUB</div>
               <div class="hero-showcase-tagline" aria-hidden="true"></div>
-              <button class="hero-negotiate-cta" type="button" onclick="document.getElementById('product-grid')?.scrollIntoView({behavior:'smooth',block:'start'})">🛒 Add to Cart &amp; Get Your Best Deal</button>
+              <button class="hero-negotiate-cta" type="button" onclick="document.getElementById('product-grid')?.scrollIntoView({behavior:'smooth',block:'start'})">🤝 Add to Cart &amp; Get Your Best Deal</button>
             </div>
             <div class="hero-showcase-note" aria-hidden="true"></div>
           </div>
@@ -3868,4 +3868,20 @@ button.bg-mkgTeal:hover,.hover\\:bg-mkgTealDark:hover{background-color:#075985}
  .hero-showcase{border-radius:14px}
  .hero-super-title{font-size:18px!important;letter-spacing:.04em!important}
 }
+</style>
+
+
+<style>
+/* Match the hero title to the header's Super Deal Hub wordmark style */
+.hero-super-title{
+  font-family:inherit!important;
+  font-size:10px!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+  color:#087f8c!important;
+  text-shadow:none!important;
+}
+@media(min-width:640px){.hero-super-title{font-size:12px!important}}
+@media(max-width:640px){.hero-super-title{font-size:10px!important;letter-spacing:.06em!important}}
 </style>
