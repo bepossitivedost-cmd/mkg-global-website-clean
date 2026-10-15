@@ -3033,9 +3033,8 @@
     function closeProductModal(updateUrl = true) {
       document.getElementById('product-detail-modal').classList.add('hidden');
       activeModalItem = null;
-      if (updateUrl && window.location.pathname.startsWith('/product/') && !productPageOpenedDirectly) {
-        history.pushState({}, '', '/');
-      }
+      // Never rewrite a product URL to the homepage when closing the modal.
+      // Keeping the product path also makes direct/shared product links stable.
       document.title = 'MKG GLOBAL | Certified Refurbished Devices';
     }
 
