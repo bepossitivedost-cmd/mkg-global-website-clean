@@ -212,7 +212,7 @@
 .hero-brand-btn .brand-fallback{display:none;width:17px;height:17px;flex:0 0 17px;align-items:center;justify-content:center;border-radius:5px;background:#0b203d;color:#fff;font-size:7px;font-weight:950}
 .hero-showcase{position:relative;height:100%;min-width:0;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:2px 0 0;overflow:hidden}
 .hero-showcase-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 8px 4px}
-.hero-super-title{font-size:15px;font-weight:950;color:#0b203d;letter-spacing:.02em}
+.hero-super-title{font-size:20px;line-height:1.1;font-weight:1000;color:#08756e;letter-spacing:.055em;text-transform:uppercase;text-shadow:0 2px 0 rgba(255,255,255,.9);}
 .hero-showcase-note{font-size:8.5px;color:#526274;font-weight:800;text-align:right}
 .hero-negotiate-cta{display:inline-flex;align-items:center;justify-content:center;margin-top:7px;padding:6px 10px;border:0;border-radius:8px;background:#08756e;color:#fff;font-size:10px;font-weight:900;text-decoration:none;box-shadow:0 3px 8px rgba(0,108,100,.16);white-space:nowrap;cursor:pointer}.hero-negotiate-cta:hover{background:#065f59}
 @media(max-width:640px){.hero-negotiate-cta{font-size:9px;padding:5px 7px;margin-top:5px}}
@@ -2462,7 +2462,7 @@
         '</div>';
       const title = document.querySelector('.hero-super-title');
       const tagline = document.querySelector('.hero-showcase-tagline');
-      if (title) title.textContent = '✦ SUPER DEAL HUB';
+      if (title) title.textContent = 'SUPER DEAL HUB';
       if (tagline) tagline.textContent = '';
       dots.innerHTML = LATEST_SHOWCASE.map((_,i) =>
         '<button class="showcase-dot' + (i===showcaseIndex ? ' active' : '') + '" type="button" aria-label="Showcase ' + (i+1) + '" onclick="renderLatestShowcase(' + i + ');restartShowcaseTimer()"></button>'
