@@ -1,13 +1,21 @@
+function normalizedProductModel(item) {
+  const brand = String(item?.Brand || '').trim();
+  let model = String(item?.Model || '').trim();
+  if (brand && model.toLowerCase().startsWith(brand.toLowerCase() + ' ')) model = model.slice(brand.length).trim();
+  return model;
+}
 function slugifyProductSeo(item) {
-  const parts = [item?.Brand, item?.Model, item?.Color, item?.RAM_Storage].filter(Boolean).join('-');
+  const parts = [item?.Brand, normalizedProductModel(item), item?.Color, item?.RAM_Storage].filter(Boolean).join('-');
   return String(parts || item?.id || 'product').toLowerCase().replace(/&/g,'and').replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,120);
 }
 function productSlugMatches(item, slug) {
   const target = String(slug || '').trim().toLowerCase();
-  const exact = slugifyProductSeo(item).toLowerCase();
-  if (exact === target) return true;
   const compact = value => String(value || '').toLowerCase().replace(/[^a-z0-9]+/g,'');
-  return compact(exact) === compact(target);
+  const candidates = [
+    slugifyProductSeo(item),
+    [item?.Brand, item?.Model, item?.Color, item?.RAM_Storage].filter(Boolean).join('-')
+  ];
+  return candidates.some(value => String(value).toLowerCase() === target || compact(value) === compact(target));
 }
 function schemaCondition(item) {
   const c=String(item?.Condition||'').toLowerCase();
