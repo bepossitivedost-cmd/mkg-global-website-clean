@@ -2697,9 +2697,10 @@
     }
 
     function slugifyProduct(item) {
-      const parts = [item?.Brand, item?.Model, item?.Color, item?.RAM_Storage]
-        .filter(Boolean)
-        .join('-');
+      const brand = String(item?.Brand || '').trim();
+      let model = String(item?.Model || '').trim();
+      if (brand && model.toLowerCase().startsWith(brand.toLowerCase() + ' ')) model = model.slice(brand.length).trim();
+      const parts = [brand, model, item?.Color, item?.RAM_Storage].filter(Boolean).join('-');
       return String(parts || item?.id || 'product')
         .toLowerCase()
         .replace(/&/g, 'and')
