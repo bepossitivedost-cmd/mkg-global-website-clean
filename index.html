@@ -2605,13 +2605,10 @@
               </p>
             ` : ''}
 
-            <!-- Pricing Row + MOQ -->
+            <!-- Pricing Row: keep MOQ/MOV rules off product listings -->
             <div class="mt-3 flex flex-wrap items-center gap-2">
               <span class="text-xl font-black text-mkgTeal">${dealPrice > 0 ? formatINR(dealPrice) : 'Price unavailable'}</span>
               ${mrp > 0 ? `<span class="text-xs text-slate-400 line-through">${formatINR(mrp)}</span>` : ''}
-              ${String(item.Category || '').trim().toLowerCase() === 'accessories'
-                ? `<span class="text-[10px] font-black text-orange-800 bg-orange-50 border border-orange-200 px-2 py-1 rounded-lg">MOQ ₹6,000 (Accessories Only)</span>`
-                : `<span class="text-[10px] font-black text-blue-800 bg-blue-50 border border-blue-200 px-2 py-1 rounded-lg">MOV ₹50,000</span>`}
             </div>
           </div>
         </div>
