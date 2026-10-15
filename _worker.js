@@ -525,9 +525,11 @@ export default {
     if (url.pathname === '/api/inventory' && request.method === 'GET') return json(await getInventory(env, request), 200, { 'cache-control': 'no-store' });
     if (url.pathname === '/api/product' && request.method === 'GET') {
       const slug = String(url.searchParams.get('slug') || '').trim().toLowerCase();
-      if (!slug) return json({ error: 'Product slug is required.' }, 400, { 'cache-control': 'no-store' });
+      const productId = String(url.searchParams.get('id') || '').trim();
+      if (!slug && !productId) return json({ error: 'Product id or slug is required.' }, 400, { 'cache-control': 'no-store' });
       const items = await getInventory(env, request);
-      const item = items.find(x => productSlugMatches(x, slug));
+      const item = (productId ? items.find(x => String(x.id) === productId) : null)
+        || (slug ? items.find(x => productSlugMatches(x, slug)) : null);
       if (!item) return json({ error: 'Product not found.' }, 404, { 'cache-control': 'no-store' });
       return json(item, 200, { 'cache-control': 'no-store' });
     }
@@ -557,8 +559,10 @@ export default {
     }
     if (url.pathname.startsWith('/product/')) {
       const slug=decodeURIComponent(url.pathname.split('/')[2]||'').toLowerCase();
+      const productId=String(url.searchParams.get('id')||'').trim();
       const items=await getInventory(env,request);
-      const item=items.find(x=>productSlugMatches(x,slug));
+      const item=(productId ? items.find(x=>String(x.id)===productId) : null)
+        || items.find(x=>productSlugMatches(x,slug));
       const asset=await env.ASSETS.fetch(new Request(new URL('/index.html',request.url),request));
       if(!asset.ok) return asset;
       const html=await asset.text();
