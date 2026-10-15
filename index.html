@@ -214,7 +214,7 @@
 .hero-showcase-head{width:100%;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 8px 4px}
 .hero-super-title{font-size:15px;font-weight:950;color:#0b203d;letter-spacing:.02em}
 .hero-showcase-note{font-size:8.5px;color:#526274;font-weight:800;text-align:right}
-.hero-negotiate-cta{display:inline-flex;align-items:center;justify-content:center;margin-top:7px;padding:6px 10px;border-radius:8px;background:#08756e;color:#fff;font-size:10px;font-weight:900;text-decoration:none;box-shadow:0 3px 8px rgba(0,108,100,.16);white-space:nowrap}.hero-negotiate-cta:hover{background:#065f59}
+.hero-negotiate-cta{display:inline-flex;align-items:center;justify-content:center;margin-top:7px;padding:6px 10px;border:0;border-radius:8px;background:#08756e;color:#fff;font-size:10px;font-weight:900;text-decoration:none;box-shadow:0 3px 8px rgba(0,108,100,.16);white-space:nowrap;cursor:pointer}.hero-negotiate-cta:hover{background:#065f59}
 @media(max-width:640px){.hero-negotiate-cta{font-size:9px;padding:5px 7px;margin-top:5px}}
 .hero-products{width:100%;height:225px;display:flex!important;align-items:center;justify-content:center;gap:8px;z-index:2;min-width:0}
 .hero-product{position:relative;width:135px;height:250px!important;border:0;background:transparent;padding:28px 0 0;cursor:pointer;transition:transform .22s ease,filter .22s ease,background .22s ease,box-shadow .22s ease;display:flex;align-items:flex-end;justify-content:center;z-index:1}
@@ -383,7 +383,7 @@
             <div>
               <div class="hero-super-title">🔥 SUPER DEAL HUB</div>
               <div class="hero-showcase-tagline">Latest Flagships • Curated Showcase</div>
-              <a class="hero-negotiate-cta" href="https://wa.me/918287361020?text=Hello%20MKG%20GLOBAL%2C%20I%20want%20to%20negotiate%20the%20price%20for%20a%20product.%20Please%20share%20your%20best%20price." target="_blank" rel="noopener">🤝 Negotiate Price on WhatsApp</a>
+              <button class="hero-negotiate-cta" type="button" onclick="document.getElementById('product-grid')?.scrollIntoView({behavior:'smooth',block:'start'})">🛒 Add to Cart &amp; Negotiate</button>
             </div>
             <div class="hero-showcase-note">New generation • Multi-brand • Auto showcase</div>
           </div>
@@ -714,6 +714,9 @@
           <span class="text-xl font-black text-mkgTeal" id="cart-grand-total">₹0</span>
         </div>
 
+        <button id="cart-negotiate-btn" onclick="openCartNegotiation()" class="hidden w-full py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-sm rounded-xl shadow-md flex items-center justify-center gap-2 transition-transform active:scale-[0.98]">
+          <span class="text-lg">🤝</span><span>Negotiate Cart Price</span>
+        </button>
         <button onclick="openUpiPaymentModal()" class="w-full py-3 bg-mkgTeal hover:bg-mkgTealDark text-white font-black text-sm rounded-xl shadow-md flex items-center justify-center gap-2 transition-transform active:scale-[0.98]">
           <span class="text-lg">📲</span>
           <span>Pay via UPI & Confirm Order</span>
@@ -721,6 +724,25 @@
         <p class="text-[10px] text-center text-slate-500 font-semibold">Direct UPI payment • No payment gateway</p>
       </div>
 
+    </div>
+  </div>
+
+  <!-- Cart Price Negotiation Modal -->
+  <div id="cart-negotiation-modal" class="fixed inset-0 z-[70] hidden bg-slate-950/75 backdrop-blur-sm items-center justify-center p-4">
+    <div class="bg-white rounded-2xl w-full max-w-md shadow-2xl overflow-hidden">
+      <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
+        <div><h3 class="font-black text-base">🤝 Negotiate Your Cart Price</h3><p class="text-xs text-slate-300 mt-1">Your selected products will be shared with MKG GLOBAL.</p></div>
+        <button type="button" onclick="closeCartNegotiation()" class="w-8 h-8 rounded-full bg-slate-700 text-white font-black">✕</button>
+      </div>
+      <div class="p-4 space-y-3">
+        <div class="rounded-xl bg-slate-50 border border-slate-200 p-3 text-xs text-slate-600">Listed cart total: <strong id="negotiation-listed-total" class="text-slate-900">₹0</strong></div>
+        <label class="block text-xs font-black text-slate-700">Your expected total price (₹) *</label>
+        <input id="negotiation-expected-price" type="number" min="1" step="1" inputmode="numeric" placeholder="Enter expected price for the full cart" class="w-full px-3 py-3 border border-slate-300 rounded-xl text-sm font-bold focus:outline-none focus:border-mkgTeal">
+        <label class="block text-xs font-black text-slate-700">Message / quantity details (optional)</label>
+        <textarea id="negotiation-note" rows="2" placeholder="Any special requirement?" class="w-full px-3 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:border-mkgTeal"></textarea>
+        <p class="text-[11px] text-slate-500">This is a price request only. The order is not confirmed until MKG GLOBAL agrees on the final price.</p>
+        <button type="button" onclick="sendCartNegotiation()" class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-black">Send Cart &amp; Expected Price on WhatsApp →</button>
+      </div>
     </div>
   </div>
 
@@ -3078,8 +3100,10 @@ function openProductFromUrl() {
       const counterBadge = document.getElementById('cart-counter-badge');
       const headerItemCount = document.getElementById('cart-item-count');
       const grandTotalElem = document.getElementById('cart-grand-total');
+      const negotiateBtn = document.getElementById('cart-negotiate-btn');
 
       container.innerHTML = '';
+      if (negotiateBtn) negotiateBtn.classList.toggle('hidden', cart.length === 0);
       counterBadge.innerText = cart.length;
       headerItemCount.innerText = cart.length;
 
@@ -3142,6 +3166,46 @@ function openProductFromUrl() {
     function removeFromCart(idx) {
       cart.splice(idx, 1);
       updateCartUI();
+    }
+
+    function openCartNegotiation() {
+      if (!cart.length) { alert('Please add products to your cart first.'); return; }
+      const total = calculateCartGrandTotal();
+      const listed = document.getElementById('negotiation-listed-total');
+      const expected = document.getElementById('negotiation-expected-price');
+      const note = document.getElementById('negotiation-note');
+      if (listed) listed.textContent = formatINR(total);
+      if (expected) { expected.value = ''; expected.max = String(total); }
+      if (note) note.value = '';
+      const modal = document.getElementById('cart-negotiation-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeCartNegotiation() {
+      const modal = document.getElementById('cart-negotiation-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function sendCartNegotiation() {
+      if (!cart.length) { alert('Your cart is empty. Add products before negotiating.'); closeCartNegotiation(); return; }
+      const name = (document.getElementById('cust-name')?.value || '').trim();
+      const phone = (document.getElementById('cust-phone')?.value || '').trim();
+      const expected = Number(document.getElementById('negotiation-expected-price')?.value || 0);
+      const note = (document.getElementById('negotiation-note')?.value || '').trim();
+      const listed = calculateCartGrandTotal();
+      if (!name) { alert('Please enter your name in the cart first.'); closeCartNegotiation(); document.getElementById('cust-name')?.focus(); return; }
+      if (!phone) { alert('Please enter your WhatsApp mobile number in the cart first.'); closeCartNegotiation(); document.getElementById('cust-phone')?.focus(); return; }
+      if (!Number.isFinite(expected) || expected <= 0) { alert('Please enter your expected total cart price.'); return; }
+      let lines = '';
+      cart.forEach((item, index) => {
+        lines += `\n${index + 1}. ${item.model}${item.ramStorage ? ' (' + item.ramStorage + ')' : ''}\n   Qty: ${item.qty}\n   Listed unit price: ${formatINR(item.unitPrice)}\n   Condition: ${item.condition} | Coverage: ${item.warranty}`;
+      });
+      const message = `*MKG GLOBAL — CART PRICE NEGOTIATION REQUEST*\n------------------------------\nCustomer: ${name}\nWhatsApp: ${phone}\n${lines}\n\nListed cart total: ${formatINR(listed)}\n*Customer expected total: ${formatINR(expected)}*\n${note ? 'Note: ' + note + '\n' : ''}\nPlease share your best possible final price. This is a price request, not a confirmed order.`;
+      const url = 'https://wa.me/918287361020?text=' + encodeURIComponent(message);
+      window.open(url, '_blank', 'noopener');
+      closeCartNegotiation();
     }
 
     function getMoqStatus() {
