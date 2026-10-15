@@ -2304,6 +2304,9 @@
     let searchQuery = '';
     let cart = [];
     
+    // Preserve directly opened product URLs; closing the modal must not redirect these visits to the homepage.
+    const productPageOpenedDirectly = /^\/product\//i.test(window.location.pathname);
+
     // Active Modal State
     let activeModalItem = null;
     let activeModalWarrantyPrice = 0;
@@ -3030,7 +3033,7 @@
     function closeProductModal(updateUrl = true) {
       document.getElementById('product-detail-modal').classList.add('hidden');
       activeModalItem = null;
-      if (updateUrl && window.location.pathname.startsWith('/product/')) {
+      if (updateUrl && window.location.pathname.startsWith('/product/') && !productPageOpenedDirectly) {
         history.pushState({}, '', '/');
       }
       document.title = 'MKG GLOBAL | Certified Refurbished Devices';
