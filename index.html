@@ -375,17 +375,17 @@
         <div class="hero-brand-panel">
           <div class="hero-brand-kicker">MKG GLOBAL</div>
           <h1 class="hero-brand-title">Shop by Brand</h1>
-          <p class="hero-brand-subtitle">Tap any brand to filter the complete catalogue.</p>
+          <p class="hero-brand-subtitle">Top Brands. One Destination.</p>
           <div id="hero-brand-list" class="hero-brand-list" aria-label="Filter products by brand"></div>
         </div>
         <div class="hero-showcase">
           <div class="hero-showcase-head">
             <div>
               <div class="hero-super-title">🔥 SUPER DEAL HUB</div>
-              <div class="hero-showcase-tagline">Latest Flagships • Curated Showcase</div>
-              <button class="hero-negotiate-cta" type="button" onclick="document.getElementById('product-grid')?.scrollIntoView({behavior:'smooth',block:'start'})">🛒 Add to Cart &amp; Negotiate</button>
+              <div class="hero-showcase-tagline" aria-hidden="true"></div>
+              <button class="hero-negotiate-cta" type="button" onclick="document.getElementById('product-grid')?.scrollIntoView({behavior:'smooth',block:'start'})">🛒 Add to Cart &amp; Get Your Best Deal</button>
             </div>
-            <div class="hero-showcase-note">New generation • Multi-brand • Auto showcase</div>
+            <div class="hero-showcase-note" aria-hidden="true"></div>
           </div>
           <div id="latest-showcase" class="latest-showcase" aria-label="Latest flagship showcase"></div>
           <div class="showcase-dots" id="showcase-dots" aria-label="Showcase slides"></div>
@@ -2462,8 +2462,8 @@
         '</div>';
       const title = document.querySelector('.hero-super-title');
       const tagline = document.querySelector('.hero-showcase-tagline');
-      if (title) title.textContent = '🔥 SUPER DEAL HUB • ' + slide.title;
-      if (tagline) tagline.textContent = slide.tagline;
+      if (title) title.textContent = '✦ SUPER DEAL HUB';
+      if (tagline) tagline.textContent = '';
       dots.innerHTML = LATEST_SHOWCASE.map((_,i) =>
         '<button class="showcase-dot' + (i===showcaseIndex ? ' active' : '') + '" type="button" aria-label="Showcase ' + (i+1) + '" onclick="renderLatestShowcase(' + i + ');restartShowcaseTimer()"></button>'
       ).join('');
