@@ -2541,8 +2541,19 @@
       });
     }
 
+    // Manually mark sold-out products until live inventory is updated.
+    function isManuallySoldOut(item) {
+      const brand = String(item?.Brand || '').trim().toLowerCase();
+      const model = String(item?.Model || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ');
+      const storage = String(item?.RAM_Storage || '').trim().toLowerCase().replace(/[^a-z0-9]+/g, '');
+      if (brand === 'apple' && model === 'iphone 17') return true;
+      return (brand === 'redmi' || brand === 'xiaomi') &&
+        model.includes('redmi note 13') &&
+        (storage.includes('8256') || storage.includes('8gb256gb') || storage.includes('8gbrom256gb'));
+    }
+
     function createProductCard(item) {
-      const qty = parseInt(item.Qty) || 0;
+      const qty = isManuallySoldOut(item) ? 0 : (parseInt(item.Qty) || 0);
       const isOutOfStock = qty <= 0;
       
       const dealPrice = cleanPrice(item.SuperDealPrice);
@@ -2803,7 +2814,7 @@
 
       // Stock logic: never expose numeric inventory quantity to customers.
       // Show only an OUT OF STOCK strip when Qty is zero; otherwise show no stock count.
-      const qty = parseInt(item.Qty) || 0;
+      const qty = isManuallySoldOut(item) ? 0 : (parseInt(item.Qty) || 0);
       const stockInfo = document.getElementById('modal-stock-info');
       if (qty > 0) {
         stockInfo.innerHTML = '';
