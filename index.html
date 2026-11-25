@@ -393,8 +393,8 @@
       </div>
     </div>
     <div class="hero-category-nav" aria-label="Shop categories">
-      <button class="active" onclick="resetFilters()">🌐 <strong>All</strong></button>
-      <button onclick="setCategory('Phone', null)">📱 <strong>Phones</strong></button>
+      <button onclick="resetFilters()">🌐 <strong>All</strong></button>
+      <button class="active" onclick="setCategory('Phone', null)">📱 <strong>Phones</strong></button>
       <button onclick="setCategory('Laptop', null)">💻 <strong>Laptops</strong></button>
       <button onclick="setCategory('Accessories', null)">🎧 <strong>Accessories</strong></button>
       <button onclick="setCategory('Wearables', null)">⌚ <strong>Wearables</strong></button>
@@ -2297,7 +2297,7 @@
 
     // State Variables
     let inventory = [];
-    let selectedCategory = 'all';
+    let selectedCategory = 'Phone';
     let selectedCondition = 'all';
     let selectedBrand = 'all';
     let selectedGrade = 'all';
