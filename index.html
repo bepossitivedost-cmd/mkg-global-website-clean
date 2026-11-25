@@ -2535,6 +2535,14 @@
         return matchCategory && matchCondition && matchBrand && matchGrade && matchSearch;
       });
 
+      // Keep available products first and move sold-out items to the bottom.
+      // This only changes storefront display order; inventory data is untouched.
+      filtered.sort((a, b) => {
+        const aOut = isManuallySoldOut(a) || (parseInt(a.Qty, 10) || 0) <= 0;
+        const bOut = isManuallySoldOut(b) || (parseInt(b.Qty, 10) || 0) <= 0;
+        return Number(aOut) - Number(bOut);
+      });
+
       if (filtered.length === 0) {
         emptyState.classList.remove('hidden');
         return;
