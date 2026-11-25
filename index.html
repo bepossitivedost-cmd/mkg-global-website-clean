@@ -2295,6 +2295,11 @@
   }
 ];
 
+    // Preserve the original stored grading labels for product cards and filters.
+    function displayGrade(value) {
+      return String(value || '').trim();
+    }
+
     // State Variables
     let inventory = [];
     let selectedCategory = 'Phone';
