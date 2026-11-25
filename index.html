@@ -791,7 +791,7 @@
         <div class="p-3 rounded-2xl bg-blue-50/80 border border-blue-200">
           <div class="flex items-center justify-between mb-1 gap-2">
             <strong class="text-blue-900 font-black text-sm">2. Open Box</strong>
-            <span class="px-2 py-0.5 bg-blue-200 text-blue-900 rounded font-black text-[10px] whitespace-nowrap">A1 / Pristine</span>
+            <span class="px-2 py-0.5 bg-blue-200 text-blue-900 rounded font-black text-[10px] whitespace-nowrap">A+ / Pristine</span>
           </div>
           <p class="text-slate-700">Factory seal opened for inspection, verification or demo. Device is in pristine condition with no material cosmetic wear. Packaging may be Brand Box or MKG Box as stated in the listing.</p>
         </div>
@@ -805,7 +805,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
             <div class="p-2.5 rounded-xl bg-white/80 border border-teal-100">
               <div class="flex items-center justify-between">
-                <strong class="text-sm text-slate-900">A1 — Flawless</strong>
+                <strong class="text-sm text-slate-900">A+ — Flawless</strong>
                 <span class="text-[10px] font-black text-teal-700">LIKE NEW</span>
               </div>
               <p class="mt-1 text-slate-600">No visible cosmetic marks under normal inspection. Clean, premium appearance.</p>
@@ -813,7 +813,7 @@
 
             <div class="p-2.5 rounded-xl bg-white/80 border border-teal-100">
               <div class="flex items-center justify-between">
-                <strong class="text-sm text-slate-900">A2 — Minor Scratches</strong>
+                <strong class="text-sm text-slate-900">A — Minor Scratches</strong>
                 <span class="text-[10px] font-black text-teal-700">LIGHT WEAR</span>
               </div>
               <p class="mt-1 text-slate-600">Light hairline scratches or minor signs of previous use, visible on close inspection.</p>
@@ -821,7 +821,7 @@
 
             <div class="p-2.5 rounded-xl bg-white/80 border border-teal-100">
               <div class="flex items-center justify-between">
-                <strong class="text-sm text-slate-900">A3 — Deep Scratches</strong>
+                <strong class="text-sm text-slate-900">A− — Deep Scratches</strong>
                 <span class="text-[10px] font-black text-teal-700">VISIBLE WEAR</span>
               </div>
               <p class="mt-1 text-slate-600">Clearly visible deeper scratches or stronger cosmetic wear, while the device remains within QC acceptance.</p>
@@ -829,7 +829,7 @@
 
             <div class="p-2.5 rounded-xl bg-white/80 border border-teal-100">
               <div class="flex items-center justify-between">
-                <strong class="text-sm text-slate-900">A4 — Noticeable Wear</strong>
+                <strong class="text-sm text-slate-900">B+ — Noticeable Wear</strong>
                 <span class="text-[10px] font-black text-teal-700">HEAVIER WEAR</span>
               </div>
               <p class="mt-1 text-slate-600">More noticeable scratches, scuffs or minor dents. Functional condition is subject to the 42-point QC pass.</p>
@@ -839,7 +839,7 @@
 
         <div class="p-3 rounded-2xl bg-slate-50 border border-slate-200">
           <strong class="text-slate-900 font-black text-sm">How to read the grade</strong>
-          <p class="mt-1 text-slate-600">The A1/A2/A3/A4 grade describes primarily <strong>cosmetic condition</strong>. Battery health, warranty, box/accessories and QC status are separate product attributes and should be checked on the product page.</p>
+          <p class="mt-1 text-slate-600">The A+/A/A−/B+ grade describes primarily <strong>cosmetic condition</strong>. Battery health, warranty, box/accessories and QC status are separate product attributes and should be checked on the product page.</p>
         </div>
       </div>
 
@@ -2295,17 +2295,6 @@
   }
 ];
 
-    // Display the new MKG certified grading scale while retaining existing stored grade values.
-    function displayGrade(value) {
-      const raw = String(value || '').trim();
-      if (!raw) return '';
-      return raw
-        .replace(/^A\\+/, 'A1')
-        .replace(/^A(?=\\s*\\()/, 'A2')
-        .replace(/^A−|^A-/, 'A3')
-        .replace(/^B\\+/, 'A4');
-    }
-
     // State Variables
     let inventory = [];
     let selectedCategory = 'Phone';
@@ -3593,7 +3582,7 @@ function openProductFromUrl() {
         const el = document.getElementById(id);
         if (!el) return;
         el.innerHTML = '<option value="all">' + label + ': All</option>' +
-          values.map(v => '<option value="' + v.replace(/"/g, '&quot;') + '">' + displayGrade(v) + '</option>').join('');
+          values.map(v => '<option value="' + v.replace(/"/g, '&quot;') + '">' + v + '</option>').join('');
         el.value = selected;
       };
       fill('brand-filter', 'Brand', unique('Brand'), selectedBrand);
