@@ -2886,7 +2886,7 @@
       } else if (isRefurbOrOpenDevice) {
         // Open Box + Refurbished Smartphones/Laptops: paid 6/12-month plans are based on Super Deal Price.
         const warrantyPricing = getWarrantyPlanPricing(cleanPrice(item.SuperDealPrice));
-        const includedWarrantyLabel = defaultWarranty;
+        const includedWarrantyLabel = '7 Days Warranty';
         activeModalWarrantyPrice = 0;
         activeModalWarrantyLabel = includedWarrantyLabel;
         warrantyContainer.innerHTML = `
@@ -2900,7 +2900,7 @@
                 <input type="radio" name="modal-warranty-opt" value="0" checked onchange="handleWarrantySelect(0, ${JSON.stringify(includedWarrantyLabel)}, this)" class="text-mkgTeal focus:ring-mkgTeal">
                 <div>
                   <span class="font-black text-slate-900 text-xs">${includedWarrantyLabel}</span>
-                  <p class="text-[10px] text-slate-500">Included with this device as specified in the inventory</p>
+                  <p class="text-[10px] text-slate-500">Free 7-day functional warranty included</p>
                 </div>
               </div>
               <span class="font-black text-emerald-700 text-xs">Free</span>
